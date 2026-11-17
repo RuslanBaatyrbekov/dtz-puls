@@ -190,6 +190,7 @@ function vProg(){var lv=level(),dn=doneCount(),seen=Object.keys(S.seen).length,h
     '<div class="row"><label for="nm" class="small" style="min-width:90px">'+esc(t('set.name'))+'</label><input class="txt" id="nm" value="'+esc(S.name)+'" maxlength="30"><button class="btn small" data-a="name">'+esc(t('btn.save'))+'</button></div>'+
     '<p class="small muted" style="margin:0">'+esc(syncLine())+(EMAIL?' · '+esc(EMAIL):'')+'</p>'+
     '<details><summary class="small">'+esc(t('set.code'))+'</summary><p class="small muted">'+esc(t('set.code.p'))+'</p><textarea id="code" class="txt" style="max-width:none;min-height:80px" dir="ltr" spellcheck="false"></textarea><div class="row" style="margin-top:8px"><button class="btn small ghost" data-a="exp">'+esc(t('set.exp'))+'</button><button class="btn small" data-a="imp">'+esc(t('set.imp'))+'</button></div></details>'+
+    (SB&&ME?'<details><summary class="small">'+esc(t('pw.h'))+'</summary><form id="pwf" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"><input type="email" autocomplete="username" value="'+esc(EMAIL)+'" hidden><input class="txt" style="max-width:none" id="pw1" type="password" dir="ltr" autocomplete="new-password" placeholder="'+esc(t('pw.new'))+'"><input class="txt" style="max-width:none" id="pw2" type="password" dir="ltr" autocomplete="new-password" placeholder="'+esc(t('pw.rep'))+'"><button class="btn small" type="submit">'+esc(t('pw.btn'))+'</button></form></details>':'')+
     '<div class="row">'+(SB&&ME?'<button class="btn small ghost" data-a="logout">'+esc(t('btn.logout'))+'</button>':'')+'<button class="btn small ghost" data-a="reset" style="color:var(--bad)">'+esc(t('set.reset'))+'</button></div></section>';
   return h;}
 
@@ -234,6 +235,9 @@ function vTop(){var h=header()+'<section><div class="eyebrow">'+esc(t('tab.top')
   h+='<ol class="race">'+rows.map(function(r,i){var top=rows[0][key]||1,pct=Math.max(4,Math.round((r[key]||0)/top*100));
     return '<li class="'+(r.me?'me':'')+(i<3?' podium':'')+'"><span class="pos num">'+(medal[i]||(i+1))+'</span><span class="grow"><span class="nm">'+esc(r.name)+(r.me?' · '+esc(t('top.you')):'')+'</span><span class="track"><i style="width:'+pct+'%"></i></span></span><b class="num">'+(r[key]||0)+'</b></li>';}).join('')+'</ol>';
   return h+'<div class="row"><button class="btn small ghost" data-a="topleave">'+esc(t('top.leave'))+'</button></div>';}
+
+function doPw(){var a=$('#pw1').value,b=$('#pw2').value;if(a.length<8)return toast(t('pw.short'));if(a!==b)return toast(t('pw.diff'));
+  SB.auth.updateUser({password:a}).then(function(r){if(r.error){toast(t('pw.err',{m:r.error.message}));return;}$('#pw1').value='';$('#pw2').value='';toast(t('pw.ok'));},function(e){toast(t('pw.err',{m:String(e&&e.message||e)}));});}
 
 /* add learner (observer only, via Edge Function create-learner) */
 var ADD={busy:false,res:null,err:''};
@@ -410,7 +414,7 @@ var A={
 };
 document.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el||el.disabled)return;var f=A[el.dataset.a];if(f)f(el);});
 document.addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.ch==='lang'){setLang(e.target.value);render();}});
-document.addEventListener('submit',function(e){if(e.target.id==='lf'){e.preventDefault();doLogin();}if(e.target.id==='af'){e.preventDefault();doAdd();}});
+document.addEventListener('submit',function(e){if(e.target.id==='lf'){e.preventDefault();doLogin();}if(e.target.id==='af'){e.preventDefault();doAdd();}if(e.target.id==='pwf'){e.preventDefault();doPw();}});
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='fillin'){e.preventDefault();check();}});
 document.addEventListener('input',function(e){if(e.target.id==='fillin'&&T)T.val=e.target.value;if(e.target.dataset&&e.target.dataset.g&&T&&T.vals)T.vals[e.target.dataset.g]=e.target.value;});
 
