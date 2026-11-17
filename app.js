@@ -48,17 +48,17 @@ function fix(o){var d=def();o=o&&typeof o==='object'?JSON.parse(JSON.stringify(o
 var S=def(), SB=null, ME=null, EMAIL='', OWNER=false, syncState='local', pushT=null, pushing=false, again=false, loginErr='', loginBusy=false, loginEm='';
 try{var raw=localStorage.getItem(KEY);if(raw)S=fix(JSON.parse(raw));}catch(e){}
 (function(){var l=S.lang;try{l=l||localStorage.getItem('dtz-lang');}catch(e){}
-  if(!l){var nav=(navigator.language||'en').slice(0,2);l=LANGS.some(function(x){return x[0]===nav;})?nav:'en';}
+  if(!l)l='en';
   setLang(l,true);})();
 function cfgOk(){var c=window.PULS_CONFIG||{};return !!(c.url&&c.anonKey&&c.url.indexOf('YOUR')<0&&window.supabase&&window.supabase.createClient);}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}schedulePush();}
 function adopt(c){S=fix(c);if(S.lang&&S.lang!==LANG)setLang(S.lang,true);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function schedulePush(){if(!SB||!ME||OWNER)return;clearTimeout(pushT);pushT=setTimeout(push,600);}
-function push(){if(!SB||!ME||OWNER)return;if(pushing){again=true;return;}pushing=true;again=false;
+function schedulePush(){if(!SB||!ME)return;clearTimeout(pushT);pushT=setTimeout(push,600);}
+function push(){if(!SB||!ME)return;if(pushing){again=true;return;}pushing=true;again=false;
   SB.from('progress').upsert({user_id:ME,state:JSON.parse(JSON.stringify(S)),updated_at:new Date().toISOString()})
   .then(function(r){syncState=r.error?'error':'cloud';},function(){syncState='error';})
   .then(function(){pushing=false;if(again)push();if(view==='progress')render();});}
-function pull(){if(!SB||!ME||OWNER)return;
+function pull(){if(!SB||!ME)return;
   SB.from('progress').select('state').eq('user_id',ME).maybeSingle().then(function(r){
     if(r.error){syncState='error';if(view==='progress')render();return;}
     var c=r.data&&r.data.state;
@@ -75,7 +75,7 @@ function onSession(sess){var id=sess&&sess.user?sess.user.id:null;
   SB.from('observers').select('user_id').eq('user_id',ME).maybeSingle().then(function(r){OWNER=!!(r&&r.data);},function(){OWNER=false;})
   .then(loadCourse)
   .then(function(ok){if(!ok){view='nocourse';render();return;}
-    if(OWNER)syncState='owner';else{syncState='connecting';pull();}
+    syncState='connecting';pull();
     if(view==='boot'||view==='login'||view==='nocourse')view=fromHash();render();});}
 function loadCourse(){
   return SB.from('course_content').select('data').eq('id','dtz').maybeSingle().then(function(r){
@@ -137,8 +137,8 @@ function stripSvg(st){st=st||S;var n=14,w=560/n,y=46,p='M0 '+y,lab='',tt=new Dat
 
 /* ---------- screens ---------- */
 var BRAND='<div class="brand"><svg viewBox="0 0 28 16"><path d="M0 9h7l2-3 3 9 3-14 3 8h10"/></svg>DTZ-Puls</div>';
-function langSelect(id){return '<label class="sr" for="'+id+'">'+esc(t('set.lang'))+'</label><select class="txt sel" id="'+id+'" data-ch="lang">'+LANGS.map(function(l){return '<option value="'+l[0]+'"'+(l[0]===LANG?' selected':'')+'>'+l[1]+'</option>';}).join('')+'</select>';}
-function header(){return '<div class="top">'+BRAND+'<div class="chips"><span class="chip num" title="'+esc(t('chip.exam'))+'"><b>⏳</b> '+daysLeft()+'</span><span class="chip num" title="'+esc(t('chip.streak'))+'"><b>♥</b> '+streak()+'</span><span class="chip xp num" title="XP"><b>★</b> '+S.xp+'</span></div></div>';}
+function langSelect(id){return '<label class="sr" for="'+id+'">'+esc(t('set.lang'))+'</label><select class="txt sel'+(id==='lgh'?' lgh':'')+'" id="'+id+'" data-ch="lang" title="Language">'+LANGS.map(function(l){return '<option value="'+l[0]+'"'+(l[0]===LANG?' selected':'')+'>'+(id==='lgh'?l[0].toUpperCase()+' · ':'')+l[1]+'</option>';}).join('')+'</select>';}
+function header(){return '<div class="top">'+BRAND+'<div class="chips">'+langSelect('lgh')+'<span class="chip num" title="'+esc(t('chip.exam'))+'"><b>⏳</b> '+daysLeft()+'</span><span class="chip num" title="'+esc(t('chip.streak'))+'"><b>♥</b> '+streak()+'</span><span class="chip xp num" title="XP"><b>★</b> '+S.xp+'</span></div></div>';}
 function vNoCourse(){var noCfg=!cfgOk();
   return '<div class="top">'+BRAND+'</div><section class="card hero"><h1>'+esc(noCfg?t('nc.cfg.h'):t('nc.h'))+'</h1><p class="small muted" style="margin:0">'+esc(noCfg?t('nc.cfg.p'):courseErr)+'</p>'+(noCfg?'':'<div class="foot"><button class="btn" data-a="retry">'+esc(t('btn.retry'))+'</button>'+(ME?'<button class="btn ghost" data-a="logout">'+esc(t('btn.logout'))+'</button>':'')+'</div>')+'</section>';}
 function vLogin(){return '<div class="top">'+BRAND+langSelect('lg0')+'</div>'+
