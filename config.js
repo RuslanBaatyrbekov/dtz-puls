@@ -3,6 +3,6 @@
    nothing, access is enforced by the Row Level Security policies in schema.sql.
    Never put the service_role / secret key here. */
 window.PULS_CONFIG = {
-  url: 'https://YOUR-PROJECT.supabase.co',
-  anonKey: 'YOUR-ANON-KEY'
+  url: 'https://miidzagigpjlyjonbrxm.supabase.co',
+  anonKey: 'sb_publishable_7Yga8MTYdODkf_HqzzhGTA_hnKKNaK5'
 };
