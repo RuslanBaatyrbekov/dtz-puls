@@ -230,12 +230,13 @@ function vAdd(){var h='<details class="card"'+(ADD.res||ADD.err?' open':'')+'><s
 function addMsg(r){return 'DTZ-Puls\n'+location.origin+location.pathname+'\nEmail: '+r.email+'\nPasswort / Password: '+r.password+'\n\nSprache ändern / change language: oben im Menü.';}
 function doAdd(){var em=$('#ae').value.trim(),nm=$('#an').value.trim(),pw=$('#ap').value.trim();if(!em)return;
   if(!SB||!SB.functions)return;ADD={busy:true,res:null,err:''};render();
-  SB.functions.invoke('create-learner',{body:{email:em,name:nm,password:pw}}).then(function(r){
+  SB.auth.getUser().then(function(u){if(u&&u.error){ADD={busy:false,res:null,err:''};SB.auth.signOut({scope:'local'}).then(function(){},function(){});onSession(null);toast(t('login.again'));return null;}
+  return SB.functions.invoke('create-learner',{body:{email:em,name:nm,password:pw}}).then(function(r){
     var d=r.data,e=r.error;
     if(e){var ctx=e.context;var p=ctx&&ctx.json?ctx.json():Promise.resolve(null);
       return p.then(function(j){var code=j&&j.error;ADD={busy:false,res:null,err:code==='exists'?t('add.exists'):/not found|404|FunctionsFetchError|Failed to send/i.test(String(e.message)+String(e.name))?t('add.nofn'):t('add.err',{m:(code||e.message||'?')+(j&&j.detail?' ('+j.detail+')':'')})};render();},function(){ADD={busy:false,res:null,err:t('add.err',{m:e.message||'?'})};render();});}
     ADD={busy:false,res:d,err:''};render();loadWatch();
-  },function(e){ADD={busy:false,res:null,err:t('add.err',{m:String(e&&e.message||e)})};render();});}
+  });},function(e){ADD={busy:false,res:null,err:t('add.err',{m:String(e&&e.message||e)})};render();});}
 
 /* ---------- lesson / practice runner ---------- */
 function openLesson(i){var D=ALL[i],isNew=!S.done[D.id];
@@ -374,7 +375,7 @@ var A={
     document.querySelectorAll('input[data-g]').forEach(function(inp){var id=inp.dataset.g;T.vals[id]=inp.value;if(norm(inp.value)===norm(inp.dataset.ans))T.tries[id]='ok';else{bad++;T.tries[id]=(typeof T.tries[id]==='number'?T.tries[id]:0)+1;}});
     if(bad){render();return toast(t('toast.gaps',{n:bad}));}
     T.ok=true;var st=R.q[R.pos];S.seen[x._k]=today();var hadErr=Object.keys(T.tries).some(function(k){return T.tries[k]!=='ok'||false;});if(st.first)R.ok++;else R.fixed++;delete S.missed[x._k];render();},
-  logout:function(){if(!SB)return;try{localStorage.removeItem(CKEY);}catch(e){}setCourse({weeks:[],bank:{},rules:{}});SB.auth.signOut().then(function(){},function(){});onSession(null);},
+  logout:function(){if(!SB)return;try{localStorage.removeItem(CKEY);}catch(e){}setCourse({weeks:[],bank:{},rules:{}});SB.auth.signOut({scope:'local'}).then(function(){},function(){});onSession(null);},
   retry:function(){view='boot';render();SB.auth.getSession().then(function(r){ME=null;onSession(r&&r.data&&r.data.session);});},
   addcopy:function(){var ta=$('#amsg');ta.select();try{navigator.clipboard.writeText(ta.value).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.copyman'));});}catch(e){toast(t('toast.copyman'));}},
   exp:function(){var code=btoa(unescape(encodeURIComponent(JSON.stringify(S)))),ta=$('#code');ta.value=code;ta.select();
