@@ -121,7 +121,7 @@ function say(el,text,rate){if(sayEl===el){stopSay();return false;}stopSay();sayS
   catch(e){toast(t('toast.nospeech'));return false;}}
 
 /* ---------- routing ---------- */
-var VIEWS=['path','practice','progress','watch'], view='path', R=null, T=null, RES=null, toastT=null;
+var VIEWS=['path','practice','top','progress','watch'], view='path', R=null, T=null, RES=null, toastT=null;
 function fromHash(){var h=(location.hash||'').slice(1);return VIEWS.indexOf(h)>=0?h:'path';}
 window.addEventListener('hashchange',function(){if(view==='run'||view==='result')return;stopSay();view=fromHash();render();});
 function toast(m){var o=$('.toast');if(o)o.remove();var d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=m;document.body.appendChild(d);clearTimeout(toastT);toastT=setTimeout(function(){d.remove();},3600);}
@@ -216,6 +216,24 @@ function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only')
   if(!W.docs)return h+'<div class="card">'+esc(t('boot'))+'</div>';
   if(!W.docs.length)return h+'<div class="card">'+esc(t('w.none'))+'</div>';
   return h+W.docs.sort(function(a,b){return (b.t||0)-(a.t||0);}).map(learnerRow).join('');}
+
+/* points race: opt-in, only name + points (SQL function leaderboard) */
+var TOP={rows:null,at:0,err:'',busy:false,period:'week'};
+function loadTop(){if(!SB||!ME||TOP.busy)return;TOP.busy=true;
+  SB.rpc('leaderboard').then(function(r){TOP.busy=false;if(r.error){TOP.err=r.error.message||'error';}else{TOP.err='';TOP.rows=r.data||[];TOP.at=Date.now();}if(view==='top')render();},
+    function(){TOP.busy=false;TOP.err='offline';if(view==='top')render();});}
+function vTop(){var h=header()+'<section><div class="eyebrow">'+esc(t('tab.top'))+'</div><h1>'+esc(t('top.h'))+'</h1><p class="small muted" style="margin:6px 0 0">'+esc(t('top.p'))+'</p></section>';
+  if(S.rank!=='1'){return h+'<section class="card" style="display:flex;flex-direction:column;gap:10px">'+(S.name?'':'<label class="small" for="tn">'+esc(t('top.name'))+'</label><input class="txt" id="tn" maxlength="30" style="max-width:none">')+'<button class="btn" data-a="topjoin">'+esc(t('top.join'))+'</button></section>';}
+  if(!TOP.rows&&!TOP.err){loadTop();return h+'<div class="card">'+esc(t('boot'))+'</div>';}
+  if(TOP.err)return h+'<div class="card">'+esc(t('top.err'))+'</div>';
+  if(Date.now()-TOP.at>60000)loadTop();
+  var key=TOP.period==='week'?'week_xp':'xp',rows=TOP.rows.slice().sort(function(a,b){return (b[key]||0)-(a[key]||0);});
+  h+='<div class="seg2" role="group"><button data-a="topper" data-v="week" aria-pressed="'+(TOP.period==='week')+'">'+esc(t('top.week'))+'</button><button data-a="topper" data-v="all" aria-pressed="'+(TOP.period==='all')+'">'+esc(t('top.all'))+'</button></div>';
+  if(!rows.length)return h+'<div class="card">'+esc(t('top.empty'))+'</div>';
+  var medal=['🥇','🥈','🥉'];
+  h+='<ol class="race">'+rows.map(function(r,i){var top=rows[0][key]||1,pct=Math.max(4,Math.round((r[key]||0)/top*100));
+    return '<li class="'+(r.me?'me':'')+(i<3?' podium':'')+'"><span class="pos num">'+(medal[i]||(i+1))+'</span><span class="grow"><span class="nm">'+esc(r.name)+(r.me?' · '+esc(t('top.you')):'')+'</span><span class="track"><i style="width:'+pct+'%"></i></span></span><b class="num">'+(r[key]||0)+'</b></li>';}).join('')+'</ol>';
+  return h+'<div class="row"><button class="btn small ghost" data-a="topleave">'+esc(t('top.leave'))+'</button></div>';}
 
 /* add learner (observer only, via Edge Function create-learner) */
 var ADD={busy:false,res:null,err:''};
@@ -339,7 +357,7 @@ function vResult(){var r=RES,lv=level(),ni=nextIdx(),more=ni>=0&&newToday()<2;
 
 /* ---------- render + events ---------- */
 function render(){var a=$('#app'),tabs=$('#tabs'),inRun=view==='run'||view==='result'||view==='login'||view==='boot'||view==='nocourse';tabs.hidden=inRun;tabs.style.display=inRun?'none':'';
-  a.innerHTML=view==='nocourse'?vNoCourse():view==='login'?vLogin():view==='boot'?vBoot():view==='run'?vRun():view==='result'?vResult():view==='practice'?vPractice():view==='progress'?vProg():view==='watch'?vWatch():vPath();
+  a.innerHTML=view==='nocourse'?vNoCourse():view==='login'?vLogin():view==='boot'?vBoot():view==='run'?vRun():view==='result'?vResult():view==='practice'?vPractice():view==='top'?vTop():view==='progress'?vProg():view==='watch'?vWatch():vPath();
   tabs.querySelectorAll('button').forEach(function(b){b.textContent=t('tab.'+b.dataset.v);if(b.dataset.v===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   var wt=$('#watchtab');if(wt)wt.hidden=!OWNER;
   document.title='DTZ-Puls';
@@ -378,6 +396,9 @@ var A={
   logout:function(){if(!SB)return;try{localStorage.removeItem(CKEY);}catch(e){}setCourse({weeks:[],bank:{},rules:{}});SB.auth.signOut({scope:'local'}).then(function(){},function(){});onSession(null);},
   retry:function(){view='boot';render();SB.auth.getSession().then(function(r){ME=null;onSession(r&&r.data&&r.data.session);});},
   addcopy:function(){var ta=$('#amsg');ta.select();try{navigator.clipboard.writeText(ta.value).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.copyman'));});}catch(e){toast(t('toast.copyman'));}},
+  topjoin:function(){var n=$('#tn');if(n){var v=n.value.trim().slice(0,30);if(!v)return toast(t('top.name'));S.name=v;}S.rank='1';save();TOP.rows=null;render();setTimeout(loadTop,1500);},
+  topleave:function(){S.rank='0';save();TOP.rows=null;render();},
+  topper:function(el){TOP.period=el.dataset.v;render();},
   exp:function(){var code=btoa(unescape(encodeURIComponent(JSON.stringify(S)))),ta=$('#code');ta.value=code;ta.select();
     try{navigator.clipboard.writeText(code).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.copyman'));});}catch(e){toast(t('toast.copyman'));}},
   imp:function(){var v=$('#code').value.replace(/\s+/g,'');if(!v)return toast(t('toast.paste'));var o=importCode(v);

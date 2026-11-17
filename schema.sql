@@ -63,3 +63,22 @@ alter publication supabase_realtime add table public.progress;
 --    подставив свой email:
 -- insert into public.observers (user_id)
 --   select id from auth.users where email = 'твой@email.de';
+
+-- 7. Leaderboard: only learners who opted in (state.rank = '1'), only name and points.
+--    security definer reads every row, but returns nothing else from the progress state.
+create or replace function public.leaderboard()
+returns table (name text, xp int, week_xp int, me boolean)
+language sql stable security definer set search_path = public as $$
+  select
+    coalesce(nullif(left(p.state->>'name', 30), ''), '—') as name,
+    coalesce((p.state->>'xp')::numeric, 0)::int as xp,
+    coalesce((select sum(d.value::numeric) from jsonb_each_text(coalesce(p.state->'days', '{}'::jsonb)) d
+              where d.key >= to_char(current_date - 6, 'YYYY-MM-DD') and d.value ~ '^[0-9.]+$'), 0)::int as week_xp,
+    p.user_id = auth.uid() as me
+  from public.progress p
+  where p.state->>'rank' = '1'
+  order by xp desc
+  limit 100;
+$$;
+revoke all on function public.leaderboard() from public, anon;
+grant execute on function public.leaderboard() to authenticated;

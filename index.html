@@ -174,6 +174,18 @@ textarea.txt{font-family:var(--f-mono);font-size:12px}
 [dir="rtl"] .day,[dir="rtl"] .opt{text-align:right}
 
 /* German exam theme */
+.seg2{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);border-radius:6px;overflow:hidden}
+.seg2 button{border:0;background:var(--card);padding:10px;font-family:var(--f-display);font-weight:700;min-height:44px}
+.seg2 button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.race{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.race li{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.race li.podium{border-color:var(--ink)} .race li.me{box-shadow:3px 3px 0 var(--flag);border-color:var(--ink)}
+.race .pos{flex:0 0 34px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:20px}
+.race .nm{display:block;font-weight:600}
+.race .track{display:block;height:6px;background:var(--line);border-radius:99px;margin-top:6px;overflow:hidden}
+.race .track i{display:block;height:100%;background:var(--pulse);border-radius:99px;transition:width .6s}
+.race li.me .track i{background:var(--flag)}
+.race b{font-family:var(--f-display);font-size:18px;min-width:48px;text-align:end}
 select.lgh{width:auto;max-width:96px;padding:4px 6px;font-size:13px;font-weight:600;border-radius:6px;min-height:32px}
 .chips{align-items:center}
 @media (max-width:400px){.chips{gap:5px}.chip{padding:4px 7px}}
@@ -212,22 +224,22 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 <body>
 <div class="wrap" id="app"></div>
 <nav class="tabs" id="tabs"><div>
-<button data-a="tab" data-v="path">Heute</button><button data-a="tab" data-v="practice">Training</button><button data-a="tab" data-v="progress">Fortschritt</button><button data-a="tab" data-v="watch" id="watchtab" hidden>Watch</button>
+<button data-a="tab" data-v="path">Heute</button><button data-a="tab" data-v="practice">Training</button><button data-a="tab" data-v="top">Top</button><button data-a="tab" data-v="progress">Fortschritt</button><button data-a="tab" data-v="watch" id="watchtab" hidden>Watch</button>
 </div></nav>
-<script src="config.js?v=6"></script>
+<script src="config.js?v=7"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=6"></script>
-<script src="i18n/uk.js?v=6"></script>
-<script src="i18n/en.js?v=6"></script>
-<script src="i18n/tr.js?v=6"></script>
-<script src="i18n/ar.js?v=6"></script>
-<script src="i18n/ur.js?v=6"></script>
-<script src="i18n/fa.js?v=6"></script>
-<script src="i18n/hr.js?v=6"></script>
-<script src="i18n/sr.js?v=6"></script>
-<script src="i18n/my.js?v=6"></script>
-<script src="i18n/es.js?v=6"></script>
-<script src="i18n/hi.js?v=6"></script>
-<script src="app.js?v=6"></script>
+<script src="i18n/ru.js?v=7"></script>
+<script src="i18n/uk.js?v=7"></script>
+<script src="i18n/en.js?v=7"></script>
+<script src="i18n/tr.js?v=7"></script>
+<script src="i18n/ar.js?v=7"></script>
+<script src="i18n/ur.js?v=7"></script>
+<script src="i18n/fa.js?v=7"></script>
+<script src="i18n/hr.js?v=7"></script>
+<script src="i18n/sr.js?v=7"></script>
+<script src="i18n/my.js?v=7"></script>
+<script src="i18n/es.js?v=7"></script>
+<script src="i18n/hi.js?v=7"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>
