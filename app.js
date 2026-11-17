@@ -233,7 +233,7 @@ function doAdd(){var em=$('#ae').value.trim(),nm=$('#an').value.trim(),pw=$('#ap
   SB.functions.invoke('create-learner',{body:{email:em,name:nm,password:pw}}).then(function(r){
     var d=r.data,e=r.error;
     if(e){var ctx=e.context;var p=ctx&&ctx.json?ctx.json():Promise.resolve(null);
-      return p.then(function(j){var code=j&&j.error;ADD={busy:false,res:null,err:code==='exists'?t('add.exists'):/not found|404|FunctionsFetchError|Failed to send/i.test(String(e.message)+String(e.name))?t('add.nofn'):t('add.err',{m:code||e.message||'?'})};render();},function(){ADD={busy:false,res:null,err:t('add.err',{m:e.message||'?'})};render();});}
+      return p.then(function(j){var code=j&&j.error;ADD={busy:false,res:null,err:code==='exists'?t('add.exists'):/not found|404|FunctionsFetchError|Failed to send/i.test(String(e.message)+String(e.name))?t('add.nofn'):t('add.err',{m:(code||e.message||'?')+(j&&j.detail?' ('+j.detail+')':'')})};render();},function(){ADD={busy:false,res:null,err:t('add.err',{m:e.message||'?'})};render();});}
     ADD={busy:false,res:d,err:''};render();loadWatch();
   },function(e){ADD={busy:false,res:null,err:t('add.err',{m:String(e&&e.message||e)})};render();});}
 
