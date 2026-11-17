@@ -38,7 +38,7 @@ I built it to prepare for my own DTZ exam and to share with my classmates.
 
 1. Create a Supabase project (EU region) and run `schema.sql` in the SQL editor.
 2. Run `content.sql` (the course, kept outside the repository).
-3. Turn off sign-ups in **Authentication → Providers → Email**; create learner accounts in **Authentication → Users**.
+3. Turn off sign-ups in **Authentication → Providers → Email**. Deploy the Edge Function `supabase/functions/create-learner` (dashboard: Edge Functions → Deploy a new function → via editor). Observers can then create learner accounts from the Observer tab; the service role key stays inside Supabase.
 4. Make yourself an observer:
    ```sql
    insert into public.observers (user_id) select id from auth.users where email = 'you@example.com';

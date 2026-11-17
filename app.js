@@ -71,7 +71,7 @@ function onSession(sess){var id=sess&&sess.user?sess.user.id:null;
   if(id===ME&&view!=='boot'&&view!=='login')return;
   ME=id;EMAIL=sess.user.email||'';
   if(S.uid&&S.uid!==ME){var l=LANG;S=def();S.lang=l;try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-  S.uid=ME;S.email=EMAIL;if(!S.lang)S.lang=LANG;
+  S.uid=ME;S.email=EMAIL;if(!S.lang)S.lang=LANG;if(!S.name&&sess.user.user_metadata&&sess.user.user_metadata.name)S.name=String(sess.user.user_metadata.name).slice(0,30);
   SB.from('observers').select('user_id').eq('user_id',ME).maybeSingle().then(function(r){OWNER=!!(r&&r.data);},function(){OWNER=false;})
   .then(loadCourse)
   .then(function(ok){if(!ok){view='nocourse';render();return;}
@@ -211,11 +211,31 @@ function learnerRow(st){var name=st.name||st.email||'—',s=streak(st),dn=doneCo
     '<div class="stats"><div class="stat"><b class="num" style="color:var(--pulse)">'+s+'</b><span class="small muted">'+esc(t('chip.streak'))+'</span></div><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+wk+'/7</b><span class="small muted">'+esc(t('w.week'))+'</span></div></div>'+
     (Object.keys(miss).length?'<div class="row small">'+Object.keys(miss).map(function(k){return '<span class="tag">'+esc(t('sec.'+k))+': '+miss[k]+'</span>';}).join('')+'</div>':'')+'</section>';}
 function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only'))+'</div>';startWatch();
-  var h=header()+'<section><div class="eyebrow">'+esc(t('tab.watch'))+'</div><h1>'+esc(t('w.h'))+'</h1>'+(W.at?'<p class="small muted" style="margin:6px 0 0">'+esc(t('w.at',{t:ago(W.at)}))+'</p>':'')+'</section>';
+  var h=header()+'<section><div class="eyebrow">'+esc(t('tab.watch'))+'</div><h1>'+esc(t('w.h'))+'</h1>'+(W.at?'<p class="small muted" style="margin:6px 0 0">'+esc(t('w.at',{t:ago(W.at)}))+'</p>':'')+'</section>'+vAdd();
   if(W.err)return h+'<div class="card">'+esc(t('w.err'))+'</div>';
   if(!W.docs)return h+'<div class="card">'+esc(t('boot'))+'</div>';
   if(!W.docs.length)return h+'<div class="card">'+esc(t('w.none'))+'</div>';
   return h+W.docs.sort(function(a,b){return (b.t||0)-(a.t||0);}).map(learnerRow).join('');}
+
+/* add learner (observer only, via Edge Function create-learner) */
+var ADD={busy:false,res:null,err:''};
+function vAdd(){var h='<details class="card"'+(ADD.res||ADD.err?' open':'')+'><summary>'+esc(t('add.h'))+'</summary><p class="small muted">'+esc(t('add.p'))+'</p>'+
+  '<form id="af" style="display:flex;flex-direction:column;gap:8px"><input class="txt" style="max-width:none" id="ae" type="email" dir="ltr" placeholder="'+esc(t('add.email'))+'" autocomplete="off" required>'+
+  '<input class="txt" style="max-width:none" id="an" placeholder="'+esc(t('add.name'))+'" maxlength="30" autocomplete="off">'+
+  '<input class="txt" style="max-width:none" id="ap" dir="ltr" placeholder="'+esc(t('add.pw'))+'" autocomplete="new-password">'+
+  '<button class="btn" type="submit"'+(ADD.busy?' disabled':'')+'>'+esc(ADD.busy?t('add.busy'):t('add.btn'))+'</button></form>';
+  if(ADD.err)h+='<p class="small" role="alert" style="color:var(--bad)">'+esc(ADD.err)+'</p>';
+  if(ADD.res){h+='<p class="small"><b>'+esc(t('add.ok'))+'</b></p><textarea class="txt" id="amsg" style="max-width:none;min-height:110px" dir="ltr" readonly>'+esc(addMsg(ADD.res))+'</textarea><div class="row" style="margin-top:8px"><button class="btn small" data-a="addcopy">'+esc(t('add.copy'))+'</button></div>';}
+  return h+'</details>';}
+function addMsg(r){return 'DTZ-Puls\n'+location.origin+location.pathname+'\nEmail: '+r.email+'\nPasswort / Password: '+r.password+'\n\nSprache ändern / change language: oben im Menü.';}
+function doAdd(){var em=$('#ae').value.trim(),nm=$('#an').value.trim(),pw=$('#ap').value.trim();if(!em)return;
+  if(!SB||!SB.functions)return;ADD={busy:true,res:null,err:''};render();
+  SB.functions.invoke('create-learner',{body:{email:em,name:nm,password:pw}}).then(function(r){
+    var d=r.data,e=r.error;
+    if(e){var ctx=e.context;var p=ctx&&ctx.json?ctx.json():Promise.resolve(null);
+      return p.then(function(j){var code=j&&j.error;ADD={busy:false,res:null,err:code==='exists'?t('add.exists'):/not found|404|FunctionsFetchError|Failed to send/i.test(String(e.message)+String(e.name))?t('add.nofn'):t('add.err',{m:code||e.message||'?'})};render();},function(){ADD={busy:false,res:null,err:t('add.err',{m:e.message||'?'})};render();});}
+    ADD={busy:false,res:d,err:''};render();loadWatch();
+  },function(e){ADD={busy:false,res:null,err:t('add.err',{m:String(e&&e.message||e)})};render();});}
 
 /* ---------- lesson / practice runner ---------- */
 function openLesson(i){var D=ALL[i],isNew=!S.done[D.id];
@@ -356,6 +376,7 @@ var A={
     T.ok=true;var st=R.q[R.pos];S.seen[x._k]=today();var hadErr=Object.keys(T.tries).some(function(k){return T.tries[k]!=='ok'||false;});if(st.first)R.ok++;else R.fixed++;delete S.missed[x._k];render();},
   logout:function(){if(!SB)return;try{localStorage.removeItem(CKEY);}catch(e){}setCourse({weeks:[],bank:{},rules:{}});SB.auth.signOut().then(function(){},function(){});onSession(null);},
   retry:function(){view='boot';render();SB.auth.getSession().then(function(r){ME=null;onSession(r&&r.data&&r.data.session);});},
+  addcopy:function(){var ta=$('#amsg');ta.select();try{navigator.clipboard.writeText(ta.value).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.copyman'));});}catch(e){toast(t('toast.copyman'));}},
   exp:function(){var code=btoa(unescape(encodeURIComponent(JSON.stringify(S)))),ta=$('#code');ta.value=code;ta.select();
     try{navigator.clipboard.writeText(code).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.copyman'));});}catch(e){toast(t('toast.copyman'));}},
   imp:function(){var v=$('#code').value.replace(/\s+/g,'');if(!v)return toast(t('toast.paste'));var o=importCode(v);
@@ -367,7 +388,7 @@ var A={
 };
 document.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el||el.disabled)return;var f=A[el.dataset.a];if(f)f(el);});
 document.addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.ch==='lang'){setLang(e.target.value);render();}});
-document.addEventListener('submit',function(e){if(e.target.id==='lf'){e.preventDefault();doLogin();}});
+document.addEventListener('submit',function(e){if(e.target.id==='lf'){e.preventDefault();doLogin();}if(e.target.id==='af'){e.preventDefault();doAdd();}});
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='fillin'){e.preventDefault();check();}});
 document.addEventListener('input',function(e){if(e.target.id==='fillin'&&T)T.val=e.target.value;if(e.target.dataset&&e.target.dataset.g&&T&&T.vals)T.vals[e.target.dataset.g]=e.target.value;});
 
