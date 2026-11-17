@@ -44,7 +44,8 @@ Deno.serve(async (req) => {
 
   // 1. Check the caller with their own session (publishable key + their token, RLS applies).
   const asUser = createClient(url, apikey, { global: { headers: { Authorization: auth } }, auth: { persistSession: false } });
-  const { data: me, error: meErr } = await asUser.auth.getUser();
+  const token = auth.replace(/^Bearer\s+/i, "");
+  const { data: me, error: meErr } = await asUser.auth.getUser(token);
   if (meErr || !me?.user) {
     console.error("getUser failed:", meErr?.message);
     return json({ error: "auth", detail: meErr?.message || "no user" }, 401);
