@@ -56,6 +56,10 @@ Any explanation field is either a string or `{ "ru": …, "en": …, … }`; tas
   "a": ["dem"], "o": ["der","die","das","den","dem"], "r": ["dat_prep"], "e": "der Bus → mit dem Bus" }
 ```
 
+## Disclaimer
+
+A private, free learning project. Not official and not affiliated with BAMF, g.a.s.t. or telc. All tasks are original; official practice tests are only linked, never copied.
+
 ## License
 
 MIT

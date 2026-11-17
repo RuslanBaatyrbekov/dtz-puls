@@ -146,7 +146,7 @@ function vLogin(){return '<div class="top">'+BRAND+langSelect('lg0')+'</div>'+
   '<form id="lf" style="display:flex;flex-direction:column;gap:10px"><label class="small" for="em">Email</label><input class="txt" style="max-width:none" id="em" type="email" dir="ltr" autocomplete="username" inputmode="email" required value="'+esc(loginEm)+'">'+
   '<label class="small" for="pw">'+esc(t('login.pw'))+'</label><input class="txt" style="max-width:none" id="pw" type="password" dir="ltr" autocomplete="current-password" required>'+
   (loginErr?'<p class="small" role="alert" style="margin:0;color:var(--bad)">'+esc(loginErr)+'</p>':'')+
-  '<button class="btn" type="submit"'+(loginBusy?' disabled':'')+'>'+esc(loginBusy?t('login.busy'):t('login.btn'))+'</button></form><p class="small muted" style="margin:0">'+esc(t('login.noacc'))+'</p></section>';}
+  '<button class="btn" type="submit"'+(loginBusy?' disabled':'')+'>'+esc(loginBusy?t('login.busy'):t('login.btn'))+'</button></form><p class="small muted" style="margin:0">'+esc(t('login.noacc'))+'</p></section><p class="small muted" lang="de" dir="ltr" style="margin:0">Privates, kostenloses Lernprojekt. Nicht offiziell, nicht verbunden mit BAMF, g.a.s.t. oder telc.</p>';}
 function vBoot(){return '<div class="card">'+esc(t('boot'))+'</div>';}
 
 function dayRow(D){var done=!!S.done[D.id],nx=nextIdx()===D.idx,cls=done?'done':nx?'next':'lock';
