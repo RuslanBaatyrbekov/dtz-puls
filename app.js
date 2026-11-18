@@ -19,6 +19,12 @@ function setLang(l,keep){if(!I18N[l]&&l!=='ru'&&l!=='en')l='en';LANG=l;
   try{localStorage.setItem('dtz-lang',l);}catch(e){}
   if(!keep&&S){S.lang=l;save();}}
 
+/* ---------- themes + avatars ---------- */
+var THEMES=[['auto',''],['flag','Schwarz-Rot-Gold',['#f4f3ee','#151515','#dd0000','#ffce00']],['karo','Karopapier',['#f5f6f2','#1f45a0','#c7342b','#f6dc2a']],['ostsee','Ostsee',['#eef5f7','#0e7490','#d9480f','#f2c14e']],
+  ['nacht','Nacht',['#121212','#ffce00','#ff4d4d','#f2f0ea']],['wald','Schwarzwald',['#0f1712','#7bd389','#ff7b5c','#e0c060']],['berlin','Berlin',['#101018','#b69cff','#ff5c8a','#ffd166']]];
+var AVATARS=['🦊','🐻','🐼','🦁','🐯','🐸','🐵','🦉','🐧','🐢','🐙','🦄','🐝','🦋','🌻','🌵','🍀','⚽','🎸','🚗','🚲','☕','📚','🚀'];
+function applyTheme(th){var r=document.documentElement;if(!th||th==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',th);try{localStorage.setItem('dtz-theme',th||'auto');}catch(e){}}
+
 /* ---------- course ---------- */
 var C={weeks:[],bank:{},rules:{},exam:'2026-12-19'}, BANK={}, WK=[], ALL=[], LBY={}, TOTAL=0, KEY='dtz-puls-v1', CKEY='dtz-puls-course-v1', courseErr='';
 var SECTIONS=['kasus','satz','hoeren','lesen','wort','sprechen','schreiben'];
@@ -49,10 +55,11 @@ var S=def(), SB=null, ME=null, EMAIL='', OWNER=false, syncState='local', pushT=n
 try{var raw=localStorage.getItem(KEY);if(raw)S=fix(JSON.parse(raw));}catch(e){}
 (function(){var l=S.lang;try{l=l||localStorage.getItem('dtz-lang');}catch(e){}
   if(!l)l='en';
-  setLang(l,true);})();
+  setLang(l,true);
+  var th=S.theme;try{th=th||localStorage.getItem('dtz-theme');}catch(e){}applyTheme(th||'auto');})();
 function cfgOk(){var c=window.PULS_CONFIG||{};return !!(c.url&&c.anonKey&&c.url.indexOf('YOUR')<0&&window.supabase&&window.supabase.createClient);}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}schedulePush();}
-function adopt(c){S=fix(c);if(S.lang&&S.lang!==LANG)setLang(S.lang,true);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function adopt(c){S=fix(c);if(S.lang&&S.lang!==LANG)setLang(S.lang,true);if(S.theme)applyTheme(S.theme);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function schedulePush(){if(!SB||!ME)return;clearTimeout(pushT);pushT=setTimeout(push,600);}
 function push(){if(!SB||!ME)return;if(pushing){again=true;return;}pushing=true;again=false;
   SB.from('progress').upsert({user_id:ME,state:JSON.parse(JSON.stringify(S)),updated_at:new Date().toISOString()})
@@ -137,8 +144,8 @@ function stripSvg(st){st=st||S;var n=14,w=560/n,y=46,p='M0 '+y,lab='',tt=new Dat
 
 /* ---------- screens ---------- */
 var BRAND='<div class="brand"><svg viewBox="0 0 28 16"><path d="M0 9h7l2-3 3 9 3-14 3 8h10"/></svg>DTZ-Puls</div>';
-function langSelect(id){return '<label class="sr" for="'+id+'">'+esc(t('set.lang'))+'</label><select class="txt sel'+(id==='lgh'?' lgh':'')+'" id="'+id+'" data-ch="lang" title="Language">'+LANGS.map(function(l){return '<option value="'+l[0]+'"'+(l[0]===LANG?' selected':'')+'>'+(id==='lgh'?l[0].toUpperCase()+' · ':'')+l[1]+'</option>';}).join('')+'</select>';}
-function header(){return '<div class="top">'+BRAND+'<div class="chips">'+langSelect('lgh')+'<span class="chip num" title="'+esc(t('chip.exam'))+'"><b>⏳</b> '+daysLeft()+'</span><span class="chip num" title="'+esc(t('chip.streak'))+'"><b>♥</b> '+streak()+'</span><span class="chip xp num" title="XP"><b>★</b> '+S.xp+'</span></div></div>';}
+function langSelect(id){return '<label class="sr" for="'+id+'">'+esc(t('set.lang'))+'</label><select class="txt sel'+(id==='lgh'?' lgh':'')+'" id="'+id+'" data-ch="lang" title="Language">'+LANGS.map(function(l){return '<option value="'+l[0]+'"'+(l[0]===LANG?' selected':'')+'>'+(id==='lgh'?l[0].toUpperCase():l[1])+'</option>';}).join('')+'</select>';}
+function header(){return '<div class="top">'+BRAND+'<div class="chips">'+langSelect('lgh')+'<span class="chip num" title="'+esc(t('chip.exam'))+'"><b>⏳</b> '+daysLeft()+'</span><span class="chip num" title="'+esc(t('chip.streak'))+'"><b>♥</b> '+streak()+'</span><span class="chip xp num" title="XP"><b>★</b> '+S.xp+'</span>'+(S.avatar?'<button class="chip avc" data-a="tab" data-v="progress" aria-label="'+esc(t('tab.progress'))+'">'+esc(S.avatar)+'</button>':'')+'</div></div>';}
 function vNoCourse(){var noCfg=!cfgOk();
   return '<div class="top">'+BRAND+'</div><section class="card hero"><h1>'+esc(noCfg?t('nc.cfg.h'):t('nc.h'))+'</h1><p class="small muted" style="margin:0">'+esc(noCfg?t('nc.cfg.p'):courseErr)+'</p>'+(noCfg?'':'<div class="foot"><button class="btn" data-a="retry">'+esc(t('btn.retry'))+'</button>'+(ME?'<button class="btn ghost" data-a="logout">'+esc(t('btn.logout'))+'</button>':'')+'</div>')+'</section>';}
 function vLogin(){return '<div class="top">'+BRAND+langSelect('lg0')+'</div>'+
@@ -177,7 +184,9 @@ function vPractice(){var h=header()+'<section><div class="eyebrow">'+esc(t('tab.
 function badges(){var s=Math.max(S.best,streak()),dn=doneCount(),seen=Object.keys(S.seen).length;return [
   [t('b.first'),dn>=1],[t('b.s3'),s>=3],[t('b.s7'),s>=7],[t('b.s14'),s>=14],[t('b.clean'),S.perfect>=1],[t('b.clean5'),S.perfect>=5],[t('b.w1'),dn>=7],[t('b.half'),dn>=Math.ceil(TOTAL/2)],[t('b.all'),TOTAL>0&&dn>=TOTAL],[t('b.t100'),seen>=100],[t('b.t300'),seen>=300]];}
 function syncLine(){return {local:t('sync.local'),connecting:t('sync.conn'),cloud:t('sync.cloud'),error:t('sync.err'),owner:t('sync.owner')}[syncState]||'';}
-function vProg(){var lv=level(),dn=doneCount(),seen=Object.keys(S.seen).length,h=header()+'<section><div class="eyebrow">'+esc(t('tab.progress'))+'</div><h1>'+esc((S.name||t('prog.you'))+' · '+t('lvl.label',{n:lv.i+1}))+'</h1><p class="small muted" style="margin:6px 0 0">'+esc(lv.name)+'</p></section>';
+function vProg(){var lv=level(),dn=doneCount(),seen=Object.keys(S.seen).length,pct=lv.to?Math.round((S.xp-lv.from)/(lv.to-lv.from)*100):100;
+  var h=header()+'<section class="card hero"><div class="row" style="gap:14px;flex-wrap:nowrap"><div class="me-av" aria-hidden="true">'+esc(S.avatar||'🙂')+'</div><div class="grow"><div class="eyebrow">'+esc(t('tab.progress'))+'</div><h1 style="margin:2px 0">'+esc(S.name||t('prog.you'))+'</h1><div class="small"><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+' · <span class="num muted">'+S.xp+' XP</span></div></div></div><div class="bar"><i style="width:'+pct+'%"></i></div></section>'+
+    '<div class="eyebrow" style="margin-top:4px">'+esc(t('prof.prog'))+'</div>';
   h+='<div class="stats"><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+seen+'</b><span class="small muted">'+esc(t('prog.tasks'))+'</span></div><div class="stat"><b class="num">'+Math.max(S.best,streak())+'</b><span class="small muted">'+esc(t('prog.best'))+'</span></div></div>';
   var cells='',tt=new Date(),start=addDays(tt,-(((tt.getDay()+6)%7)+28));
   for(var i=0;i<35;i++){var d=addDays(start,i),k=ds(d);cells+='<i class="'+(S.days[k]!==undefined?'a':S.frozen[k]?'f':'')+(k===today()?' t':'')+'" title="'+k+'"></i>';}
@@ -186,6 +195,8 @@ function vProg(){var lv=level(),dn=doneCount(),seen=Object.keys(S.seen).length,h
   h+='<section class="card" style="display:flex;flex-direction:column;gap:10px"><h3>'+esc(t('prog.secs'))+'</h3>'+bySec+'</section>';
   h+='<section><h3 style="margin-bottom:8px">'+esc(t('prog.badges'))+'</h3><div class="badges">'+badges().map(function(b){return '<div class="badge'+(b[1]?'':' off')+'"><b>'+(b[1]?'✓ ':'')+esc(b[0])+'</b></div>';}).join('')+'</div></section>';
   h+='<section class="card" style="display:flex;flex-direction:column;gap:12px"><h3>'+esc(t('set.h'))+'</h3>'+
+    '<div><div class="small" style="margin-bottom:6px"><b>'+esc(t('prof.theme'))+'</b></div><div class="themes">'+THEMES.map(function(x){var cur=(S.theme||'auto')===x[0];return '<button class="th" data-a="theme" data-v="'+x[0]+'" aria-pressed="'+cur+'"><span class="sw">'+(x[2]?x[2].map(function(c){return '<i style="background:'+c+'"></i>';}).join(''):'<i style="background:#f4f3ee"></i><i style="background:#151515"></i>')+'</span>'+esc(x[1]||t('th.auto'))+'</button>';}).join('')+'</div></div>'+
+    '<div><div class="small" style="margin-bottom:6px"><b>'+esc(t('prof.avatar'))+'</b></div><div class="avs">'+AVATARS.map(function(a){return '<button class="av" data-a="avatar" data-v="'+a+'" aria-pressed="'+(S.avatar===a)+'">'+a+'</button>';}).join('')+'</div></div>'+
     '<div class="row"><span class="small" style="min-width:90px">'+esc(t('set.lang'))+'</span>'+langSelect('lg1')+'</div>'+
     '<div class="row"><label for="nm" class="small" style="min-width:90px">'+esc(t('set.name'))+'</label><input class="txt" id="nm" value="'+esc(S.name)+'" maxlength="30"><button class="btn small" data-a="name">'+esc(t('btn.save'))+'</button></div>'+
     '<p class="small muted" style="margin:0">'+esc(syncLine())+(EMAIL?' · '+esc(EMAIL):'')+'</p>'+
@@ -207,7 +218,7 @@ function startWatch(){if(!SB||!OWNER)return;if(!W.docs&&!W.busy)loadWatch();
   if(!W.poll)W.poll=setInterval(function(){if(view==='watch'&&!document.hidden)loadWatch();},60000);}
 function learnerRow(st){var name=st.name||st.email||'—',s=streak(st),dn=doneCount(st),td=st.days[today()]!==undefined,wk=0,tt=new Date();for(var i=0;i<7;i++)if(st.days[ds(addDays(tt,-i))]!==undefined)wk++;
   var miss={};Object.keys(st.missed||{}).forEach(function(k){var x=BANK[k];if(x)miss[x._s]=(miss[x._s]||0)+1;});
-  return '<section class="card" style="display:flex;flex-direction:column;gap:8px"><div class="row" style="justify-content:space-between"><h2>'+esc(name)+'</h2><span class="chip" style="'+(td?'border-color:var(--ok);color:var(--ok)':'')+'">'+esc(td?t('w.today'):t('w.notyet'))+'</span></div>'+
+  return '<section class="card" style="display:flex;flex-direction:column;gap:8px"><div class="row" style="justify-content:space-between"><h2>'+(st.avatar?esc(st.avatar)+' ':'')+esc(name)+'</h2><span class="chip" style="'+(td?'border-color:var(--ok);color:var(--ok)':'')+'">'+esc(td?t('w.today'):t('w.notyet'))+'</span></div>'+
     '<p class="small muted" style="margin:0">'+esc(t('w.last',{t:ago(st.t)}))+' · '+(st.lang?esc(st.lang.toUpperCase()):'')+'</p>'+stripSvg(st)+
     '<div class="stats"><div class="stat"><b class="num" style="color:var(--pulse)">'+s+'</b><span class="small muted">'+esc(t('chip.streak'))+'</span></div><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+wk+'/7</b><span class="small muted">'+esc(t('w.week'))+'</span></div></div>'+
     (Object.keys(miss).length?'<div class="row small">'+Object.keys(miss).map(function(k){return '<span class="tag">'+esc(t('sec.'+k))+': '+miss[k]+'</span>';}).join('')+'</div>':'')+'</section>';}
@@ -233,7 +244,7 @@ function vTop(){var h=header()+'<section><div class="eyebrow">'+esc(t('tab.top')
   if(!rows.length)return h+'<div class="card">'+esc(t('top.empty'))+'</div>';
   var medal=['🥇','🥈','🥉'];
   h+='<ol class="race">'+rows.map(function(r,i){var top=rows[0][key]||1,pct=Math.max(4,Math.round((r[key]||0)/top*100));
-    return '<li class="'+(r.me?'me':'')+(i<3?' podium':'')+'"><span class="pos num">'+(medal[i]||(i+1))+'</span><span class="grow"><span class="nm">'+esc(r.name)+(r.me?' · '+esc(t('top.you')):'')+'</span><span class="track"><i style="width:'+pct+'%"></i></span></span><b class="num">'+(r[key]||0)+'</b></li>';}).join('')+'</ol>';
+    return '<li class="'+(r.me?'me':'')+(i<3?' podium':'')+'"><span class="pos num">'+(medal[i]||(i+1))+'</span><span class="grow"><span class="nm">'+(r.avatar?esc(r.avatar)+' ':'')+esc(r.name)+(r.me?' · '+esc(t('top.you')):'')+'</span><span class="track"><i style="width:'+pct+'%"></i></span></span><b class="num">'+(r[key]||0)+'</b></li>';}).join('')+'</ol>';
   return h+'<div class="row"><button class="btn small ghost" data-a="topleave">'+esc(t('top.leave'))+'</button></div>';}
 
 function doPw(){var a=$('#pw1').value,b=$('#pw2').value;if(a.length<8)return toast(t('pw.short'));if(a!==b)return toast(t('pw.diff'));
@@ -403,6 +414,8 @@ var A={
   topjoin:function(){var n=$('#tn');if(n){var v=n.value.trim().slice(0,30);if(!v)return toast(t('top.name'));S.name=v;}S.rank='1';save();TOP.rows=null;render();setTimeout(loadTop,1500);},
   topleave:function(){S.rank='0';save();TOP.rows=null;render();},
   topper:function(el){TOP.period=el.dataset.v;render();},
+  theme:function(el){S.theme=el.dataset.v;applyTheme(S.theme);save();render();},
+  avatar:function(el){S.avatar=el.dataset.v;save();render();},
   exp:function(){var code=btoa(unescape(encodeURIComponent(JSON.stringify(S)))),ta=$('#code');ta.value=code;ta.select();
     try{navigator.clipboard.writeText(code).then(function(){toast(t('toast.copied'));},function(){toast(t('toast.copyman'));});}catch(e){toast(t('toast.copyman'));}},
   imp:function(){var v=$('#code').value.replace(/\s+/g,'');if(!v)return toast(t('toast.paste'));var o=importCode(v);
