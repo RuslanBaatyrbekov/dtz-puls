@@ -343,7 +343,8 @@ function vTask(st){var x=st.t,h='<div class="eyebrow">'+esc(st.first?t('sec.'+(x
   return h;}
 function optsHtml(x){return '<div class="opts" lang="de" dir="ltr">'+T.opts.map(function(j){var cl=T.done?(j===x.a?' good':j===T.sel?' wrong':''):(j===T.sel?' sel':'');return '<button class="opt'+cl+'" data-a="sel" data-j="'+j+'"'+(T.done?' disabled':'')+'>'+esc(x.o[j])+'</button>';}).join('')+'</div>';}
 function vSpeak(x){var h='<h2>'+esc(t('speak.teil'+x.teil))+'</h2>';
-  if(x.sc)h+='<div class="scene" aria-hidden="true">'+esc(x.sc)+'</div>';
+  if(x.img)h+='<img class="bild" src="'+esc(x.img)+'" alt="'+esc(x.alt||'')+'" loading="lazy">';
+  else if(x.sc)h+='<div class="scene" aria-hidden="true">'+esc(x.sc)+'</div>';
   h+='<div class="prompt" lang="de" dir="ltr">'+esc(x.q).replace(/\n/g,'<br>')+'</div>'+(x.pts?'<ul class="pts" lang="de" dir="ltr">'+x.pts.map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>':'');
   h+='<p class="small muted">'+esc(t('speak.how'+x.teil))+'</p>';
   h+='<div class="row">'+sayBtn(x.q,t('speak.hear'))+'<button class="btn small ghost" data-a="timer" id="tmr">⏱ '+fmt(T.left)+'</button></div>';
