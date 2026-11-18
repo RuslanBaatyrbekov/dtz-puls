@@ -53,7 +53,8 @@ function fix(o){var d=def();o=o&&typeof o==='object'?JSON.parse(JSON.stringify(o
 /* ---------- state + sync (same model as Pulse: last write wins on client timestamp) ---------- */
 var S=def(), SB=null, ME=null, EMAIL='', OWNER=false, syncState='local', pushT=null, pushing=false, again=false, loginErr='', loginBusy=false, loginEm='';
 try{var raw=localStorage.getItem(KEY);if(raw)S=fix(JSON.parse(raw));}catch(e){}
-(function(){var l=S.lang;try{l=l||localStorage.getItem('dtz-lang');}catch(e){}
+var LANGCHOSEN=false;
+(function(){var l=S.lang;try{l=l||localStorage.getItem('dtz-lang');}catch(e){}LANGCHOSEN=!!l;
   if(!l)l='en';
   setLang(l,true);
   var th=S.theme;try{th=th||localStorage.getItem('dtz-theme');}catch(e){}applyTheme(th||'auto');})();
@@ -152,7 +153,9 @@ function langSelect(id){return '<label class="sr" for="'+id+'">'+esc(t('set.lang
 function header(){return '<div class="top">'+BRAND+'<div class="chips">'+langSelect('lgh')+'<span class="chip num" title="'+esc(t('chip.exam'))+'"><b>⏳</b> '+daysLeft()+'</span><span class="chip num" title="'+esc(t('chip.streak'))+'"><b>♥</b> '+streak()+'</span><span class="chip xp num" title="XP"><b>★</b> '+S.xp+'</span>'+(S.avatar?'<button class="chip avc" data-a="tab" data-v="progress" aria-label="'+esc(t('tab.progress'))+'">'+esc(S.avatar)+'</button>':'')+'</div></div>';}
 function vNoCourse(){var noCfg=!cfgOk();
   return '<div class="top">'+BRAND+'</div><section class="card hero"><h1>'+esc(noCfg?t('nc.cfg.h'):t('nc.h'))+'</h1><p class="small muted" style="margin:0">'+esc(noCfg?t('nc.cfg.p'):courseErr)+'</p>'+(noCfg?'':'<div class="foot"><button class="btn" data-a="retry">'+esc(t('btn.retry'))+'</button>'+(ME?'<button class="btn ghost" data-a="logout">'+esc(t('btn.logout'))+'</button>':'')+'</div>')+'</section>';}
-function vLogin(){return '<div class="top">'+BRAND+langSelect('lg0')+'</div>'+
+function langGrid(){return '<div class="langs">'+LANGS.map(function(l){return '<button class="lgb'+(l[0]===LANG?' on':'')+'" data-a="pick-lang" data-v="'+l[0]+'" lang="'+l[0]+'" dir="'+(l[2]?'rtl':'ltr')+'">'+l[1]+'</button>';}).join('')+'</div>';}
+var LANGHEAD='🌐 Sprache · Language · Язык · Dil · اللغة · زبان · Jezik · Idioma · भाषा';
+function vLogin(){if(!LANGCHOSEN)return '<div class="top">'+BRAND+'</div><section class="card hero"><h1 style="font-size:20px">'+LANGHEAD+'</h1>'+langGrid()+'</section>';return '<div class="top">'+BRAND+langSelect('lg0')+'</div>'+
   '<section class="card hero"><div class="eyebrow">'+esc(t('login.eyebrow'))+'</div><h1>'+esc(t('login.h'))+'</h1><p class="small muted" style="margin:0">'+esc(t('login.p'))+'</p>'+
   '<form id="lf" style="display:flex;flex-direction:column;gap:10px"><label class="small" for="em">Email</label><input class="txt" style="max-width:none" id="em" type="email" dir="ltr" autocomplete="username" inputmode="email" required value="'+esc(loginEm)+'">'+
   '<label class="small" for="pw">'+esc(t('login.pw'))+'</label><input class="txt" style="max-width:none" id="pw" type="password" dir="ltr" autocomplete="current-password" required>'+
@@ -171,7 +174,7 @@ function vPath(){var s=streak(),lv=level(),ni=nextIdx(),did=S.days[today()]!==un
   var pace=ni>=0&&(capToday()>2||behind())?'<p class="small" style="margin:0;color:var(--pulse)"><b>'+esc(t('path.pace',{n:capToday()}))+'</b></p>':'';
   h+='<section class="card hero"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="eyebrow">'+esc(S.name?t('path.hi',{name:S.name}):t('path.hi0'))+'</div><div class="row" style="align-items:baseline;gap:8px"><span class="big num">'+daysLeft()+'</span><span class="small muted">'+esc(t('path.days'))+'</span></div></div><div class="small muted" style="text-align:end"><b class="num" style="color:var(--pulse);font-size:20px">'+s+'</b><br>'+esc(t('chip.streak'))+'</div></div>'+stripSvg()+
     '<div><div class="row small" style="justify-content:space-between"><span><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+'</span><span class="muted num">'+S.xp+(lv.to?' / '+lv.to:'')+' XP</span></div><div class="bar" style="margin-top:6px"><i style="width:'+pct+'%"></i></div></div>'+
-    '<p class="small" style="margin:0">'+esc(sub)+'</p>'+pace+'<div class="foot">'+cta+'</div></section>';
+    '<p class="small" style="margin:0">'+esc(sub)+'</p>'+(ni>=0?'<p class="small muted" style="margin:0">'+esc(t('path.min'))+'</p>':'')+pace+'<div class="foot">'+cta+'</div></section>';
   WK.forEach(function(w,wi){var d=w.days.filter(function(x){return S.done[x.id];}).length;
     h+='<section class="week"><div><div class="eyebrow">'+esc(t('path.week',{n:wi+1}))+' · <span class="num">'+d+' / '+w.days.length+'</span></div><h2>'+esc(L(w.title))+'</h2>'+(w.sub?'<p class="small muted" style="margin:4px 0 0">'+esc(L(w.sub))+'</p>':'')+'</div><div class="days">'+w.days.map(dayRow).join('')+'</div></section>';});
   return h;}
@@ -207,7 +210,7 @@ function vProg(){var lv=level(),dn=doneCount(),seen=Object.keys(S.seen).length,p
     '<p class="small muted" style="margin:0">'+esc(syncLine())+(EMAIL?' · '+esc(EMAIL):'')+'</p>'+
     '<details><summary class="small">'+esc(t('set.code'))+'</summary><p class="small muted">'+esc(t('set.code.p'))+'</p><textarea id="code" class="txt" style="max-width:none;min-height:80px" dir="ltr" spellcheck="false"></textarea><div class="row" style="margin-top:8px"><button class="btn small ghost" data-a="exp">'+esc(t('set.exp'))+'</button><button class="btn small" data-a="imp">'+esc(t('set.imp'))+'</button></div></details>'+
     (SB&&ME?'<details><summary class="small">'+esc(t('pw.h'))+'</summary><form id="pwf" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"><input type="email" autocomplete="username" value="'+esc(EMAIL)+'" hidden><input class="txt" style="max-width:none" id="pw1" type="password" dir="ltr" autocomplete="new-password" placeholder="'+esc(t('pw.new'))+'"><input class="txt" style="max-width:none" id="pw2" type="password" dir="ltr" autocomplete="new-password" placeholder="'+esc(t('pw.rep'))+'"><button class="btn small" type="submit">'+esc(t('pw.btn'))+'</button></form></details>':'')+
-    '<div class="row">'+(SB&&ME?'<button class="btn small ghost" data-a="logout">'+esc(t('btn.logout'))+'</button>':'')+'<button class="btn small ghost" data-a="reset" style="color:var(--bad)">'+esc(t('set.reset'))+'</button></div></section>';
+    '<div class="row"><button class="btn small ghost" data-a="tour">'+esc(t('tour.again'))+'</button>'+(SB&&ME?'<button class="btn small ghost" data-a="logout">'+esc(t('btn.logout'))+'</button>':'')+'<button class="btn small ghost" data-a="reset" style="color:var(--bad)">'+esc(t('set.reset'))+'</button></div></section>';
   return h;}
 
 /* observer */
@@ -396,12 +399,21 @@ function vResult(){var r=RES,lv=level(),ni=nextIdx(),more=ni>=0&&newToday()<capT
   '<div class="card"><div class="row small" style="justify-content:space-between"><span><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+'</span><span class="muted num">'+S.xp+(lv.to?' / '+lv.to:'')+' XP</span></div><div class="bar" style="margin-top:6px"><i style="width:'+(lv.to?Math.round((S.xp-lv.from)/(lv.to-lv.from)*100):100)+'%"></i></div></div>'+
   '<div class="foot"><button class="btn" data-a="home">'+esc(t('btn.home'))+'</button>'+(r.kind==='practice'?'<button class="btn ghost" data-a="prac" data-v="'+r.sec+'">'+esc(t('res.more'))+'</button>':(more&&r.kind==='lesson'?'<button class="btn ghost" data-a="open" data-i="'+ni+'">'+esc(t('res.next'))+'</button>':''))+'</div></section>';}
 
+/* first-visit tour */
+var TOUR=-1, TOURN=7, TOURI=['🌐','👋','📅','🏋️','🏁','👤','🗣️'];
+function vTour(){if(TOUR<0)return '';var last=TOUR===TOURN-1;
+  return '<div class="tour" role="dialog" aria-modal="true" aria-labelledby="tourh"><div class="tourbox"><div class="tourico" aria-hidden="true">'+TOURI[TOUR]+'</div>'+(TOUR===0?'<h2 id="tourh" style="font-size:17px">'+LANGHEAD+'</h2>'+langGrid():'<h2 id="tourh">'+esc(t('tour.h'+(TOUR-1)))+'</h2><p>'+esc(t('tour.p'+(TOUR-1)))+'</p>')+
+    '<div class="tourdots">'+Array.from({length:TOURN},function(_,i){return '<i class="'+(i===TOUR?'on':'')+'"></i>';}).join('')+'</div>'+
+    '<div class="foot">'+(last?'':'<button class="btn ghost" data-a="tourskip">'+esc(t('tour.skip'))+'</button>')+'<button class="btn" data-a="tournext">'+esc(last?t('tour.go'):t('tour.next'))+'</button></div></div></div>';}
+function maybeTour(){if(!S.tour&&TOUR<0&&ALL.length&&(view==='path'||view==='practice')){TOUR=0;}}
+
 /* ---------- render + events ---------- */
 function render(){var a=$('#app'),tabs=$('#tabs'),inRun=view==='run'||view==='result'||view==='login'||view==='boot'||view==='nocourse';tabs.hidden=inRun;tabs.style.display=inRun?'none':'';
   a.innerHTML=view==='nocourse'?vNoCourse():view==='login'?vLogin():view==='boot'?vBoot():view==='run'?vRun():view==='result'?vResult():view==='practice'?vPractice():view==='top'?vTop():view==='progress'?vProg():view==='watch'?vWatch():vPath();
   tabs.querySelectorAll('button').forEach(function(b){b.textContent=t('tab.'+b.dataset.v);if(b.dataset.v===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   var wt=$('#watchtab');if(wt)wt.hidden=!OWNER;
   document.title='DTZ-Puls';
+  maybeTour();var old=document.querySelector('.tour');if(old)old.remove();if(TOUR>=0){a.insertAdjacentHTML('beforeend',vTour());}
   var f=$('#fillin');if(f&&!f.disabled&&view==='run')f.focus({preventScroll:true});}
 var tmrI=null, resetArmed=false, impArmed=false;
 function importCode(v){var o=null;try{o=JSON.parse(decodeURIComponent(escape(atob(v))));}catch(e){}
@@ -440,6 +452,10 @@ var A={
   topjoin:function(){var n=$('#tn');if(n){var v=n.value.trim().slice(0,30);if(!v)return toast(t('top.name'));S.name=v;}S.rank='1';save();TOP.rows=null;render();setTimeout(loadTop,1500);},
   topleave:function(){S.rank='0';save();TOP.rows=null;render();},
   topper:function(el){TOP.period=el.dataset.v;render();},
+  'pick-lang':function(el){LANGCHOSEN=true;setLang(el.dataset.v);render();},
+  tournext:function(){if(TOUR<TOURN-1){TOUR++;render();}else{TOUR=-1;S.tour=1;save();render();}},
+  tourskip:function(){TOUR=-1;S.tour=1;save();render();},
+  tour:function(){TOUR=0;view='path';try{location.hash='path';}catch(e){}render();},
   wsort:function(el){W.sort=el.dataset.v;render();},
   wopen:function(el){W.open=W.open||{};W.open[el.dataset.v]=!W.open[el.dataset.v];render();},
   theme:function(el){S.theme=el.dataset.v;applyTheme(S.theme);save();render();},

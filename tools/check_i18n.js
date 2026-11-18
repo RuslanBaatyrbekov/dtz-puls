@@ -10,7 +10,7 @@ for (const l of Object.keys(I)) {
   if (miss.length || extra.length) { bad++; console.log(l, 'missing', miss, 'extra', extra); }
 }
 const used = new Set((fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8').match(/(?<![A-Za-z_.$])t\('[a-z0-9.]+[a-z0-9]'/g) || []).map(s => s.slice(s.indexOf("'") + 1, -1)));
-const missing = [...used].filter(k => !(k in I.ru) && !/^(speak\.teil|speak\.how)$/.test(k));
+const missing = [...used].filter(k => !(k in I.ru) && !/^(speak\.teil|speak\.how|tour\.h|tour\.p)$/.test(k));
 if (missing.length) { bad++; console.log('used but missing:', missing); }
 if (Object.keys(I).length !== 12) { bad++; console.log('expected 12 languages, got', Object.keys(I).length); }
 if (bad) process.exit(1);
