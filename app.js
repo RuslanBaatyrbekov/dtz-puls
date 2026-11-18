@@ -228,7 +228,7 @@ function learnerRow(st){var name=st.name||st.email||'—',s=streak(st),dn=doneCo
     '<div class="stats"><div class="stat"><b class="num" style="color:var(--pulse)">'+s+'</b><span class="small muted">'+esc(t('chip.streak'))+'</span></div><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+wk+'/7</b><span class="small muted">'+esc(t('w.week'))+'</span></div></div>'+
     (Object.keys(miss).length?'<div class="row small">'+Object.keys(miss).map(function(k){return '<span class="tag">'+esc(t('sec.'+k))+': '+miss[k]+'</span>';}).join('')+'</div>':'')+'</section>';}
 function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only'))+'</div>';startWatch();
-  var h=header()+'<section><div class="eyebrow">'+esc(t('tab.watch'))+'</div><h1>'+esc(t('w.h'))+'</h1>'+(W.at?'<p class="small muted" style="margin:6px 0 0">'+esc(t('w.at',{t:ago(W.at)}))+'</p>':'')+'</section>'+vAdd();
+  var h=header()+'<section><div class="eyebrow">'+esc(t('tab.watch'))+'</div><h1>'+esc(t('w.h'))+'</h1>'+(W.at?'<p class="small muted" style="margin:6px 0 0">'+esc(t('w.at',{t:ago(W.at)}))+'</p>':'')+'</section>'+vAdd()+vUpload();
   if(W.err)return h+'<div class="card">'+esc(t('w.err'))+'</div>';
   if(!W.docs)return h+'<div class="card">'+esc(t('boot'))+'</div>';
   if(!W.docs.length)return h+'<div class="card">'+esc(t('w.none'))+'</div>';
@@ -263,6 +263,15 @@ function vTop(){var h=header()+'<section><div class="eyebrow">'+esc(t('tab.top')
 
 function doPw(){var a=$('#pw1').value,b=$('#pw2').value;if(a.length<8)return toast(t('pw.short'));if(a!==b)return toast(t('pw.diff'));
   SB.auth.updateUser({password:a}).then(function(r){if(r.error){toast(t('pw.err',{m:r.error.message}));return;}$('#pw1').value='';$('#pw2').value='';toast(t('pw.ok'));},function(e){toast(t('pw.err',{m:String(e&&e.message||e)}));});}
+
+/* upload a new course version (observer only; RLS policy "course: observers update") */
+function vUpload(){return '<details class="card"><summary>'+esc(t('up.h'))+'</summary><p class="small muted">'+esc(t('up.p'))+'</p><label class="btn small ghost" style="display:inline-flex;align-items:center;cursor:pointer">'+esc(t('up.btn'))+'<input type="file" id="upf" accept=".json,application/json" hidden></label></details>';}
+function doUpload(file){var rd=new FileReader();rd.onload=function(){var c=null;try{c=JSON.parse(rd.result);}catch(e){}
+  if(!c||!Array.isArray(c.weeks)||!c.bank||!c.rules)return toast(t('up.bad'));
+  SB.from('course_content').upsert({id:'dtz',data:c,updated_at:new Date().toISOString()}).then(function(r){
+    if(r.error)return toast(t('up.err',{m:r.error.message}));
+    setCourse(c);try{localStorage.setItem(CKEY,JSON.stringify(c));}catch(e){}render();toast(t('up.ok',{n:TOTAL}));},function(e){toast(t('up.err',{m:String(e&&e.message||e)}));});};
+  rd.readAsText(file);}
 
 /* add learner (observer only, via Edge Function create-learner) */
 var ADD={busy:false,res:null,err:''};
@@ -442,7 +451,7 @@ var A={
   reset:function(el){if(!resetArmed){resetArmed=true;el.textContent=t('set.reset2');setTimeout(function(){resetArmed=false;},5000);return;}resetArmed=false;var n=S.name,l=S.lang;S=def();S.name=n;S.lang=l;save();render();toast(t('toast.reset'));}
 };
 document.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el||el.disabled)return;var f=A[el.dataset.a];if(f)f(el);});
-document.addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.ch==='lang'){setLang(e.target.value);render();}});
+document.addEventListener('change',function(e){if(e.target.id==='upf'&&e.target.files&&e.target.files[0]){doUpload(e.target.files[0]);e.target.value='';return;}if(e.target.dataset&&e.target.dataset.ch==='lang'){setLang(e.target.value);render();}});
 document.addEventListener('submit',function(e){if(e.target.id==='lf'){e.preventDefault();doLogin();}if(e.target.id==='af'){e.preventDefault();doAdd();}if(e.target.id==='pwf'){e.preventDefault();doPw();}});
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='fillin'){e.preventDefault();check();}});
 document.addEventListener('input',function(e){if(e.target.id==='fillin'&&T)T.val=e.target.value;if(e.target.dataset&&e.target.dataset.g&&T&&T.vals)T.vals[e.target.dataset.g]=e.target.value;});

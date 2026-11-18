@@ -84,3 +84,13 @@ language sql stable security definer set search_path = public as $$
 $$;
 revoke all on function public.leaderboard() from public, anon;
 grant execute on function public.leaderboard() to authenticated;
+
+-- 8. Observers can upload a new course version from the app (Observer tab → Upload course).
+grant insert, update on public.course_content to authenticated;
+drop policy if exists "course: observers insert" on public.course_content;
+drop policy if exists "course: observers update" on public.course_content;
+create policy "course: observers insert" on public.course_content for insert to authenticated
+  with check (exists (select 1 from public.observers o where o.user_id = (select auth.uid())));
+create policy "course: observers update" on public.course_content for update to authenticated
+  using (exists (select 1 from public.observers o where o.user_id = (select auth.uid())))
+  with check (exists (select 1 from public.observers o where o.user_id = (select auth.uid())));
