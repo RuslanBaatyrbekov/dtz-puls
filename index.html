@@ -174,6 +174,18 @@ textarea.txt{font-family:var(--f-mono);font-size:12px}
 [dir="rtl"] .day,[dir="rtl"] .opt{text-align:right}
 
 /* German exam theme */
+.wsum{display:flex;align-items:baseline;gap:10px;background:var(--card);border:1px solid var(--line);border-inline-start:4px solid var(--ok);border-radius:6px;padding:10px 12px}
+.wsum b{font-family:var(--f-display);font-size:24px}
+.chipbtn.on{border-color:var(--ink);background:var(--accent-soft)}
+.wlist{display:flex;flex-direction:column;gap:4px}
+.wline{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-height:52px}
+.wline.open{border-color:var(--ink)}
+.wst{width:10px;height:10px;border-radius:50%;background:var(--line);flex:none} .wst.on{background:var(--ok)}
+.wav{font-size:22px;flex:none}
+.wnm{display:flex;flex-direction:column;min-width:0} .wnm b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wdots{display:flex;gap:2px;flex:none} .wdots i{width:7px;height:16px;border-radius:2px;background:var(--line)} .wdots i.a{background:var(--ink)}
+.wnum{font-family:var(--f-display);font-weight:700;font-size:15px;min-width:36px;text-align:end;flex:none}
+@media (max-width:380px){.wdots{display:none}}
 .top{flex-wrap:wrap;row-gap:8px}
 .brand{white-space:nowrap}
 .chips{flex-wrap:wrap;justify-content:flex-end}
@@ -248,20 +260,20 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 <nav class="tabs" id="tabs"><div>
 <button data-a="tab" data-v="path">Heute</button><button data-a="tab" data-v="practice">Training</button><button data-a="tab" data-v="top">Top</button><button data-a="tab" data-v="progress">Fortschritt</button><button data-a="tab" data-v="watch" id="watchtab" hidden>Watch</button>
 </div></nav>
-<script src="config.js?v=9"></script>
+<script src="config.js?v=10"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=9"></script>
-<script src="i18n/uk.js?v=9"></script>
-<script src="i18n/en.js?v=9"></script>
-<script src="i18n/tr.js?v=9"></script>
-<script src="i18n/ar.js?v=9"></script>
-<script src="i18n/ur.js?v=9"></script>
-<script src="i18n/fa.js?v=9"></script>
-<script src="i18n/hr.js?v=9"></script>
-<script src="i18n/sr.js?v=9"></script>
-<script src="i18n/my.js?v=9"></script>
-<script src="i18n/es.js?v=9"></script>
-<script src="i18n/hi.js?v=9"></script>
-<script src="app.js?v=9"></script>
+<script src="i18n/ru.js?v=10"></script>
+<script src="i18n/uk.js?v=10"></script>
+<script src="i18n/en.js?v=10"></script>
+<script src="i18n/tr.js?v=10"></script>
+<script src="i18n/ar.js?v=10"></script>
+<script src="i18n/ur.js?v=10"></script>
+<script src="i18n/fa.js?v=10"></script>
+<script src="i18n/hr.js?v=10"></script>
+<script src="i18n/sr.js?v=10"></script>
+<script src="i18n/my.js?v=10"></script>
+<script src="i18n/es.js?v=10"></script>
+<script src="i18n/hi.js?v=10"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>

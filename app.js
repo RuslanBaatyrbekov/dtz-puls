@@ -227,7 +227,16 @@ function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only')
   if(W.err)return h+'<div class="card">'+esc(t('w.err'))+'</div>';
   if(!W.docs)return h+'<div class="card">'+esc(t('boot'))+'</div>';
   if(!W.docs.length)return h+'<div class="card">'+esc(t('w.none'))+'</div>';
-  return h+W.docs.sort(function(a,b){return (b.t||0)-(a.t||0);}).map(learnerRow).join('');}
+  var td=today(),act=W.docs.filter(function(x){return x.days[td]!==undefined;}).length,sort=W.sort||'recent';
+  var keyf={recent:function(x){return x.t||0;},streak:function(x){return streak(x);},days:function(x){return doneCount(x)*1e6+(x.xp||0);},name:function(x){return 0;}}[sort];
+  var docs=W.docs.slice().sort(sort==='name'?function(a,b){return String(a.name||a.email||'').localeCompare(String(b.name||b.email||''));}:function(a,b){return keyf(b)-keyf(a);});
+  h+='<div class="wsum"><b class="num">'+act+' / '+W.docs.length+'</b><span class="small">'+esc(t('w.sum'))+'</span></div>';
+  h+='<div class="row small" style="gap:6px"><span class="muted">'+esc(t('w.sort'))+'</span>'+['recent','streak','days','name'].map(function(k){return '<button class="chipbtn'+(sort===k?' on':'')+'" data-a="wsort" data-v="'+k+'">'+esc(t('w.s.'+k))+'</button>';}).join('')+'</div>';
+  return h+'<div class="wlist">'+docs.map(learnerLine).join('')+'</div>';}
+function learnerLine(st){var id=st._id,open=W.open&&W.open[id],name=st.name||st.email||'—',s=streak(st),dn=doneCount(st),td=st.days[today()]!==undefined,dots='',tt=new Date();
+  for(var i=6;i>=0;i--){dots+='<i class="'+(st.days[ds(addDays(tt,-i))]!==undefined?'a':'')+'"></i>';}
+  var row='<button class="wline'+(open?' open':'')+'" data-a="wopen" data-v="'+esc(id)+'" aria-expanded="'+(!!open)+'"><span class="wst '+(td?'on':'')+'" title="'+esc(td?t('w.today'):t('w.notyet'))+'"></span><span class="wav">'+esc(st.avatar||'🙂')+'</span><span class="grow wnm"><b>'+esc(name)+'</b><span class="small muted">'+esc(ago(st.t))+'</span></span><span class="wdots" aria-label="'+esc(t('w.week'))+'">'+dots+'</span><span class="wnum num" title="'+esc(t('chip.streak'))+'">♥'+s+'</span><span class="wnum num" title="'+esc(t('prog.days'))+'">'+dn+'/'+TOTAL+'</span></button>';
+  return row+(open?learnerRow(st):'');}
 
 /* points race: opt-in, only name + points (SQL function leaderboard) */
 var TOP={rows:null,at:0,err:'',busy:false,period:'week'};
@@ -414,6 +423,8 @@ var A={
   topjoin:function(){var n=$('#tn');if(n){var v=n.value.trim().slice(0,30);if(!v)return toast(t('top.name'));S.name=v;}S.rank='1';save();TOP.rows=null;render();setTimeout(loadTop,1500);},
   topleave:function(){S.rank='0';save();TOP.rows=null;render();},
   topper:function(el){TOP.period=el.dataset.v;render();},
+  wsort:function(el){W.sort=el.dataset.v;render();},
+  wopen:function(el){W.open=W.open||{};W.open[el.dataset.v]=!W.open[el.dataset.v];render();},
   theme:function(el){S.theme=el.dataset.v;applyTheme(S.theme);save();render();},
   avatar:function(el){S.avatar=el.dataset.v;save();render();},
   exp:function(){var code=btoa(unescape(encodeURIComponent(JSON.stringify(S)))),ta=$('#code');ta.value=code;ta.select();
