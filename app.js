@@ -112,7 +112,11 @@ function applyFreezes(){var keys=Object.keys(S.days).concat(Object.keys(S.frozen
   while(ds(d)>last&&gap.length<6){gap.push(ds(d));d=addDays(d,-1);}
   if(gap.length&&gap.length<=S.freezes){gap.forEach(function(k){S.frozen[k]=1;});S.freezes-=gap.length;save();}}
 function level(st){st=st||S;var i=0;for(var k=0;k<LEVELS.length;k++)if(st.xp>=LEVELS[k])i=k;return {i:i,name:t('lvl.'+i),from:LEVELS[i],to:LEVELS[i+1]||null};}
-function nextIdx(st){st=st||S;for(var i=0;i<ALL.length;i++)if(!st.done[ALL[i].id])return i;return -1;}
+/* pace: the daily limit grows when the exam is close; optional review days are skipped when behind */
+function remaining(st){st=st||S;var n=0;for(var i=0;i<ALL.length;i++)if(!st.done[ALL[i].id])n++;return n;}
+function behind(st){return remaining(st)>Math.max(1,daysLeft())*2;}
+function capToday(){return Math.min(6,Math.max(2,Math.ceil(remaining()/Math.max(1,daysLeft()))));}
+function nextIdx(st){st=st||S;var skip=behind(st),first=-1;for(var i=0;i<ALL.length;i++)if(!st.done[ALL[i].id]){if(first<0)first=i;if(skip&&ALL[i].opt)continue;return i;}return first;}
 function newToday(){return S.newDay===today()?S.newN:0;}
 function doneCount(st){st=st||S;var n=0;Object.keys(st.done||{}).forEach(function(id){if(LBY[id])n++;});return n;}
 
@@ -156,17 +160,18 @@ function vLogin(){return '<div class="top">'+BRAND+langSelect('lg0')+'</div>'+
   '<button class="btn" type="submit"'+(loginBusy?' disabled':'')+'>'+esc(loginBusy?t('login.busy'):t('login.btn'))+'</button></form><p class="small muted" style="margin:0">'+esc(t('login.noacc'))+'</p></section><p class="small muted" lang="de" dir="ltr" style="margin:0">Privates, kostenloses Lernprojekt. Nicht offiziell, nicht verbunden mit BAMF, g.a.s.t. oder telc.</p>';}
 function vBoot(){return '<div class="card">'+esc(t('boot'))+'</div>';}
 
-function dayRow(D){var done=!!S.done[D.id],nx=nextIdx()===D.idx,cls=done?'done':nx?'next':'lock';
-  var st=done?(S.done[D.id].p?t('day.perfect'):t('day.done')):nx?(D.boss?t('day.boss'):t('day.min',{n:D.min||20})):t('day.locked');
+function dayRow(D){var done=!!S.done[D.id],ni=nextIdx(),nx=ni===D.idx,skipped=!done&&D.opt&&D.idx<ni,cls=done?'done':nx?'next':skipped?'opt':'lock';
+  var st=done?(S.done[D.id].p?t('day.perfect'):t('day.done')):skipped?t('day.opt'):nx?(D.boss?t('day.boss'):t('day.min',{n:D.min||20})):t('day.locked');
   return '<button class="day '+cls+'" data-a="open" data-i="'+D.idx+'"'+(cls==='lock'?' aria-disabled="true"':'')+'><span class="n">'+(done?'✓':D.idx+1)+'</span><span class="grow"><span class="tt">'+esc(L(D.title))+'</span><br><span class="st">'+esc(st)+'</span></span>'+(D.tag?'<span class="tag">'+esc(t('sec.'+D.tag))+'</span>':'')+'</button>';}
-function vPath(){var s=streak(),lv=level(),ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()>=2,h=header(),cta,sub;
+function vPath(){var s=streak(),lv=level(),ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()>=capToday(),h=header(),cta,sub;
   var pct=lv.to?Math.round((S.xp-lv.from)/(lv.to-lv.from)*100):100;
   if(ni<0){cta='<button class="btn" data-a="review">'+esc(t('btn.review'))+'</button>';sub=t('path.alldone');}
   else if(cap){cta='<button class="btn" data-a="review">'+esc(t('btn.review'))+'</button><button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>';sub=t('path.cap',{n:ni+1});}
   else{cta='<button class="btn" data-a="open" data-i="'+ni+'">'+esc(did?t('path.more',{n:ni+1}):t('path.start',{n:ni+1}))+'</button>'+(doneCount()?'<button class="btn ghost" data-a="review">'+esc(t('btn.review'))+'</button>':'');sub=did?t('path.did'):t('path.todo',{title:L(ALL[ni].title)});}
+  var pace=ni>=0&&(capToday()>2||behind())?'<p class="small" style="margin:0;color:var(--pulse)"><b>'+esc(t('path.pace',{n:capToday()}))+'</b></p>':'';
   h+='<section class="card hero"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="eyebrow">'+esc(S.name?t('path.hi',{name:S.name}):t('path.hi0'))+'</div><div class="row" style="align-items:baseline;gap:8px"><span class="big num">'+daysLeft()+'</span><span class="small muted">'+esc(t('path.days'))+'</span></div></div><div class="small muted" style="text-align:end"><b class="num" style="color:var(--pulse);font-size:20px">'+s+'</b><br>'+esc(t('chip.streak'))+'</div></div>'+stripSvg()+
     '<div><div class="row small" style="justify-content:space-between"><span><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+'</span><span class="muted num">'+S.xp+(lv.to?' / '+lv.to:'')+' XP</span></div><div class="bar" style="margin-top:6px"><i style="width:'+pct+'%"></i></div></div>'+
-    '<p class="small" style="margin:0">'+esc(sub)+'</p><div class="foot">'+cta+'</div></section>';
+    '<p class="small" style="margin:0">'+esc(sub)+'</p>'+pace+'<div class="foot">'+cta+'</div></section>';
   WK.forEach(function(w,wi){var d=w.days.filter(function(x){return S.done[x.id];}).length;
     h+='<section class="week"><div><div class="eyebrow">'+esc(t('path.week',{n:wi+1}))+' · <span class="num">'+d+' / '+w.days.length+'</span></div><h2>'+esc(L(w.title))+'</h2>'+(w.sub?'<p class="small muted" style="margin:4px 0 0">'+esc(L(w.sub))+'</p>':'')+'</div><div class="days">'+w.days.map(dayRow).join('')+'</div></section>';});
   return h;}
@@ -282,8 +287,8 @@ function doAdd(){var em=$('#ae').value.trim(),nm=$('#an').value.trim(),pw=$('#ap
 
 /* ---------- lesson / practice runner ---------- */
 function openLesson(i){var D=ALL[i],isNew=!S.done[D.id];
-  if(isNew&&i!==nextIdx())return toast(t('toast.prev'));
-  if(isNew&&newToday()>=2)return toast(t('toast.cap'));
+  if(isNew&&i!==nextIdx()&&!(D.opt&&i<nextIdx()))return toast(t('toast.prev'));
+  if(isNew&&newToday()>=capToday())return toast(t('toast.cap'));
   var q=(D.cards||[]).map(function(c){return {k:'card',c:c};}).concat(D._tasks.map(function(x){return {k:'task',t:x,first:true};}));
   startRun({id:D.id,title:L(D.title),kind:'lesson',boss:!!D.boss},q,isNew);}
 function startRun(meta,q,isNew){stopSay();R={L:meta,q:q,pos:0,ok:0,fixed:0,isNew:!!isNew};T=null;view='run';render();window.scrollTo(0,0);}
@@ -372,7 +377,7 @@ function finish(){var D=R.L,td=today(),first=S.days[td]===undefined,gain,tasks=R
   if(R.isNew&&D.kind==='lesson'){S.done[D.id]={d:td,p:perfect?1:0};if(perfect)S.perfect++;if(S.newDay!==td){S.newDay=td;S.newN=0;}S.newN++;}
   var s=streak(),fz=false;if(s>S.best)S.best=s;if(first&&s>0&&s%7===0&&S.freezes<2){S.freezes++;fz=true;}
   save();RES={gain:gain,ok:R.ok,tasks:tasks,streak:s,fz:fz,title:D.title,kind:D.kind,sec:D.sec,isNew:R.isNew,perfect:perfect};R=null;view='result';render();window.scrollTo(0,0);}
-function vResult(){var r=RES,lv=level(),ni=nextIdx(),more=ni>=0&&newToday()<2;
+function vResult(){var r=RES,lv=level(),ni=nextIdx(),more=ni>=0&&newToday()<capToday();
   var head=r.kind==='review'?t('res.review'):r.kind==='practice'?t('res.prac'):r.isNew?t('res.day'):t('res.again');
   return '<section class="result"><svg class="ecg" viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 55 H90 Q100 42 110 55 H128 L138 64 L152 8 L166 78 L176 55 H196 Q214 34 232 55 H400"/></svg><div><div class="eyebrow">'+esc(r.title)+'</div><h1>'+esc(head)+'</h1><p style="margin:8px 0 0">'+esc(t('res.streak',{n:r.streak}))+(r.fz?' '+esc(t('res.freeze')):'')+(r.perfect?' '+esc(t('res.perfect')):'')+'</p></div>'+
   (r.tasks&&r.kind!=='review'?'<div class="stamp" lang="de" dir="ltr">'+(r.perfect?'SEHR GUT':'BESTANDEN')+'</div>':'')+'<div class="stats"><div class="stat"><b class="num">+'+r.gain+'</b><span class="small muted">XP</span></div><div class="stat"><b class="num">'+r.ok+' / '+r.tasks+'</b><span class="small muted">'+esc(t('res.first'))+'</span></div><div class="stat"><b class="num">'+daysLeft()+'</b><span class="small muted">'+esc(t('path.days'))+'</span></div></div>'+
