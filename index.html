@@ -55,6 +55,7 @@ code{font-family:var(--f-mono);font-size:.9em;background:var(--accent-soft);padd
 .chip b{color:var(--pulse)} .chip.xp b{color:var(--gold)}
 /* герой */
 .hero{display:flex;flex-direction:column;gap:14px}
+.todaygo{display:flex;flex-direction:column;gap:14px}
 .hero .big{font-family:var(--f-display);font-size:44px;font-weight:700;line-height:1;color:var(--pulse)}
 .strip{width:100%;height:76px;display:block;border-radius:10px;background:var(--paper);border:1px solid var(--line)}
 .strip path{fill:none;stroke:var(--pulse);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
@@ -174,6 +175,13 @@ textarea.txt{font-family:var(--f-mono);font-size:12px}
 [dir="rtl"] .day,[dir="rtl"] .opt{text-align:right}
 
 /* German exam theme */
+.tour.spot{background:transparent;display:block}
+.tour.spot .hole{position:fixed;border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.62);outline:3px solid var(--flag);outline-offset:2px;pointer-events:none;animation:holep 1.6s ease-in-out infinite}
+.tour.spot .tourbox{position:fixed;animation:none}
+@keyframes holep{50%{outline-color:var(--pulse)}}
+.tarr{position:absolute;width:16px;height:16px;background:var(--card);border:2px solid var(--ink);transform:rotate(45deg)}
+.tarr.down{bottom:-10px;border-top:0;border-left:0}
+.tarr.up{top:-10px;border-bottom:0;border-right:0}
 .langs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .lgb{border:2px solid var(--line);background:var(--card);border-radius:8px;padding:12px;font-size:16px;font-weight:600;min-height:48px;text-align:start}
 .lgb.on{border-color:var(--ink);background:var(--accent-soft);box-shadow:3px 3px 0 var(--flag)}
@@ -271,20 +279,20 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 <nav class="tabs" id="tabs"><div>
 <button data-a="tab" data-v="path">Heute</button><button data-a="tab" data-v="practice">Training</button><button data-a="tab" data-v="top">Top</button><button data-a="tab" data-v="progress">Fortschritt</button><button data-a="tab" data-v="watch" id="watchtab" hidden>Watch</button>
 </div></nav>
-<script src="config.js?v=15"></script>
+<script src="config.js?v=20"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=15"></script>
-<script src="i18n/uk.js?v=15"></script>
-<script src="i18n/en.js?v=15"></script>
-<script src="i18n/tr.js?v=15"></script>
-<script src="i18n/ar.js?v=15"></script>
-<script src="i18n/ur.js?v=15"></script>
-<script src="i18n/fa.js?v=15"></script>
-<script src="i18n/hr.js?v=15"></script>
-<script src="i18n/sr.js?v=15"></script>
-<script src="i18n/my.js?v=15"></script>
-<script src="i18n/es.js?v=15"></script>
-<script src="i18n/hi.js?v=15"></script>
-<script src="app.js?v=15"></script>
+<script src="i18n/ru.js?v=20"></script>
+<script src="i18n/uk.js?v=20"></script>
+<script src="i18n/en.js?v=20"></script>
+<script src="i18n/tr.js?v=20"></script>
+<script src="i18n/ar.js?v=20"></script>
+<script src="i18n/ur.js?v=20"></script>
+<script src="i18n/fa.js?v=20"></script>
+<script src="i18n/hr.js?v=20"></script>
+<script src="i18n/sr.js?v=20"></script>
+<script src="i18n/my.js?v=20"></script>
+<script src="i18n/es.js?v=20"></script>
+<script src="i18n/hi.js?v=20"></script>
+<script src="app.js?v=20"></script>
 </body>
 </html>

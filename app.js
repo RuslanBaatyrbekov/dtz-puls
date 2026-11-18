@@ -174,7 +174,7 @@ function vPath(){var s=streak(),lv=level(),ni=nextIdx(),did=S.days[today()]!==un
   var pace=ni>=0&&(capToday()>2||behind())?'<p class="small" style="margin:0;color:var(--pulse)"><b>'+esc(t('path.pace',{n:capToday()}))+'</b></p>':'';
   h+='<section class="card hero"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="eyebrow">'+esc(S.name?t('path.hi',{name:S.name}):t('path.hi0'))+'</div><div class="row" style="align-items:baseline;gap:8px"><span class="big num">'+daysLeft()+'</span><span class="small muted">'+esc(t('path.days'))+'</span></div></div><div class="small muted" style="text-align:end"><b class="num" style="color:var(--pulse);font-size:20px">'+s+'</b><br>'+esc(t('chip.streak'))+'</div></div>'+stripSvg()+
     '<div><div class="row small" style="justify-content:space-between"><span><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+'</span><span class="muted num">'+S.xp+(lv.to?' / '+lv.to:'')+' XP</span></div><div class="bar" style="margin-top:6px"><i style="width:'+pct+'%"></i></div></div>'+
-    '<p class="small" style="margin:0">'+esc(sub)+'</p>'+(ni>=0?'<p class="small muted" style="margin:0">'+esc(t('path.min'))+'</p>':'')+pace+'<div class="foot">'+cta+'</div></section>';
+    '<div class="todaygo"><p class="small" style="margin:0">'+esc(sub)+'</p>'+(ni>=0?'<p class="small muted" style="margin:0">'+esc(t('path.min'))+'</p>':'')+pace+'<div class="foot">'+cta+'</div></div></section>';
   WK.forEach(function(w,wi){var d=w.days.filter(function(x){return S.done[x.id];}).length;
     h+='<section class="week"><div><div class="eyebrow">'+esc(t('path.week',{n:wi+1}))+' · <span class="num">'+d+' / '+w.days.length+'</span></div><h2>'+esc(L(w.title))+'</h2>'+(w.sub?'<p class="small muted" style="margin:4px 0 0">'+esc(L(w.sub))+'</p>':'')+'</div><div class="days">'+w.days.map(dayRow).join('')+'</div></section>';});
   return h;}
@@ -401,10 +401,23 @@ function vResult(){var r=RES,lv=level(),ni=nextIdx(),more=ni>=0&&newToday()<capT
 
 /* first-visit tour */
 var TOUR=-1, TOURN=7, TOURI=['🌐','👋','📅','🏋️','🏁','👤','🗣️'];
+var TOURT=[null,null,'.hero .todaygo','#tabs [data-v="practice"]','#tabs [data-v="top"]','#tabs [data-v="progress"]',null];
 function vTour(){if(TOUR<0)return '';var last=TOUR===TOURN-1;
-  return '<div class="tour" role="dialog" aria-modal="true" aria-labelledby="tourh"><div class="tourbox"><div class="tourico" aria-hidden="true">'+TOURI[TOUR]+'</div>'+(TOUR===0?'<h2 id="tourh" style="font-size:17px">'+LANGHEAD+'</h2>'+langGrid():'<h2 id="tourh">'+esc(t('tour.h'+(TOUR-1)))+'</h2><p>'+esc(t('tour.p'+(TOUR-1)))+'</p>')+
+  var spot=TOURT[TOUR]&&document.querySelector(TOURT[TOUR]);
+  return '<div class="tour'+(spot?' spot':'')+'" role="dialog" aria-modal="true" aria-labelledby="tourh">'+(spot?'<div class="hole"></div>':'')+'<div class="tourbox">'+(spot?'<span class="tarr"></span>':'')+'<div class="tourico" aria-hidden="true">'+TOURI[TOUR]+'</div>'+(TOUR===0?'<h2 id="tourh" style="font-size:17px">'+LANGHEAD+'</h2>'+langGrid():'<h2 id="tourh">'+esc(t('tour.h'+(TOUR-1)))+'</h2><p>'+esc(t('tour.p'+(TOUR-1)))+'</p>')+
     '<div class="tourdots">'+Array.from({length:TOURN},function(_,i){return '<i class="'+(i===TOUR?'on':'')+'"></i>';}).join('')+'</div>'+
     '<div class="foot">'+(last?'':'<button class="btn ghost" data-a="tourskip">'+esc(t('tour.skip'))+'</button>')+'<button class="btn" data-a="tournext">'+esc(last?t('tour.go'):t('tour.next'))+'</button></div></div></div>';}
+/* place the highlight over the target and the tip next to it */
+function placeTour(){var box=document.querySelector('.tour.spot');if(!box)return;var el=document.querySelector(TOURT[TOUR]);if(!el)return;
+  var r=el.getBoundingClientRect(),vh=window.innerHeight,vw=document.documentElement.clientWidth||window.innerWidth,pad=6,hole=box.querySelector('.hole'),tip=box.querySelector('.tourbox'),arr=box.querySelector('.tarr');
+  hole.style.left=(r.left-pad)+'px';hole.style.top=(r.top-pad)+'px';hole.style.width=(r.width+pad*2)+'px';hole.style.height=(r.height+pad*2)+'px';
+  var w=Math.min(360,vw-24);tip.style.width=w+'px';var cx=r.left+r.width/2,left=Math.max(12,Math.min(vw-w-12,cx-w/2));tip.style.left=left+'px';
+  arr.style.left=Math.max(16,Math.min(w-28,cx-left-8))+'px';
+  var above=r.top-pad-14-12,below=vh-r.bottom-pad-14-12;
+  if(above>below){tip.style.top='auto';tip.style.bottom=(vh-r.top+pad+14)+'px';tip.style.maxHeight=above+'px';arr.className='tarr down';}
+  else{tip.style.bottom='auto';tip.style.top=(r.bottom+pad+14)+'px';tip.style.maxHeight=below+'px';arr.className='tarr up';}
+  tip.style.overflow='';if(tip.scrollHeight>tip.clientHeight+2){tip.style.overflow='auto';arr.style.display='none';}else arr.style.display='';}
+window.addEventListener('resize',placeTour);window.addEventListener('scroll',placeTour,{passive:true});
 function maybeTour(){if(!S.tour&&TOUR<0&&ALL.length&&(view==='path'||view==='practice')){TOUR=0;}}
 
 /* ---------- render + events ---------- */
@@ -413,7 +426,7 @@ function render(){var a=$('#app'),tabs=$('#tabs'),inRun=view==='run'||view==='re
   tabs.querySelectorAll('button').forEach(function(b){b.textContent=t('tab.'+b.dataset.v);if(b.dataset.v===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   var wt=$('#watchtab');if(wt)wt.hidden=!OWNER;
   document.title='DTZ-Puls';
-  maybeTour();var old=document.querySelector('.tour');if(old)old.remove();if(TOUR>=0){a.insertAdjacentHTML('beforeend',vTour());}
+  maybeTour();var old=document.querySelector('.tour');if(old)old.remove();if(TOUR>=0){var tg=TOURT[TOUR]&&document.querySelector(TOURT[TOUR]);if(tg&&tg.closest('#app'))window.scrollBy(0,tg.getBoundingClientRect().top-80);document.body.insertAdjacentHTML('beforeend',vTour());placeTour();}
   var f=$('#fillin');if(f&&!f.disabled&&view==='run')f.focus({preventScroll:true});}
 var tmrI=null, resetArmed=false, impArmed=false;
 function importCode(v){var o=null;try{o=JSON.parse(decodeURIComponent(escape(atob(v))));}catch(e){}
