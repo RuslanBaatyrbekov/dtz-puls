@@ -272,27 +272,53 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 .av[aria-pressed="true"]{border-color:var(--ink);background:var(--accent-soft)}
 .me-av{font-size:44px;width:72px;height:72px;border-radius:12px;border:2px solid var(--ink);display:grid;place-items:center;background:var(--accent-soft);flex:none}
 .chip.avc{font-size:16px;padding:4px 8px}
+/* cheat sheets */
+.nsearch{max-width:none;width:100%}
+.ncats{display:flex;gap:6px;flex-wrap:wrap}
+.ncats .chip{cursor:pointer}
+.ncats .chip.on,.chip.avc.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.nrow .grow{min-width:0}.nrow .st{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[dir=rtl] .nrow .chev{transform:scaleX(-1)}
+.sec .ico.nico{flex:0 0 46px;font-size:22px;font-family:inherit}
+.nback{align-self:flex-start}
+.note h1{font-size:22px;margin:4px 0 0}
+.ntip{margin:8px 0 0;line-height:1.5}
+.nblock h3{margin:0 0 8px;font-size:15px}
+.ntab{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
+.ntab table{border-collapse:collapse;width:100%;font-size:14px;min-width:100%}
+.ntab th,.ntab td{border:1px solid var(--line);padding:6px 8px;text-align:start;vertical-align:top}
+.ntab thead th{background:var(--accent-soft);font-weight:600;white-space:nowrap}
+.ntab tbody th{font-weight:600;white-space:nowrap;background:var(--paper)}
+.ntab b,.nsay b,.nlst b{color:var(--pulse)}
+.ntab.nw td{white-space:nowrap}
+.ntab.nw table{font-size:13px}.ntab.nw th,.ntab.nw td{padding:5px 6px}
+.nsay{display:flex;flex-direction:column;gap:6px}
+.nline{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:start;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:15px;line-height:1.4;color:var(--ink)}
+.nline:active{transform:scale(.99)}
+.nline .nplay{flex:0 0 auto;color:var(--accent);font-size:12px;line-height:22px}
+.nline.playing{border-color:var(--accent);background:var(--accent-soft)}
+.nlst{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;gap:6px;line-height:1.45}
 </style>
 </head>
 <body>
 <div class="wrap" id="app"></div>
 <nav class="tabs" id="tabs"><div>
-<button data-a="tab" data-v="path">Heute</button><button data-a="tab" data-v="practice">Training</button><button data-a="tab" data-v="top">Top</button><button data-a="tab" data-v="progress">Fortschritt</button><button data-a="tab" data-v="watch" id="watchtab" hidden>Watch</button>
+<button data-a="tab" data-v="path">Heute</button><button data-a="tab" data-v="practice">Training</button><button data-a="tab" data-v="notes">Spickzettel</button><button data-a="tab" data-v="top">Top</button><button data-a="tab" data-v="watch" id="watchtab" hidden>Watch</button>
 </div></nav>
-<script src="config.js?v=21"></script>
+<script src="config.js?v=25"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=21"></script>
-<script src="i18n/uk.js?v=21"></script>
-<script src="i18n/en.js?v=21"></script>
-<script src="i18n/tr.js?v=21"></script>
-<script src="i18n/ar.js?v=21"></script>
-<script src="i18n/ur.js?v=21"></script>
-<script src="i18n/fa.js?v=21"></script>
-<script src="i18n/hr.js?v=21"></script>
-<script src="i18n/sr.js?v=21"></script>
-<script src="i18n/my.js?v=21"></script>
-<script src="i18n/es.js?v=21"></script>
-<script src="i18n/hi.js?v=21"></script>
-<script src="app.js?v=21"></script>
+<script src="i18n/ru.js?v=25"></script>
+<script src="i18n/uk.js?v=25"></script>
+<script src="i18n/en.js?v=25"></script>
+<script src="i18n/tr.js?v=25"></script>
+<script src="i18n/ar.js?v=25"></script>
+<script src="i18n/ur.js?v=25"></script>
+<script src="i18n/fa.js?v=25"></script>
+<script src="i18n/hr.js?v=25"></script>
+<script src="i18n/sr.js?v=25"></script>
+<script src="i18n/my.js?v=25"></script>
+<script src="i18n/es.js?v=25"></script>
+<script src="i18n/hi.js?v=25"></script>
+<script src="app.js?v=25"></script>
 </body>
 </html>
