@@ -152,7 +152,7 @@ var BRAND='<div class="brand"><svg viewBox="0 0 28 16"><path d="M0 9h7l2-3 3 9 3
 function langSelect(id){return '<label class="sr" for="'+id+'">'+esc(t('set.lang'))+'</label><select class="txt sel'+(id==='lgh'?' lgh':'')+'" id="'+id+'" data-ch="lang" title="Language">'+LANGS.map(function(l){return '<option value="'+l[0]+'"'+(l[0]===LANG?' selected':'')+'>'+(id==='lgh'?l[0].toUpperCase():l[1])+'</option>';}).join('')+'</select>';}
 function header(){var nm=(S.name||'').trim().split(/\s+/)[0]||t('tab.progress'),on=view==='progress';
   return '<div class="top hdr"><div class="hl">'+BRAND+'<div class="chips">'+langSelect('lgh')+'<span class="chip num" title="'+esc(t('chip.exam'))+'"><b>⏳</b> '+daysLeft()+'</span><span class="chip num" title="'+esc(t('chip.streak'))+'"><b>♥</b> '+streak()+'</span><span class="chip xp num" title="XP"><b>★</b> '+S.xp+'</span></div></div>'+
-  '<button class="me'+(on?' on':'')+'" data-a="tab" data-v="progress" aria-label="'+esc(t('tab.progress'))+'"'+(on?' aria-current="page"':'')+'><span class="meav avc" aria-hidden="true">'+esc(S.avatar||'👤')+'</span><span class="mename" dir="auto">'+esc(nm)+'</span></button></div>';}
+  '<button class="mebtn'+(on?' on':'')+'" data-a="tab" data-v="progress" aria-label="'+esc(t('tab.progress'))+'"'+(on?' aria-current="page"':'')+'><span class="meav avc" aria-hidden="true">'+esc(S.avatar||'👤')+'</span><span class="mename" dir="auto">'+esc(nm)+'</span></button></div>';}
 function vNoCourse(){var noCfg=!cfgOk();
   return '<div class="top">'+BRAND+'</div><section class="card hero"><h1>'+esc(noCfg?t('nc.cfg.h'):t('nc.h'))+'</h1><p class="small muted" style="margin:0">'+esc(noCfg?t('nc.cfg.p'):courseErr)+'</p>'+(noCfg?'':'<div class="foot"><button class="btn" data-a="retry">'+esc(t('btn.retry'))+'</button>'+(ME?'<button class="btn ghost" data-a="logout">'+esc(t('btn.logout'))+'</button>':'')+'</div>')+'</section>';}
 function langGrid(){return '<div class="langs">'+LANGS.map(function(l){return '<button class="lgb'+(l[0]===LANG?' on':'')+'" data-a="pick-lang" data-v="'+l[0]+'" lang="'+l[0]+'" dir="'+(l[2]?'rtl':'ltr')+'">'+l[1]+'</button>';}).join('')+'</div>';}
@@ -432,7 +432,7 @@ window.addEventListener('popstate',function(){if(view==='note')closeNote();});
 
 /* first-visit tour */
 var TOUR=-1, TOURN=8, TOURI=['🌐','👋','📅','🏋️','📒','🏁','👤','🗣️'], TOURK=['','0','1','2','n','3','4','5'];
-var TOURT=[null,null,'.hero .todaygo','#tabs [data-v="practice"]','#tabs [data-v="notes"]','#tabs [data-v="top"]','#app .hdr .me',null];
+var TOURT=[null,null,'.hero .todaygo','#tabs [data-v="practice"]','#tabs [data-v="notes"]','#tabs [data-v="top"]','#app .hdr .mebtn',null];
 function vTour(){if(TOUR<0)return '';var last=TOUR===TOURN-1;
   var spot=TOURT[TOUR]&&document.querySelector(TOURT[TOUR]);
   return '<div class="tour'+(spot?' spot':'')+'" role="dialog" aria-modal="true" aria-labelledby="tourh">'+(spot?'<div class="hole"></div>':'')+'<div class="tourbox">'+(spot?'<span class="tarr"></span>':'')+'<div class="tourico" aria-hidden="true">'+TOURI[TOUR]+'</div>'+(TOUR===0?'<h2 id="tourh" style="font-size:17px">'+LANGHEAD+'</h2>'+langGrid():'<h2 id="tourh">'+esc(t('tour.h'+TOURK[TOUR]))+'</h2><p>'+esc(t('tour.p'+TOURK[TOUR]))+'</p>')+
