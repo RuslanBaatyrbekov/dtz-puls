@@ -81,12 +81,18 @@ function presStart(){if(!SB||!ME||PCH||!SB.channel)return;try{
   PCH.on('presence',{event:'sync'},function(){var st=PCH.presenceState()||{},o={};Object.keys(st).forEach(function(k){o[k]=1;});ONLINE=o;presPaint();});
   PCH.subscribe(function(status){if(status==='SUBSCRIBED'&&!document.hidden)PCH.track({at:Date.now()});});}catch(e){PCH=null;}}
 function presStop(){if(PCH){try{SB.removeChannel(PCH);}catch(e){}PCH=null;ONLINE={};}}
-function presPaint(){document.querySelectorAll('[data-uid]').forEach(function(el){el.hidden=!ONLINE[el.dataset.uid];});}
+var BEAT=null;
+function beat(){if(!SB||!ME||document.hidden)return;
+  SB.from('progress').select('state').eq('user_id',ME).maybeSingle().then(function(r){if(r.error)return;var c=r.data&&r.data.state;
+    if(c&&(c.t||0)>(S.t||0))adopt(c);S.lastOn=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}push();},function(){});}
+function beatStart(){clearInterval(BEAT);setTimeout(beat,1500);BEAT=setInterval(beat,5*60000);}
+function presPaint(){document.querySelectorAll('[data-uid]').forEach(function(el){var on=!!ONLINE[el.dataset.uid];el.classList.toggle('on',on);el.title=on?t('w.online'):'';});document.querySelectorAll('[data-seen]').forEach(function(el){var on=!!ONLINE[el.dataset.seen];el.textContent=on?t('w.now'):t('w.seen',{t:ago(+el.dataset.ts)});el.classList.toggle('onl',on);});}
 document.addEventListener('visibilitychange',function(){if(!PCH)return;try{if(document.hidden)PCH.untrack();else PCH.track({at:Date.now()});}catch(e){}});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&ME)beat();});
 function onSession(sess){var id=sess&&sess.user?sess.user.id:null;
   if(!id){presStop();ME=null;EMAIL='';OWNER=false;syncState='local';view='login';render();return;}
   if(id===ME&&view!=='boot'&&view!=='login')return;
-  ME=id;EMAIL=sess.user.email||'';setTimeout(presStart,0);
+  ME=id;EMAIL=sess.user.email||'';setTimeout(presStart,0);beatStart();
   if(S.uid&&S.uid!==ME){var l=LANG;S=def();S.lang=l;try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
   S.uid=ME;S.email=EMAIL;if(!S.lang)S.lang=LANG;if(!S.name&&sess.user.user_metadata&&sess.user.user_metadata.name)S.name=String(sess.user.user_metadata.name).slice(0,30);
   SB.from('observers').select('user_id').eq('user_id',ME).maybeSingle().then(function(r){OWNER=!!(r&&r.data);},function(){OWNER=false;})
@@ -242,7 +248,7 @@ function learnerRow(st){var name=st.name||st.email||'—',s=streak(st),dn=doneCo
     '<div class="stats"><div class="stat"><b class="num" style="color:var(--pulse)">'+s+'</b><span class="small muted">'+esc(t('chip.streak'))+'</span></div><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+wk+'/7</b><span class="small muted">'+esc(t('w.week'))+'</span></div></div>'+
     (Object.keys(miss).length?'<div class="row small">'+Object.keys(miss).map(function(k){return '<span class="tag">'+esc(t('sec.'+k))+': '+miss[k]+'</span>';}).join('')+'</div>':'')+'</section>';}
 function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only'))+'</div>';startWatch();
-  var h=header()+'<section><div class="eyebrow">'+esc(t('tab.watch'))+'</div><h1>'+esc(t('w.h'))+'</h1>'+(W.at?'<p class="small muted" style="margin:6px 0 0">'+esc(t('w.at',{t:ago(W.at)}))+'</p>':'')+'<p class="small muted wleg" style="margin:6px 0 0"><span class="wst on"></span> '+esc(t('w.legend'))+' · <span class="wonl">'+esc(t('w.online'))+'</span> '+esc(t('w.legon'))+'</p></section>'+vAdd()+vUpload();
+  var h=header()+'<section><div class="eyebrow">'+esc(t('tab.watch'))+'</div><h1>'+esc(t('w.h'))+'</h1>'+(W.at?'<p class="small muted" style="margin:6px 0 0">'+esc(t('w.at',{t:ago(W.at)}))+'</p>':'')+'<p class="small muted wleg" style="margin:6px 0 0"><span class="wst on"></span> '+esc(t('w.online'))+' · <span class="wtd">'+esc(t('w.today'))+'</span></p></section>'+vAdd()+vUpload();
   if(W.err)return h+'<div class="card">'+esc(t('w.err'))+'</div>';
   if(!W.docs)return h+'<div class="card">'+esc(t('boot'))+'</div>';
   if(!W.docs.length)return h+'<div class="card">'+esc(t('w.none'))+'</div>';
@@ -252,9 +258,9 @@ function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only')
   h+='<div class="wsum"><b class="num">'+act+' / '+W.docs.length+'</b><span class="small">'+esc(t('w.sum'))+'</span></div>';
   h+='<div class="row small" style="gap:6px"><span class="muted">'+esc(t('w.sort'))+'</span>'+['recent','streak','days','name'].map(function(k){return '<button class="chipbtn'+(sort===k?' on':'')+'" data-a="wsort" data-v="'+k+'">'+esc(t('w.s.'+k))+'</button>';}).join('')+'</div>';
   return h+'<div class="wlist">'+docs.map(learnerLine).join('')+'</div>';}
-function learnerLine(st){var id=st._id,open=W.open&&W.open[id],name=st.name||st.email||'—',s=streak(st),dn=doneCount(st),td=st.days[today()]!==undefined,dots='',tt=new Date();
+function learnerLine(st){var id=st._id,open=W.open&&W.open[id],name=st.name||st.email||'—',s=streak(st),dn=doneCount(st),td=st.days[today()]!==undefined,seenTs=Math.max(st.lastOn||0,st.t||0),dots='',tt=new Date();
   for(var i=6;i>=0;i--){dots+='<i class="'+(st.days[ds(addDays(tt,-i))]!==undefined?'a':'')+'"></i>';}
-  var row='<button class="wline'+(open?' open':'')+'" data-a="wopen" data-v="'+esc(id)+'" aria-expanded="'+(!!open)+'"><span class="wst '+(td?'on':'')+'" title="'+esc(td?t('w.today'):t('w.notyet'))+'"></span><span class="wav">'+esc(st.avatar||'🙂')+'</span><span class="grow wnm"><b>'+esc(name)+'</b><span class="wonl" data-uid="'+esc(id)+'"'+(ONLINE[id]?'':' hidden')+'>'+esc(t('w.online'))+'</span><span class="small muted">'+esc(ago(st.t))+'</span></span><span class="wdots" aria-label="'+esc(t('w.week'))+'">'+dots+'</span><span class="wnum num" title="'+esc(t('chip.streak'))+'">♥'+s+'</span><span class="wnum num" title="'+esc(t('prog.days'))+'">'+dn+'/'+TOTAL+'</span></button>';
+  var row='<button class="wline'+(open?' open':'')+'" data-a="wopen" data-v="'+esc(id)+'" aria-expanded="'+(!!open)+'"><span class="wst'+(ONLINE[id]?' on':'')+'" data-uid="'+esc(id)+'" title="'+(ONLINE[id]?esc(t('w.online')):'')+'"></span><span class="wav">'+esc(st.avatar||'🙂')+'</span><span class="grow wnm"><b>'+esc(name)+'</b>'+(td?'<span class="wtd">'+esc(t('w.today'))+'</span>':'')+'<span class="small muted wseen'+(ONLINE[id]?' onl':'')+'" data-seen="'+esc(id)+'" data-ts="'+seenTs+'">'+esc(ONLINE[id]?t('w.now'):t('w.seen',{t:ago(seenTs)}))+'</span></span><span class="wdots" aria-label="'+esc(t('w.week'))+'">'+dots+'</span><span class="wnum num wxp" title="XP">★'+(st.xp||0)+'</span><span class="wnum num" title="'+esc(t('chip.streak'))+'">♥'+s+'</span><span class="wnum num" title="'+esc(t('prog.days'))+'">'+dn+'/'+TOTAL+'</span></button>';
   return row+(open?learnerRow(st):'');}
 
 /* points race: opt-in, only name + points (SQL function leaderboard) */
