@@ -183,16 +183,19 @@ function vBoot(){return '<div class="card">'+esc(t('boot'))+'</div>';}
 function dayRow(D){var done=!!S.done[D.id],ni=nextIdx(),nx=ni===D.idx,skipped=!done&&D.opt&&D.idx<ni,cls=done?'done':nx?'next':skipped?'opt':'lock';
   var st=done?(S.done[D.id].p?t('day.perfect'):t('day.done')):skipped?t('day.opt'):nx?(D.boss?t('day.boss'):t('day.min',{n:D.min||20})):t('day.locked');
   return '<button class="day '+cls+'" data-a="open" data-i="'+D.idx+'"'+(cls==='lock'?' aria-disabled="true"':'')+'><span class="n">'+(done?'✓':D.idx+1)+'</span><span class="grow"><span class="tt">'+esc(L(D.title))+'</span><br><span class="st">'+esc(st)+'</span></span>'+(D.tag?'<span class="tag">'+esc(t('sec.'+D.tag))+'</span>':'')+'</button>';}
-function vPath(){var s=streak(),lv=level(),ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()>=capToday(),h=header(),cta,sub;
-  var pct=lv.to?Math.round((S.xp-lv.from)/(lv.to-lv.from)*100):100;
-  if(ni<0){cta='<button class="btn" data-a="review">'+esc(t('btn.review'))+'</button>';sub=t('path.alldone');}
-  else if(cap){cta='<button class="btn" data-a="review">'+esc(t('btn.review'))+'</button><button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>';sub=t('path.cap',{n:ni+1});}
-  else{cta='<button class="btn" data-a="open" data-i="'+ni+'">'+esc(did?t('path.more',{n:ni+1}):t('path.start',{n:ni+1}))+'</button>'+(doneCount()?'<button class="btn ghost" data-a="review">'+esc(t('btn.review'))+'</button>':'');sub=did?t('path.did'):t('path.todo',{title:L(ALL[ni].title)});}
+function vPath(){var ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()>=capToday(),h=header(),dc=doneCount();
+  var rev=dc?'<button class="linkbtn" data-a="review">'+esc(t('btn.review'))+'</button>':'';
   var pace=ni>=0&&(capToday()>2||behind())?'<p class="small" style="margin:0;color:var(--pulse)"><b>'+esc(t('path.pace',{n:capToday()}))+'</b></p>':'';
   if(S.tour&&!S.tourDone&&TOUR<0)h+='<button class="tourcard" data-a="tour"><span class="tci" aria-hidden="true">🎓</span><span class="grow"><b>'+esc(t('tour.card'))+'</b><br><span class="small">'+esc(t('tour.cardsub'))+'</span></span><span class="tcb" aria-hidden="true">▶</span></button>';
-  h+='<section class="card hero"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="eyebrow">'+esc(S.name?t('path.hi',{name:S.name}):t('path.hi0'))+'</div><div class="row" style="align-items:baseline;gap:8px"><span class="big num">'+daysLeft()+'</span><span class="small muted">'+esc(t('path.days'))+'</span></div></div><div class="small muted" style="text-align:end"><b class="num" style="color:var(--pulse);font-size:20px">'+s+'</b><br>'+esc(t('chip.streak'))+'</div></div>'+stripSvg()+
-    '<div><div class="row small" style="justify-content:space-between"><span><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+'</span><span class="muted num">'+S.xp+(lv.to?' / '+lv.to:'')+' XP</span></div><div class="bar" style="margin-top:6px"><i style="width:'+pct+'%"></i></div></div>'+
-    '<div class="todaygo"><p class="small" style="margin:0">'+esc(sub)+'</p>'+(ni>=0?'<p class="small muted" style="margin:0">'+esc(t('path.min'))+'</p>':'')+pace+'<div class="foot">'+cta+'</div></div></section>';
+  var body;
+  if(ni<0){body='<div class="eyebrow">🏁</div><h2 class="daytitle">'+esc(t('path.alldone'))+'</h2><div class="foot"><button class="btn" data-a="review">'+esc(t('btn.review'))+'</button></div>';}
+  else if(!did){var D=ALL[ni];
+    body='<div class="eyebrow">'+esc(t('path.today',{n:ni+1}))+'</div><h2 class="daytitle">'+esc(L(D.title))+'</h2><p class="small muted" style="margin:0">'+esc(t('path.dur',{m:D.min||20}))+'</p>'+pace+
+      (dc<3?'<p class="small muted" style="margin:0">'+esc(t('path.min'))+'</p>':'')+
+      '<div class="foot"><button class="btn big-cta" data-a="open" data-i="'+ni+'">'+esc(t('path.start',{n:ni+1}))+' →</button></div>'+rev;}
+  else{body='<div class="eyebrow">✅</div><h2 class="daytitle">'+esc(t('path.donet',{n:Math.max(1,ni)}))+'</h2><p class="small" style="margin:0">'+esc(cap?t('path.cap',{n:ni+1}):t('path.did'))+'</p>'+pace+
+      '<div class="foot">'+(cap?'<button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>':'<button class="btn ghost" data-a="open" data-i="'+ni+'">'+esc(t('path.more',{n:ni+1}))+'</button>')+'</div>'+rev;}
+  h+='<section class="card hero todayc'+(did&&ni>=0?' done':'')+'"><div class="todaygo">'+body+'</div></section>';
   WK.forEach(function(w,wi){var d=w.days.filter(function(x){return S.done[x.id];}).length;
     h+='<section class="week"><div><div class="eyebrow">'+esc(t('path.week',{n:wi+1}))+' · <span class="num">'+d+' / '+w.days.length+'</span></div><h2>'+esc(L(w.title))+'</h2>'+(w.sub?'<p class="small muted" style="margin:4px 0 0">'+esc(L(w.sub))+'</p>':'')+'</div><div class="days">'+w.days.map(dayRow).join('')+'</div></section>';});
   return h;}
@@ -216,6 +219,7 @@ function vProg(){var lv=level(),dn=doneCount(),seen=Object.keys(S.seen).length,p
   h+='<div class="stats"><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+seen+'</b><span class="small muted">'+esc(t('prog.tasks'))+'</span></div><div class="stat"><b class="num">'+Math.max(S.best,streak())+'</b><span class="small muted">'+esc(t('prog.best'))+'</span></div></div>';
   var cells='',tt=new Date(),start=addDays(tt,-(((tt.getDay()+6)%7)+28));
   for(var i=0;i<35;i++){var d=addDays(start,i),k=ds(d);cells+='<i class="'+(S.days[k]!==undefined?'a':S.frozen[k]?'f':'')+(k===today()?' t':'')+'" title="'+k+'"></i>';}
+  h+='<section class="card"><h3>'+esc(t('prof.pulse'))+'</h3><div style="margin-top:10px">'+stripSvg()+'</div><p class="small muted" style="margin:8px 0 0"><b class="num" style="color:var(--pulse)">♥ '+streak()+'</b> '+esc(t('chip.streak'))+'</p></section>';
   h+='<section class="card"><h3>'+esc(t('prog.heat'))+'</h3><div class="heat" style="margin-top:10px">'+cells+'</div></section>';
   var bySec=SECTIONS.map(function(sec){var st=secStats(sec);return st.n?'<div><div class="row small" style="justify-content:space-between"><span>'+esc(t('sec.'+sec))+'</span><span class="num muted">'+st.seen+' / '+st.n+'</span></div><div class="bar acc" style="margin-top:4px"><i style="width:'+Math.round(st.seen/st.n*100)+'%"></i></div></div>':'';}).join('');
   h+='<section class="card" style="display:flex;flex-direction:column;gap:10px"><h3>'+esc(t('prog.secs'))+'</h3>'+bySec+'</section>';

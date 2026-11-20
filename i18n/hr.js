@@ -24,5 +24,6 @@
 'tab.notes':"Podsjetnici",'notes.h':"Podsjetnici",'notes.p':"Tablice i gotove fraze za ispit. Dodirni njemačku frazu da je čuješ.",'notes.search':"Traži: Dativ, weil, Brief…",'notes.all':"Sve",'notes.cat.gram':"Gramatika",'notes.cat.write':"Pisanje",'notes.cat.speak':"Govor",'notes.cat.exam':"Ispit",'notes.none':"Podsjetnici će se pojaviti kad organizator ažurira tečaj.",'notes.empty':"Ništa nije pronađeno.",'notes.back':"Svi podsjetnici",'tour.hn':"Podsjetnici",'tour.pn':"Padeži, članovi, red riječi, primjeri pisama i fraze za Sprechen — kratko i s objašnjenjem na tvom jeziku. Zgodno prije sata ili ispita.",
 'w.online':"na mreži",'w.legend':"učio danas",'w.legon':"— aplikacija je sada otvorena",
 'w.now':"sada na mreži",'w.seen':"zadnji put na mreži: {t}",
-'tour.step':"Korak {n} od {m}",'tour.skipq':"Sigurno preskočiti? Upute traju samo 30 sekundi.",'tour.cont':"Nastavi upute",'tour.skipyes':"Ipak preskoči",'tour.done':"Upute završene!",'tour.card':"Prođi upute — 30 sekundi",'tour.cardsub':"Pokazat ćemo gdje je što.",'w.tour':"upute prođene",'w.notour':"upute nisu prođene"
+'tour.step':"Korak {n} od {m}",'tour.skipq':"Sigurno preskočiti? Upute traju samo 30 sekundi.",'tour.cont':"Nastavi upute",'tour.skipyes':"Ipak preskoči",'tour.done':"Upute završene!",'tour.card':"Prođi upute — 30 sekundi",'tour.cardsub':"Pokazat ćemo gdje je što.",'w.tour':"upute prođene",'w.notour':"upute nisu prođene",
+'path.today':"Danas · dan {n}",'path.dur':"≈ {m} minuta",'path.donet':"Dan {n} gotov!",'prof.pulse':"Tvoj puls, zadnja 2 tjedna"
 };
