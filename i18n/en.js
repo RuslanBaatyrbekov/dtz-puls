@@ -25,5 +25,6 @@
 'w.online':"online",'w.legend':"studied today",'w.legon':"— app is open right now",
 'w.now':"online now",'w.seen':"last online {t}",
 'tour.step':"Step {n} of {m}",'tour.skipq':"Skip it? The tour only takes 30 seconds.",'tour.cont':"Continue the tour",'tour.skipyes':"Skip anyway",'tour.done':"Tour complete!",'tour.card':"Take the tour — 30 seconds",'tour.cardsub':"We show you where everything is.",'w.tour':"tour done",'w.notour':"tour not done",
-'path.today':"Today · day {n}",'path.dur':"≈ {m} minutes",'path.donet':"Day {n} done!",'prof.pulse':"Your pulse, last 2 weeks"
+'path.today':"Today · day {n}",'path.dur':"≈ {m} minutes",'path.donet':"Day {n} done!",'prof.pulse':"Your pulse, last 2 weeks",
+'path.exam':"Until the exam (19.12): {n} days"
 };

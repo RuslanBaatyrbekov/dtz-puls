@@ -25,5 +25,6 @@
 'w.online':"en línea",'w.legend':"estudió hoy",'w.legon':"— tiene la app abierta ahora",
 'w.now':"en línea ahora",'w.seen':"última vez en línea: {t}",
 'tour.step':"Paso {n} de {m}",'tour.skipq':"¿Seguro que quieres saltarlo? El tutorial dura solo 30 segundos.",'tour.cont':"Seguir con el tutorial",'tour.skipyes':"Saltar de todos modos",'tour.done':"¡Tutorial completado!",'tour.card':"Haz el tutorial — 30 segundos",'tour.cardsub':"Te mostramos dónde está cada cosa.",'w.tour':"tutorial hecho",'w.notour':"tutorial pendiente",
-'path.today':"Hoy · día {n}",'path.dur':"≈ {m} minutos",'path.donet':"¡Día {n} hecho!",'prof.pulse':"Tu pulso, últimas 2 semanas"
+'path.today':"Hoy · día {n}",'path.dur':"≈ {m} minutos",'path.donet':"¡Día {n} hecho!",'prof.pulse':"Tu pulso, últimas 2 semanas",
+'path.exam':"Hasta el examen (19.12): {n} días"
 };

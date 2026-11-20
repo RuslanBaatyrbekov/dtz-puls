@@ -25,5 +25,6 @@
 'w.online':"na mreži",'w.legend':"učio danas",'w.legon':"— aplikacija je sada otvorena",
 'w.now':"sada na mreži",'w.seen':"poslednji put na mreži: {t}",
 'tour.step':"Korak {n} od {m}",'tour.skipq':"Sigurno preskočiti? Uputstvo traje samo 30 sekundi.",'tour.cont':"Nastavi uputstvo",'tour.skipyes':"Ipak preskoči",'tour.done':"Uputstvo završeno!",'tour.card':"Prođi uputstvo — 30 sekundi",'tour.cardsub':"Pokazaćemo gde je šta.",'w.tour':"uputstvo prođeno",'w.notour':"uputstvo nije prođeno",
-'path.today':"Danas · dan {n}",'path.dur':"≈ {m} minuta",'path.donet':"Dan {n} gotov!",'prof.pulse':"Tvoj puls, poslednje 2 nedelje"
+'path.today':"Danas · dan {n}",'path.dur':"≈ {m} minuta",'path.donet':"Dan {n} gotov!",'prof.pulse':"Tvoj puls, poslednje 2 nedelje",
+'path.exam':"Do ispita (19.12): {n} dana"
 };

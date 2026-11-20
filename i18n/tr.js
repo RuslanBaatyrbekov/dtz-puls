@@ -25,5 +25,6 @@
 'w.online':"çevrimiçi",'w.legend':"bugün çalıştı",'w.legon':"— uygulama şu an açık",
 'w.now':"şu an çevrimiçi",'w.seen':"son çevrimiçi: {t}",
 'tour.step':"Adım {n} / {m}",'tour.skipq':"Atlamak istediğine emin misin? Tanıtım sadece 30 saniye sürer.",'tour.cont':"Tanıtıma devam et",'tour.skipyes':"Yine de atla",'tour.done':"Tanıtım tamamlandı!",'tour.card':"Tanıtımı izle — 30 saniye",'tour.cardsub':"Her şeyin nerede olduğunu gösteriyoruz.",'w.tour':"tanıtım tamam",'w.notour':"tanıtım yapılmadı",
-'path.today':"Bugün · gün {n}",'path.dur':"≈ {m} dakika",'path.donet':"Gün {n} tamam!",'prof.pulse':"Son 2 haftalık nabzın"
+'path.today':"Bugün · gün {n}",'path.dur':"≈ {m} dakika",'path.donet':"Gün {n} tamam!",'prof.pulse':"Son 2 haftalık nabzın",
+'path.exam':"Sınava (19.12) kalan: {n} gün"
 };
