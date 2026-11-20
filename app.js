@@ -189,7 +189,7 @@ function vPath(){var s=streak(),lv=level(),ni=nextIdx(),did=S.days[today()]!==un
   else if(cap){cta='<button class="btn" data-a="review">'+esc(t('btn.review'))+'</button><button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>';sub=t('path.cap',{n:ni+1});}
   else{cta='<button class="btn" data-a="open" data-i="'+ni+'">'+esc(did?t('path.more',{n:ni+1}):t('path.start',{n:ni+1}))+'</button>'+(doneCount()?'<button class="btn ghost" data-a="review">'+esc(t('btn.review'))+'</button>':'');sub=did?t('path.did'):t('path.todo',{title:L(ALL[ni].title)});}
   var pace=ni>=0&&(capToday()>2||behind())?'<p class="small" style="margin:0;color:var(--pulse)"><b>'+esc(t('path.pace',{n:capToday()}))+'</b></p>':'';
-  if(S.tour&&!S.tourDone&&TOUR<0)h+='<button class="tourcard" data-a="tour"><span class="tci" aria-hidden="true">🎓</span><span class="grow"><b>'+esc(t('tour.card'))+'</b><br><span class="small">'+esc(t('tour.cardsub',{n:TOURXP}))+'</span></span><span class="tcb">+'+TOURXP+' ★</span></button>';
+  if(S.tour&&!S.tourDone&&TOUR<0)h+='<button class="tourcard" data-a="tour"><span class="tci" aria-hidden="true">🎓</span><span class="grow"><b>'+esc(t('tour.card'))+'</b><br><span class="small">'+esc(t('tour.cardsub'))+'</span></span><span class="tcb" aria-hidden="true">▶</span></button>';
   h+='<section class="card hero"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="eyebrow">'+esc(S.name?t('path.hi',{name:S.name}):t('path.hi0'))+'</div><div class="row" style="align-items:baseline;gap:8px"><span class="big num">'+daysLeft()+'</span><span class="small muted">'+esc(t('path.days'))+'</span></div></div><div class="small muted" style="text-align:end"><b class="num" style="color:var(--pulse);font-size:20px">'+s+'</b><br>'+esc(t('chip.streak'))+'</div></div>'+stripSvg()+
     '<div><div class="row small" style="justify-content:space-between"><span><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+'</span><span class="muted num">'+S.xp+(lv.to?' / '+lv.to:'')+' XP</span></div><div class="bar" style="margin-top:6px"><i style="width:'+pct+'%"></i></div></div>'+
     '<div class="todaygo"><p class="small" style="margin:0">'+esc(sub)+'</p>'+(ni>=0?'<p class="small muted" style="margin:0">'+esc(t('path.min'))+'</p>':'')+pace+'<div class="foot">'+cta+'</div></div></section>';
@@ -457,14 +457,14 @@ function closeNote(){stopSay();NOTE=null;view='notes';render();window.scrollTo(0
 window.addEventListener('popstate',function(){if(view==='note')closeNote();});
 
 /* first-visit tour */
-var TOURQ=false, TOURXP=20, TOUR=-1, TOURN=8, TOURI=['🌐','👋','📅','🏋️','📒','🏁','👤','🗣️'], TOURK=['','0','1','2','n','3','4','5'];
+var TOURQ=false, TOUR=-1, TOURN=8, TOURI=['🌐','👋','📅','🏋️','📒','🏁','👤','🗣️'], TOURK=['','0','1','2','n','3','4','5'];
 var TOURT=[null,null,'.hero .todaygo','#tabs [data-v="practice"]','#tabs [data-v="notes"]','#tabs [data-v="top"]','#app .hdr .mebtn',null];
 function vTour(){if(TOUR<0)return '';var last=TOUR===TOURN-1;
   var spot=TOURT[TOUR]&&document.querySelector(TOURT[TOUR]);
   return '<div class="tour'+(spot?' spot':'')+'" role="dialog" aria-modal="true" aria-labelledby="tourh">'+(spot?'<div class="hole"></div>':'')+'<div class="tourbox">'+(spot?'<span class="tarr"></span>':'')+'<div class="tourico" aria-hidden="true">'+TOURI[TOUR]+'</div>'+(TOUR===0?'<h2 id="tourh" style="font-size:17px">'+LANGHEAD+'</h2>'+langGrid():'<h2 id="tourh">'+esc(t('tour.h'+TOURK[TOUR]))+'</h2><p>'+esc(t('tour.p'+TOURK[TOUR]))+'</p>')+
     '<div class="tourdots">'+Array.from({length:TOURN},function(_,i){return '<i class="'+(i===TOUR?'on':'')+'"></i>';}).join('')+'</div>'+
-    '<p class="tourrw">'+esc(t('tour.step',{n:TOUR+1,m:TOURN}))+' · <b>+'+TOURXP+' ★</b> '+esc(t('tour.reward'))+'</p>'+
-    (TOURQ?'<div class="tourq"><p>'+esc(t('tour.skipq',{n:TOURXP}))+'</p><div class="foot"><button class="btn" data-a="tourcont">'+esc(t('tour.cont'))+'</button><button class="linkbtn" data-a="tourskip">'+esc(t('tour.skipyes'))+'</button></div></div>':
+    '<p class="tourrw">'+esc(t('tour.step',{n:TOUR+1,m:TOURN}))+'</p>'+
+    (TOURQ?'<div class="tourq"><p>'+esc(t('tour.skipq'))+'</p><div class="foot"><button class="btn" data-a="tourcont">'+esc(t('tour.cont'))+'</button><button class="linkbtn" data-a="tourskip">'+esc(t('tour.skipyes'))+'</button></div></div>':
     '<div class="foot">'+(last||TOUR===0?'':'<button class="linkbtn" data-a="tourask">'+esc(t('tour.skip'))+'</button>')+'<button class="btn" data-a="tournext">'+esc(last?t('tour.go'):t('tour.next'))+'</button></div>')+'</div></div>';}
 /* place the highlight over the target and the tip next to it */
 function placeTour(){var box=document.querySelector('.tour.spot');if(!box)return;var el=document.querySelector(TOURT[TOUR]);if(!el)return;
@@ -477,7 +477,7 @@ function placeTour(){var box=document.querySelector('.tour.spot');if(!box)return
   else{tip.style.bottom='auto';tip.style.top=(r.bottom+pad+14)+'px';tip.style.maxHeight=below+'px';arr.className='tarr up';}
   tip.style.overflow='';if(tip.scrollHeight>tip.clientHeight+2){tip.style.overflow='auto';arr.style.display='none';}else arr.style.display='';}
 window.addEventListener('resize',placeTour);window.addEventListener('scroll',placeTour,{passive:true});
-function maybeTour(){if(!S.tour&&TOUR<0&&ALL.length&&VIEWS.indexOf(view)>=0&&view!=='watch'){if(view!=='path'){view='path';try{history.replaceState(null,'','#path');}catch(e){}}TOUR=0;}}
+function maybeTour(){if(!S.tour&&TOUR<0&&ALL.length&&VIEWS.indexOf(view)>=0&&view!=='watch'){if(view!=='path'){view='path';try{history.replaceState(null,'','#path');}catch(e){}}TOUR=LANGCHOSEN?1:0;}}
 
 /* ---------- render + events ---------- */
 function render(){maybeTour();var a=$('#app'),tabs=$('#tabs'),inRun=view==='run'||view==='result'||view==='login'||view==='boot'||view==='nocourse';tabs.hidden=inRun;tabs.style.display=inRun?'none':'';
@@ -526,7 +526,7 @@ var A={
   topleave:function(){S.rank='0';save();TOP.rows=null;render();},
   topper:function(el){TOP.period=el.dataset.v;render();},
   'pick-lang':function(el){LANGCHOSEN=true;setLang(el.dataset.v);render();},
-  tournext:function(){TOURQ=false;if(TOUR<TOURN-1){TOUR++;render();}else{TOUR=-1;S.tour=1;var first=!S.tourDone;S.tourDone=1;if(first)S.xp=(S.xp||0)+TOURXP;save();render();toast(first?t('tour.done',{n:TOURXP}):t('tour.go'));}},
+  tournext:function(){TOURQ=false;if(TOUR<TOURN-1){TOUR++;render();}else{TOUR=-1;S.tour=1;S.tourDone=1;save();render();toast(t('tour.done'));}},
   tourask:function(){TOURQ=true;render();},
   tourcont:function(){TOURQ=false;render();},
   tourskip:function(){TOURQ=false;TOUR=-1;S.tour=1;save();render();},
