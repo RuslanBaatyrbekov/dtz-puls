@@ -26,5 +26,6 @@
 'w.now':"online now",'w.seen':"last online {t}",
 'tour.step':"Step {n} of {m}",'tour.skipq':"Skip it? The tour only takes 30 seconds.",'tour.cont':"Continue the tour",'tour.skipyes':"Skip anyway",'tour.done':"Tour complete!",'tour.card':"Take the tour — 30 seconds",'tour.cardsub':"We show you where everything is.",'w.tour':"tour done",'w.notour':"tour not done",
 'path.today':"Today · day {n}",'path.dur':"≈ {m} minutes",'path.donet':"Day {n} done!",'prof.pulse':"Your pulse, last 2 weeks",
-'path.exam':"Until the exam (19.12): {n} days"
+'path.exam':"Until the exam (19.12): {n} days",
+'rem.h':"Reminders",'rem.p':"One notification a day at the time you choose — only if you have not studied yet today.",'rem.on':"Turn on",'rem.off':"Turn off",'rem.active':"on",'rem.time':"Time",'rem.ok':"Reminders on: every day at {h}.",'rem.denied':"Notifications are blocked in your browser. Allow them in the site settings (lock icon next to the address).",'rem.unsup':"This browser does not support notifications. Open the site in Chrome or install the app.",'rem.ios':"On iPhone: tap Share → Add to Home Screen, open DTZ-Puls from the icon and turn on reminders in your Profile.",'rem.ask':"Remind you to study at {h}?",'rem.asksub':"One notification a day, only if today’s lesson is not done yet. You can change the time in your Profile.",'rem.later':"Not now",'rem.err':"Could not turn on reminders. Please try again.",'app.install':"Install the app",'app.installp':"An icon on your home screen; opens without the browser."
 };

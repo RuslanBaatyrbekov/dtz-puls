@@ -92,7 +92,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden&&ME)
 function onSession(sess){var id=sess&&sess.user?sess.user.id:null;
   if(!id){presStop();ME=null;EMAIL='';OWNER=false;syncState='local';view='login';render();return;}
   if(id===ME&&view!=='boot'&&view!=='login')return;
-  ME=id;EMAIL=sess.user.email||'';setTimeout(presStart,0);beatStart();
+  ME=id;EMAIL=sess.user.email||'';setTimeout(presStart,0);beatStart();setTimeout(pushSync,3000);
   if(S.uid&&S.uid!==ME){var l=LANG;S=def();S.lang=l;try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
   S.uid=ME;S.email=EMAIL;if(!S.lang)S.lang=LANG;if(!S.name&&sess.user.user_metadata&&sess.user.user_metadata.name)S.name=String(sess.user.user_metadata.name).slice(0,30);
   SB.from('observers').select('user_id').eq('user_id',ME).maybeSingle().then(function(r){OWNER=!!(r&&r.data);},function(){OWNER=false;})
@@ -196,6 +196,7 @@ function vPath(){var ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()
   else{body='<div class="eyebrow">✅</div><h2 class="daytitle">'+esc(t('path.donet',{n:Math.max(1,ni)}))+'</h2><p class="small" style="margin:0">'+esc(cap?t('path.cap',{n:ni+1}):t('path.did'))+'</p>'+pace+
       '<div class="foot">'+(cap?'<button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>':'<button class="btn ghost" data-a="open" data-i="'+ni+'">'+esc(t('path.more',{n:ni+1}))+'</button>')+'</div>'+rev;}
   var exam='<p class="examline"><span aria-hidden="true">⏳</span> '+esc(t('path.exam',{n:'\u0001'})).replace('\u0001','<b class="num">'+daysLeft()+'</b>')+'</p>';
+  h+=remCard();
   h+='<section class="card hero todayc'+(did&&ni>=0?' done':'')+'">'+exam+'<div class="todaygo">'+body+'</div></section>';
   WK.forEach(function(w,wi){var d=w.days.filter(function(x){return S.done[x.id];}).length;
     h+='<section class="week"><div><div class="eyebrow">'+esc(t('path.week',{n:wi+1}))+' · <span class="num">'+d+' / '+w.days.length+'</span></div><h2>'+esc(L(w.title))+'</h2>'+(w.sub?'<p class="small muted" style="margin:4px 0 0">'+esc(L(w.sub))+'</p>':'')+'</div><div class="days">'+w.days.map(dayRow).join('')+'</div></section>';});
@@ -228,7 +229,7 @@ function vProg(){var lv=level(),dn=doneCount(),seen=Object.keys(S.seen).length,p
   h+='<section class="card" style="display:flex;flex-direction:column;gap:12px"><h3>'+esc(t('set.h'))+'</h3>'+
     '<div><div class="small" style="margin-bottom:6px"><b>'+esc(t('prof.theme'))+'</b></div><div class="themes">'+THEMES.map(function(x){var cur=(S.theme||'auto')===x[0];return '<button class="th" data-a="theme" data-v="'+x[0]+'" aria-pressed="'+cur+'"><span class="sw">'+(x[2]?x[2].map(function(c){return '<i style="background:'+c+'"></i>';}).join(''):'<i style="background:#f4f3ee"></i><i style="background:#151515"></i>')+'</span>'+esc(x[1]||t('th.auto'))+'</button>';}).join('')+'</div></div>'+
     '<div><div class="small" style="margin-bottom:6px"><b>'+esc(t('prof.avatar'))+'</b></div><div class="avs">'+AVATARS.map(function(a){return '<button class="av" data-a="avatar" data-v="'+a+'" aria-pressed="'+(S.avatar===a)+'">'+a+'</button>';}).join('')+'</div></div>'+
-    '<div class="row"><span class="small" style="min-width:90px">'+esc(t('set.lang'))+'</span>'+langSelect('lg1')+'</div>'+
+    '<div class="row"><span class="small" style="min-width:90px">'+esc(t('set.lang'))+'</span>'+langSelect('lg1')+'</div>'+remBlock()+
     '<div class="row"><label for="nm" class="small" style="min-width:90px">'+esc(t('set.name'))+'</label><input class="txt" id="nm" value="'+esc(S.name)+'" maxlength="30"><button class="btn small" data-a="name">'+esc(t('btn.save'))+'</button></div>'+
     '<p class="small muted" style="margin:0">'+esc(syncLine())+(EMAIL?' · '+esc(EMAIL):'')+'</p>'+
     '<details><summary class="small">'+esc(t('set.code'))+'</summary><p class="small muted">'+esc(t('set.code.p'))+'</p><textarea id="code" class="txt" style="max-width:none;min-height:80px" dir="ltr" spellcheck="false"></textarea><div class="row" style="margin-top:8px"><button class="btn small ghost" data-a="exp">'+esc(t('set.exp'))+'</button><button class="btn small" data-a="imp">'+esc(t('set.imp'))+'</button></div></details>'+
@@ -461,6 +462,51 @@ function openNote(id){stopSay();if(view!=='note'){try{history.pushState({dtzNote
 function closeNote(){stopSay();NOTE=null;view='notes';render();window.scrollTo(0,0);}
 window.addEventListener('popstate',function(){if(view==='note')closeNote();});
 
+/* app install + daily reminders (Web Push) */
+var INSTALL_EVT=null, PUSHBUSY=false;
+var IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function standalone(){return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;}
+function pushOk(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window&&!!(window.PULS_CONFIG||{}).vapidPublic;}
+function needHome(){return IOS&&!standalone();}
+function remH(){return S.remind&&S.remind.h!=null?S.remind.h:19;}
+function hh(h){return (h<10?'0':'')+h+':00';}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();INSTALL_EVT=e;if(view==='progress'||view==='path')render();});
+window.addEventListener('appinstalled',function(){INSTALL_EVT=null;render();});
+function b64u(x){var p='='.repeat((4-x.length%4)%4),b=atob((x+p).replace(/-/g,'+').replace(/_/g,'/')),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+function subRow(sub,h){var j=sub.toJSON();var tz='Europe/Berlin';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz;}catch(e){}
+  return {endpoint:j.endpoint,user_id:ME,p256dh:j.keys.p256dh,auth:j.keys.auth,hour:h,tz:tz,updated_at:new Date().toISOString()};}
+function pushOn(h){if(PUSHBUSY)return;if(!pushOk()){toast(t(needHome()?'rem.ios':'rem.unsup'));return;}if(!SB||!ME){toast(t('rem.err'));return;}
+  PUSHBUSY=true;render();
+  Notification.requestPermission().then(function(perm){if(perm!=='granted')throw new Error('denied');return navigator.serviceWorker.ready;})
+  .then(function(reg){return reg.pushManager.getSubscription().then(function(old){return old||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(window.PULS_CONFIG.vapidPublic)});});})
+  .then(function(sub){return SB.from('push_subs').upsert(subRow(sub,h),{onConflict:'endpoint'}).then(function(r){if(r.error)throw r.error;});})
+  .then(function(){S.remind={on:1,h:h};S.remindAsk=1;save();PUSHBUSY=false;render();toast(t('rem.ok',{h:hh(h)}));})
+  .catch(function(e){PUSHBUSY=false;render();toast(t(String(e&&e.message)==='denied'?'rem.denied':'rem.err'));});}
+function pushOff(){if(PUSHBUSY)return;PUSHBUSY=true;
+  var done=function(){S.remind={on:0,h:remH()};save();PUSHBUSY=false;render();};
+  if(!pushOk()){done();return;}
+  navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription();}).then(function(sub){if(!sub)return;var ep=sub.endpoint;
+    return sub.unsubscribe().then(function(){if(SB&&ME)return SB.from('push_subs').delete().eq('endpoint',ep);});}).then(done,done);}
+function pushHour(h){if(!(S.remind&&S.remind.on)){S.remind={on:0,h:h};save();render();return;}
+  if(!pushOk()||!SB||!ME)return;
+  navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription();}).then(function(sub){if(!sub){pushOn(h);return;}
+    return SB.from('push_subs').upsert(subRow(sub,h),{onConflict:'endpoint'}).then(function(r){if(r.error)throw r.error;S.remind={on:1,h:h};save();render();toast(t('rem.ok',{h:hh(h)}));});}).catch(function(){toast(t('rem.err'));});}
+/* keep the server copy of this device's subscription fresh (new keys, new user on the same phone) */
+function pushSync(){if(!pushOk()||!SB||!ME||!(S.remind&&S.remind.on)||Notification.permission!=='granted')return;
+  navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription();}).then(function(sub){if(sub)SB.from('push_subs').upsert(subRow(sub,remH()),{onConflict:'endpoint'}).then(function(){},function(){});}).catch(function(){});}
+function remCard(){if(S.remindAsk||(S.remind&&S.remind.on)||!S.tourDone||TOUR>=0)return '';
+  if(!pushOk()&&!needHome())return '';if(window.Notification&&Notification.permission==='denied')return '';
+  return '<section class="card remcard"><div class="row" style="gap:12px;align-items:flex-start"><span class="rci" aria-hidden="true">🔔</span><div class="grow"><b>'+esc(t('rem.ask',{h:hh(remH())}))+'</b><p class="small muted" style="margin:4px 0 0">'+esc(needHome()?t('rem.ios'):t('rem.asksub'))+'</p></div></div>'+
+    '<div class="foot">'+(needHome()?'':'<button class="btn small" data-a="remon">'+esc(t('rem.on'))+'</button>')+'<button class="linkbtn" data-a="remlater">'+esc(t('rem.later'))+'</button></div></section>';}
+function remBlock(){var on=S.remind&&S.remind.on,h=remH(),opts='';for(var i=6;i<=22;i++)opts+='<option value="'+i+'"'+(i===h?' selected':'')+'>'+hh(i)+'</option>';
+  var st=!pushOk()?(needHome()?t('rem.ios'):t('rem.unsup')):(window.Notification&&Notification.permission==='denied'?t('rem.denied'):t('rem.p'));
+  var inst=INSTALL_EVT?'<button class="btn small ghost" data-a="install">📲 '+esc(t('app.install'))+'</button>':'';
+  return '<div class="remblk"><div class="small" style="margin-bottom:6px"><b>🔔 '+esc(t('rem.h'))+'</b></div><p class="small muted" style="margin:0 0 8px">'+esc(st)+'</p>'+
+    (pushOk()?'<div class="row" style="gap:8px;flex-wrap:wrap"><label class="small" for="remh">'+esc(t('rem.time'))+'</label><select id="remh" class="txt" style="width:auto" data-ch="remh">'+opts+'</select>'+
+      (on?'<button class="btn small ghost" data-a="remoff"'+(PUSHBUSY?' disabled':'')+'>'+esc(t('rem.off'))+'</button><span class="small" style="color:var(--ok)">✓ '+esc(t('rem.active'))+'</span>':'<button class="btn small" data-a="remon"'+(PUSHBUSY?' disabled':'')+'>'+esc(t('rem.on'))+'</button>')+'</div>':'')+
+    (inst?'<div style="margin-top:10px">'+inst+'<p class="small muted" style="margin:6px 0 0">'+esc(t('app.installp'))+'</p></div>':'')+'</div>';}
+
 /* first-visit tour */
 var TOURQ=false, TOUR=-1, TOURN=8, TOURI=['🌐','👋','📅','🏋️','📒','🏁','👤','🗣️'], TOURK=['','0','1','2','n','3','4','5'];
 var TOURT=[null,null,'.hero .todaygo','#tabs [data-v="practice"]','#tabs [data-v="notes"]','#tabs [data-v="top"]','#app .hdr .mebtn',null];
@@ -534,6 +580,10 @@ var A={
   tournext:function(){TOURQ=false;if(TOUR<TOURN-1){TOUR++;render();}else{TOUR=-1;S.tour=1;S.tourDone=1;save();render();toast(t('tour.done'));}},
   tourask:function(){TOURQ=true;render();},
   tourcont:function(){TOURQ=false;render();},
+  remon:function(){var el=document.getElementById('remh');pushOn(el?+el.value:remH());},
+  remoff:function(){pushOff();},
+  remlater:function(){S.remindAsk=1;save();render();},
+  install:function(){if(!INSTALL_EVT)return;var e=INSTALL_EVT;e.prompt();(e.userChoice||Promise.resolve()).then(function(){INSTALL_EVT=null;render();});},
   tourskip:function(){TOURQ=false;TOUR=-1;S.tour=1;save();render();},
   note:function(el){openNote(el.dataset.v);},
   ncat:function(el){NCAT=el.dataset.v;document.querySelectorAll('.ncats .chip').forEach(function(c){var on=c.dataset.v===NCAT;c.classList.toggle('on',on);c.setAttribute('aria-selected',on);});nFilter();},
@@ -553,7 +603,7 @@ var A={
   reset:function(el){if(!resetArmed){resetArmed=true;el.textContent=t('set.reset2');setTimeout(function(){resetArmed=false;},5000);return;}resetArmed=false;var n=S.name,l=S.lang;S=def();S.name=n;S.lang=l;save();render();toast(t('toast.reset'));}
 };
 document.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el||el.disabled)return;var f=A[el.dataset.a];if(f)f(el);});
-document.addEventListener('change',function(e){if(e.target.id==='upf'&&e.target.files&&e.target.files[0]){doUpload(e.target.files[0]);e.target.value='';return;}if(e.target.dataset&&e.target.dataset.ch==='lang'){setLang(e.target.value);render();}});
+document.addEventListener('change',function(e){if(e.target.id==='upf'&&e.target.files&&e.target.files[0]){doUpload(e.target.files[0]);e.target.value='';return;}if(e.target.dataset&&e.target.dataset.ch==='lang'){setLang(e.target.value);render();}if(e.target.dataset&&e.target.dataset.ch==='remh'){pushHour(+e.target.value);}});
 document.addEventListener('submit',function(e){if(e.target.id==='lf'){e.preventDefault();doLogin();}if(e.target.id==='af'){e.preventDefault();doAdd();}if(e.target.id==='pwf'){e.preventDefault();doPw();}});
 document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='fillin'){e.preventDefault();check();}});
 document.addEventListener('input',function(e){if(e.target.id==='nq'){NQ=e.target.value.trim();nFilter();return;}if(e.target.id==='fillin'&&T)T.val=e.target.value;if(e.target.dataset&&e.target.dataset.g&&T&&T.vals)T.vals[e.target.dataset.g]=e.target.value;});

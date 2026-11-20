@@ -6,7 +6,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <title>DTZ-Puls</title>
-<link rel="icon" href="data:,">
+<link rel="icon" href="img/app/favicon-64.png" type="image/png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/app/apple-touch-icon.png">
+<meta name="theme-color" content="#151515">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DTZ-Puls">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -338,6 +345,9 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 .todayc.done .eyebrow{font-size:22px}
 .examline{margin:0 0 12px;padding-bottom:10px;border-bottom:1px dashed var(--line);font-size:14px;color:var(--muted)}
 .examline b{color:var(--pulse);font-size:16px}
+.remcard{border:2px dashed var(--line)}
+.remcard .rci{font-size:26px;line-height:1}
+.remblk{padding-top:4px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -345,20 +355,20 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 <nav class="tabs" id="tabs"><div>
 <button data-a="tab" data-v="path">&nbsp;</button><button data-a="tab" data-v="practice">&nbsp;</button><button data-a="tab" data-v="notes">&nbsp;</button><button data-a="tab" data-v="top">&nbsp;</button><button data-a="tab" data-v="watch" id="watchtab" hidden>&nbsp;</button>
 </div></nav>
-<script src="config.js?v=40"></script>
+<script src="config.js?v=41"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=40"></script>
-<script src="i18n/uk.js?v=40"></script>
-<script src="i18n/en.js?v=40"></script>
-<script src="i18n/tr.js?v=40"></script>
-<script src="i18n/ar.js?v=40"></script>
-<script src="i18n/ur.js?v=40"></script>
-<script src="i18n/fa.js?v=40"></script>
-<script src="i18n/hr.js?v=40"></script>
-<script src="i18n/sr.js?v=40"></script>
-<script src="i18n/my.js?v=40"></script>
-<script src="i18n/es.js?v=40"></script>
-<script src="i18n/hi.js?v=40"></script>
-<script src="app.js?v=40"></script>
+<script src="i18n/ru.js?v=41"></script>
+<script src="i18n/uk.js?v=41"></script>
+<script src="i18n/en.js?v=41"></script>
+<script src="i18n/tr.js?v=41"></script>
+<script src="i18n/ar.js?v=41"></script>
+<script src="i18n/ur.js?v=41"></script>
+<script src="i18n/fa.js?v=41"></script>
+<script src="i18n/hr.js?v=41"></script>
+<script src="i18n/sr.js?v=41"></script>
+<script src="i18n/my.js?v=41"></script>
+<script src="i18n/es.js?v=41"></script>
+<script src="i18n/hi.js?v=41"></script>
+<script src="app.js?v=41"></script>
 </body>
 </html>

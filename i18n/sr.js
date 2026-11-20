@@ -26,5 +26,6 @@
 'w.now':"sada na mreži",'w.seen':"poslednji put na mreži: {t}",
 'tour.step':"Korak {n} od {m}",'tour.skipq':"Sigurno preskočiti? Uputstvo traje samo 30 sekundi.",'tour.cont':"Nastavi uputstvo",'tour.skipyes':"Ipak preskoči",'tour.done':"Uputstvo završeno!",'tour.card':"Prođi uputstvo — 30 sekundi",'tour.cardsub':"Pokazaćemo gde je šta.",'w.tour':"uputstvo prođeno",'w.notour':"uputstvo nije prođeno",
 'path.today':"Danas · dan {n}",'path.dur':"≈ {m} minuta",'path.donet':"Dan {n} gotov!",'prof.pulse':"Tvoj puls, poslednje 2 nedelje",
-'path.exam':"Do ispita (19.12): {n} dana"
+'path.exam':"Do ispita (19.12): {n} dana",
+'rem.h':"Podsetnici",'rem.p':"Jedno obaveštenje dnevno u izabrano vreme — samo ako danas još nije bilo učenja.",'rem.on':"Uključi",'rem.off':"Isključi",'rem.active':"uključeni",'rem.time':"Vreme",'rem.ok':"Podsetnici uključeni: svaki dan u {h}.",'rem.denied':"Obaveštenja su blokirana u pregledaču. Dozvoli ih u podešavanjima sajta (ikona katanca pored adrese).",'rem.unsup':"Ovaj pregledač ne podržava obaveštenja. Otvori sajt u Chrome-u ili instaliraj aplikaciju.",'rem.ios':"Na iPhone-u: dodirni Deli → Dodaj na početni ekran, otvori DTZ-Puls sa ikone i uključi podsetnike u Profilu.",'rem.ask':"Da te podsetimo na učenje u {h}?",'rem.asksub':"Jedno obaveštenje dnevno, samo ako lekcija još nije gotova. Vreme možeš promeniti u Profilu.",'rem.later':"Ne sada",'rem.err':"Podsetnici nisu uključeni. Pokušaj ponovo.",'app.install':"Instaliraj aplikaciju",'app.installp':"Ikona na početnom ekranu; otvara se bez pregledača."
 };
