@@ -195,7 +195,8 @@ function vPath(){var ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()
       '<div class="foot"><button class="btn big-cta" data-a="open" data-i="'+ni+'">'+esc(t('path.start',{n:ni+1}))+' →</button></div>'+rev;}
   else{body='<div class="eyebrow">✅</div><h2 class="daytitle">'+esc(t('path.donet',{n:Math.max(1,ni)}))+'</h2><p class="small" style="margin:0">'+esc(cap?t('path.cap',{n:ni+1}):t('path.did'))+'</p>'+pace+
       '<div class="foot">'+(cap?'<button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>':'<button class="btn ghost" data-a="open" data-i="'+ni+'">'+esc(t('path.more',{n:ni+1}))+'</button>')+'</div>'+rev;}
-  h+='<section class="card hero todayc'+(did&&ni>=0?' done':'')+'"><div class="todaygo">'+body+'</div></section>';
+  var exam='<p class="examline"><span aria-hidden="true">⏳</span> <b class="num">'+daysLeft()+'</b> '+esc(t('path.days'))+'</p>';
+  h+='<section class="card hero todayc'+(did&&ni>=0?' done':'')+'">'+exam+'<div class="todaygo">'+body+'</div></section>';
   WK.forEach(function(w,wi){var d=w.days.filter(function(x){return S.done[x.id];}).length;
     h+='<section class="week"><div><div class="eyebrow">'+esc(t('path.week',{n:wi+1}))+' · <span class="num">'+d+' / '+w.days.length+'</span></div><h2>'+esc(L(w.title))+'</h2>'+(w.sub?'<p class="small muted" style="margin:4px 0 0">'+esc(L(w.sub))+'</p>':'')+'</div><div class="days">'+w.days.map(dayRow).join('')+'</div></section>';});
   return h;}
