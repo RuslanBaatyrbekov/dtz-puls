@@ -189,6 +189,7 @@ function vPath(){var s=streak(),lv=level(),ni=nextIdx(),did=S.days[today()]!==un
   else if(cap){cta='<button class="btn" data-a="review">'+esc(t('btn.review'))+'</button><button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>';sub=t('path.cap',{n:ni+1});}
   else{cta='<button class="btn" data-a="open" data-i="'+ni+'">'+esc(did?t('path.more',{n:ni+1}):t('path.start',{n:ni+1}))+'</button>'+(doneCount()?'<button class="btn ghost" data-a="review">'+esc(t('btn.review'))+'</button>':'');sub=did?t('path.did'):t('path.todo',{title:L(ALL[ni].title)});}
   var pace=ni>=0&&(capToday()>2||behind())?'<p class="small" style="margin:0;color:var(--pulse)"><b>'+esc(t('path.pace',{n:capToday()}))+'</b></p>':'';
+  if(S.tour&&!S.tourDone&&TOUR<0)h+='<button class="tourcard" data-a="tour"><span class="tci" aria-hidden="true">🎓</span><span class="grow"><b>'+esc(t('tour.card'))+'</b><br><span class="small">'+esc(t('tour.cardsub',{n:TOURXP}))+'</span></span><span class="tcb">+'+TOURXP+' ★</span></button>';
   h+='<section class="card hero"><div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="eyebrow">'+esc(S.name?t('path.hi',{name:S.name}):t('path.hi0'))+'</div><div class="row" style="align-items:baseline;gap:8px"><span class="big num">'+daysLeft()+'</span><span class="small muted">'+esc(t('path.days'))+'</span></div></div><div class="small muted" style="text-align:end"><b class="num" style="color:var(--pulse);font-size:20px">'+s+'</b><br>'+esc(t('chip.streak'))+'</div></div>'+stripSvg()+
     '<div><div class="row small" style="justify-content:space-between"><span><b>'+esc(t('lvl.label',{n:lv.i+1}))+'</b> '+esc(lv.name)+'</span><span class="muted num">'+S.xp+(lv.to?' / '+lv.to:'')+' XP</span></div><div class="bar" style="margin-top:6px"><i style="width:'+pct+'%"></i></div></div>'+
     '<div class="todaygo"><p class="small" style="margin:0">'+esc(sub)+'</p>'+(ni>=0?'<p class="small muted" style="margin:0">'+esc(t('path.min'))+'</p>':'')+pace+'<div class="foot">'+cta+'</div></div></section>';
@@ -237,14 +238,24 @@ function loadWatch(){if(!SB||!OWNER||W.busy)return;W.busy=true;
   SB.from('progress').select('user_id,state,updated_at').then(function(r){W.busy=false;
     if(r.error){W.err=r.error.message||'error';}else{W.err='';W.at=Date.now();
       W.docs=(r.data||[]).filter(function(x){return x.user_id!==ME&&x.state;}).map(function(x){var o=fix(x.state);o._id=x.user_id;return o;});}
-    if(view==='watch')render();},function(){W.busy=false;W.err='offline';if(view==='watch')render();});}
+    if(view==='watch')renderKeep();},function(){W.busy=false;W.err='offline';if(view==='watch')render();});}
+/* re-render without losing what the observer is typing: open <details>, field values, focus */
+function renderKeep(){var app=$('#app');if(!app){render();return;}
+  var det=[].map.call(app.querySelectorAll('details'),function(d){return d.open;});
+  var vals={};app.querySelectorAll('input,select,textarea').forEach(function(f,i){var k=f.id||f.name||('#'+i);vals[k]=f.type==='checkbox'||f.type==='radio'?{c:f.checked}:{v:f.value};});
+  var ae=document.activeElement,fk=ae&&app.contains(ae)?(ae.id||ae.name):null,sel=null;try{if(fk&&ae.selectionStart!=null)sel=[ae.selectionStart,ae.selectionEnd];}catch(e){}
+  var y=window.scrollY;render();
+  [].forEach.call(app.querySelectorAll('details'),function(d,i){if(det[i]!=null)d.open=det[i];});
+  app.querySelectorAll('input,select,textarea').forEach(function(f,i){var k=f.id||f.name||('#'+i),o=vals[k];if(!o)return;if('c' in o)f.checked=o.c;else if(f.type!=='file')f.value=o.v;});
+  if(fk){var n=document.getElementById(fk)||app.querySelector('[name="'+fk+'"]');if(n){try{n.focus({preventScroll:true});if(sel)n.setSelectionRange(sel[0],sel[1]);}catch(e){}}}
+  window.scrollTo(0,y);}
 function startWatch(){if(!SB||!OWNER)return;if(!W.docs&&!W.busy)loadWatch();
-  if(!W.ch&&SB.channel){try{W.ch=SB.channel('progress-watch').on('postgres_changes',{event:'*',schema:'public',table:'progress'},function(){loadWatch();}).subscribe();}catch(e){W.ch=null;}}
+  if(!W.ch&&SB.channel){try{W.ch=SB.channel('progress-watch').on('postgres_changes',{event:'*',schema:'public',table:'progress'},function(){clearTimeout(W.deb);W.deb=setTimeout(loadWatch,4000);}).subscribe();}catch(e){W.ch=null;}}
   if(!W.poll)W.poll=setInterval(function(){if(view==='watch'&&!document.hidden)loadWatch();},60000);}
 function learnerRow(st){var name=st.name||st.email||'—',s=streak(st),dn=doneCount(st),td=st.days[today()]!==undefined,wk=0,tt=new Date();for(var i=0;i<7;i++)if(st.days[ds(addDays(tt,-i))]!==undefined)wk++;
   var miss={};Object.keys(st.missed||{}).forEach(function(k){var x=BANK[k];if(x)miss[x._s]=(miss[x._s]||0)+1;});
   return '<section class="card" style="display:flex;flex-direction:column;gap:8px"><div class="row" style="justify-content:space-between"><h2>'+(st.avatar?esc(st.avatar)+' ':'')+esc(name)+'</h2><span class="chip" style="'+(td?'border-color:var(--ok);color:var(--ok)':'')+'">'+esc(td?t('w.today'):t('w.notyet'))+'</span></div>'+
-    '<p class="small muted" style="margin:0">'+esc(t('w.last',{t:ago(st.t)}))+' · '+(st.lang?esc(st.lang.toUpperCase()):'')+'</p>'+stripSvg(st)+
+    '<p class="small muted" style="margin:0">'+esc(t('w.last',{t:ago(st.t)}))+' · '+(st.lang?esc(st.lang.toUpperCase()):'')+' · '+esc(st.tourDone?t('w.tour'):t('w.notour'))+'</p>'+stripSvg(st)+
     '<div class="stats"><div class="stat"><b class="num" style="color:var(--pulse)">'+s+'</b><span class="small muted">'+esc(t('chip.streak'))+'</span></div><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+wk+'/7</b><span class="small muted">'+esc(t('w.week'))+'</span></div></div>'+
     (Object.keys(miss).length?'<div class="row small">'+Object.keys(miss).map(function(k){return '<span class="tag">'+esc(t('sec.'+k))+': '+miss[k]+'</span>';}).join('')+'</div>':'')+'</section>';}
 function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only'))+'</div>';startWatch();
@@ -446,13 +457,15 @@ function closeNote(){stopSay();NOTE=null;view='notes';render();window.scrollTo(0
 window.addEventListener('popstate',function(){if(view==='note')closeNote();});
 
 /* first-visit tour */
-var TOUR=-1, TOURN=8, TOURI=['🌐','👋','📅','🏋️','📒','🏁','👤','🗣️'], TOURK=['','0','1','2','n','3','4','5'];
+var TOURQ=false, TOURXP=20, TOUR=-1, TOURN=8, TOURI=['🌐','👋','📅','🏋️','📒','🏁','👤','🗣️'], TOURK=['','0','1','2','n','3','4','5'];
 var TOURT=[null,null,'.hero .todaygo','#tabs [data-v="practice"]','#tabs [data-v="notes"]','#tabs [data-v="top"]','#app .hdr .mebtn',null];
 function vTour(){if(TOUR<0)return '';var last=TOUR===TOURN-1;
   var spot=TOURT[TOUR]&&document.querySelector(TOURT[TOUR]);
   return '<div class="tour'+(spot?' spot':'')+'" role="dialog" aria-modal="true" aria-labelledby="tourh">'+(spot?'<div class="hole"></div>':'')+'<div class="tourbox">'+(spot?'<span class="tarr"></span>':'')+'<div class="tourico" aria-hidden="true">'+TOURI[TOUR]+'</div>'+(TOUR===0?'<h2 id="tourh" style="font-size:17px">'+LANGHEAD+'</h2>'+langGrid():'<h2 id="tourh">'+esc(t('tour.h'+TOURK[TOUR]))+'</h2><p>'+esc(t('tour.p'+TOURK[TOUR]))+'</p>')+
     '<div class="tourdots">'+Array.from({length:TOURN},function(_,i){return '<i class="'+(i===TOUR?'on':'')+'"></i>';}).join('')+'</div>'+
-    '<div class="foot">'+(last?'':'<button class="btn ghost" data-a="tourskip">'+esc(t('tour.skip'))+'</button>')+'<button class="btn" data-a="tournext">'+esc(last?t('tour.go'):t('tour.next'))+'</button></div></div></div>';}
+    '<p class="tourrw">'+esc(t('tour.step',{n:TOUR+1,m:TOURN}))+' · <b>+'+TOURXP+' ★</b> '+esc(t('tour.reward'))+'</p>'+
+    (TOURQ?'<div class="tourq"><p>'+esc(t('tour.skipq',{n:TOURXP}))+'</p><div class="foot"><button class="btn" data-a="tourcont">'+esc(t('tour.cont'))+'</button><button class="linkbtn" data-a="tourskip">'+esc(t('tour.skipyes'))+'</button></div></div>':
+    '<div class="foot">'+(last||TOUR===0?'':'<button class="linkbtn" data-a="tourask">'+esc(t('tour.skip'))+'</button>')+'<button class="btn" data-a="tournext">'+esc(last?t('tour.go'):t('tour.next'))+'</button></div>')+'</div></div>';}
 /* place the highlight over the target and the tip next to it */
 function placeTour(){var box=document.querySelector('.tour.spot');if(!box)return;var el=document.querySelector(TOURT[TOUR]);if(!el)return;
   var r=el.getBoundingClientRect(),vh=window.innerHeight,vw=document.documentElement.clientWidth||window.innerWidth,pad=6,hole=box.querySelector('.hole'),tip=box.querySelector('.tourbox'),arr=box.querySelector('.tarr');
@@ -513,12 +526,14 @@ var A={
   topleave:function(){S.rank='0';save();TOP.rows=null;render();},
   topper:function(el){TOP.period=el.dataset.v;render();},
   'pick-lang':function(el){LANGCHOSEN=true;setLang(el.dataset.v);render();},
-  tournext:function(){if(TOUR<TOURN-1){TOUR++;render();}else{TOUR=-1;S.tour=1;save();render();}},
-  tourskip:function(){TOUR=-1;S.tour=1;save();render();},
+  tournext:function(){TOURQ=false;if(TOUR<TOURN-1){TOUR++;render();}else{TOUR=-1;S.tour=1;var first=!S.tourDone;S.tourDone=1;if(first)S.xp=(S.xp||0)+TOURXP;save();render();toast(first?t('tour.done',{n:TOURXP}):t('tour.go'));}},
+  tourask:function(){TOURQ=true;render();},
+  tourcont:function(){TOURQ=false;render();},
+  tourskip:function(){TOURQ=false;TOUR=-1;S.tour=1;save();render();},
   note:function(el){openNote(el.dataset.v);},
   ncat:function(el){NCAT=el.dataset.v;document.querySelectorAll('.ncats .chip').forEach(function(c){var on=c.dataset.v===NCAT;c.classList.toggle('on',on);c.setAttribute('aria-selected',on);});nFilter();},
   nback:function(){try{if(history.state&&history.state.dtzNote){history.back();return;}}catch(e){}closeNote();},
-  tour:function(){TOUR=0;view='path';try{location.hash='path';}catch(e){}render();},
+  tour:function(){TOURQ=false;TOUR=LANGCHOSEN?1:0;view='path';try{location.hash='path';}catch(e){}render();},
   wsort:function(el){W.sort=el.dataset.v;render();},
   wopen:function(el){W.open=W.open||{};W.open[el.dataset.v]=!W.open[el.dataset.v];render();},
   theme:function(el){S.theme=el.dataset.v;applyTheme(S.theme);save();render();},
