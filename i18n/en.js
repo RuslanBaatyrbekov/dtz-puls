@@ -28,5 +28,6 @@
 'path.today':"Today · day {n}",'path.dur':"≈ {m} minutes",'path.donet':"Day {n} done!",'prof.pulse':"Your pulse, last 2 weeks",
 'path.exam':"Until the exam (19.12): {n} days",
 'rem.h':"Reminders",'rem.p':"One notification a day at the time you choose — only if you have not studied yet today.",'rem.on':"Turn on",'rem.off':"Turn off",'rem.active':"on",'rem.time':"Time",'rem.ok':"Reminders on: every day at {h}.",'rem.denied':"Notifications are blocked in your browser. Allow them in the site settings (lock icon next to the address).",'rem.unsup':"This browser does not support notifications. Open the site in Chrome or install the app.",'rem.ios':"On iPhone: tap Share → Add to Home Screen, open DTZ-Puls from the icon and turn on reminders in your Profile.",'rem.ask':"Remind you to study at {h}?",'rem.asksub':"One notification a day, only if today’s lesson is not done yet. You can change the time in your Profile.",'rem.later':"Not now",'rem.err':"Could not turn on reminders. Please try again.",'app.install':"Install the app",'app.installp':"An icon on your home screen; opens without the browser.",
-'w.prac':"Practice",'w.notes':"Notes",'w.miss':"Mistakes",'w.nothing':"none yet"
+'w.prac':"Practice",'w.notes':"Notes",'w.miss':"Mistakes",'w.nothing':"none yet",
+'up.read':"Reading file…",'up.check':"Checking the course…",'up.send':"Sending to the server…",'up.done':"Course uploaded ✓",'up.days':"lessons",'up.tasks':"tasks",'up.notes':"notes",'up.diff':"Tasks before: {a} → now: {b}",'up.saved':"Saved on the server: {t}"
 };

@@ -28,5 +28,6 @@
 'path.today':"Danas · dan {n}",'path.dur':"≈ {m} minuta",'path.donet':"Dan {n} gotov!",'prof.pulse':"Tvoj puls, zadnja 2 tjedna",
 'path.exam':"Do ispita (19.12): {n} dana",
 'rem.h':"Podsjetnici",'rem.p':"Jedna obavijest dnevno u odabrano vrijeme — samo ako danas još nije bilo učenja.",'rem.on':"Uključi",'rem.off':"Isključi",'rem.active':"uključeni",'rem.time':"Vrijeme",'rem.ok':"Podsjetnici uključeni: svaki dan u {h}.",'rem.denied':"Obavijesti su blokirane u pregledniku. Dopusti ih u postavkama stranice (ikona lokota pored adrese).",'rem.unsup':"Ovaj preglednik ne podržava obavijesti. Otvori stranicu u Chromeu ili instaliraj aplikaciju.",'rem.ios':"Na iPhoneu: dodirni Dijeli → Dodaj na početni zaslon, otvori DTZ-Puls s ikone i uključi podsjetnike u Profilu.",'rem.ask':"Podsjetiti te na učenje u {h}?",'rem.asksub':"Jedna obavijest dnevno, samo ako lekcija još nije gotova. Vrijeme možeš promijeniti u Profilu.",'rem.later':"Ne sada",'rem.err':"Podsjetnici se nisu uključili. Pokušaj ponovno.",'app.install':"Instaliraj aplikaciju",'app.installp':"Ikona na početnom zaslonu; otvara se bez preglednika.",
-'w.prac':"Vježbe",'w.notes':"Podsjetnici",'w.miss':"Pogreške",'w.nothing':"još ništa"
+'w.prac':"Vježbe",'w.notes':"Podsjetnici",'w.miss':"Pogreške",'w.nothing':"još ništa",
+'up.read':"Čitam datoteku…",'up.check':"Provjeravam tečaj…",'up.send':"Šaljem na poslužitelj…",'up.done':"Tečaj je učitan ✓",'up.days':"lekcija",'up.tasks':"zadataka",'up.notes':"podsjetnika",'up.diff':"Prije zadataka: {a} → sada: {b}",'up.saved':"Spremljeno na poslužitelju: {t}"
 };
