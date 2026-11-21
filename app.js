@@ -47,7 +47,7 @@ function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(M
 function daysLeft(){var e=new Date((C.exam||'2026-12-19')+'T00:00:00'),n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.round((e-n)/864e5));}
 function def(){return {name:'',lang:'',xp:0,done:{},days:{},frozen:{},freezes:0,missed:{},seen:{},prac:{},newDay:'',newN:0,best:0,perfect:0,reviews:0,t:0};}
 function fix(o){var d=def();o=o&&typeof o==='object'?JSON.parse(JSON.stringify(o)):{};var r=Object.assign(d,o);
-  ['done','days','frozen','missed','seen','prac'].forEach(function(k){if(!r[k]||typeof r[k]!=='object'||Array.isArray(r[k]))r[k]={};});
+  ['done','days','frozen','missed','seen','prac','nt'].forEach(function(k){if(!r[k]||typeof r[k]!=='object'||Array.isArray(r[k]))r[k]={};});
   r.xp=+r.xp||0;return r;}
 
 /* ---------- state + sync (same model as Pulse: last write wins on client timestamp) ---------- */
@@ -263,7 +263,10 @@ function learnerRow(st){var name=st.name||st.email||'—',s=streak(st),dn=doneCo
   return '<section class="card" style="display:flex;flex-direction:column;gap:8px"><div class="row" style="justify-content:space-between"><h2>'+(st.avatar?esc(st.avatar)+' ':'')+esc(name)+'</h2><span class="chip" style="'+(td?'border-color:var(--ok);color:var(--ok)':'')+'">'+esc(td?t('w.today'):t('w.notyet'))+'</span></div>'+
     '<p class="small muted" style="margin:0">'+esc(t('w.last',{t:ago(st.t)}))+' · '+(st.lang?esc(st.lang.toUpperCase()):'')+' · '+esc(st.tourDone?t('w.tour'):t('w.notour'))+'</p>'+stripSvg(st)+
     '<div class="stats"><div class="stat"><b class="num" style="color:var(--pulse)">'+s+'</b><span class="small muted">'+esc(t('chip.streak'))+'</span></div><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+wk+'/7</b><span class="small muted">'+esc(t('w.week'))+'</span></div></div>'+
-    (Object.keys(miss).length?'<div class="row small">'+Object.keys(miss).map(function(k){return '<span class="tag">'+esc(t('sec.'+k))+': '+miss[k]+'</span>';}).join('')+'</div>':'')+'</section>';}
+    wTags(t('w.prac'),Object.keys(st.prac||{}).sort(function(a,b){return st.prac[b]-st.prac[a];}).map(function(k){return [t('sec.'+k),st.prac[k]];}))+
+    wTags(t('w.notes'),Object.keys(st.nt||{}).sort(function(a,b){return st.nt[b]-st.nt[a];}).map(function(k){var n=notes().filter(function(x){return x.id===k;})[0];return [n?n.de:k,st.nt[k]];}))+
+    wTags(t('w.miss'),Object.keys(miss).map(function(k){return [t('sec.'+k),miss[k]];}))+'</section>';}
+function wTags(label,items){return '<div class="small wtags"><b>'+esc(label)+':</b> '+(items.length?items.map(function(x){return '<span class="tag">'+esc(x[0])+' · '+x[1]+'</span>';}).join(' '):'<span class="muted">'+esc(t('w.nothing'))+'</span>')+'</div>';}
 function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only'))+'</div>';startWatch();
   var h=header()+'<section><div class="eyebrow">'+esc(t('tab.watch'))+'</div><h1>'+esc(t('w.h'))+'</h1>'+(W.at?'<p class="small muted" style="margin:6px 0 0">'+esc(t('w.at',{t:ago(W.at)}))+'</p>':'')+'<p class="small muted wleg" style="margin:6px 0 0"><span class="wst on"></span> '+esc(t('w.online'))+' · <span class="wtd">'+esc(t('w.today'))+'</span></p></section>'+vAdd()+vUpload();
   if(W.err)return h+'<div class="card">'+esc(t('w.err'))+'</div>';
@@ -460,7 +463,7 @@ function vNote(){var n=notes().filter(function(x){return x.id===NOTE;})[0];if(!n
     else h+='<ul class="nlst">'+(b.l||[]).map(function(x){return '<li>'+md(x)+'</li>';}).join('')+'</ul>';
     h+='</section>';});
   return h;}
-function openNote(id){stopSay();if(view!=='note'){try{history.pushState({dtzNote:1},'');}catch(e){}}NOTE=id;view='note';render();window.scrollTo(0,0);}
+function openNote(id){stopSay();S.nt=S.nt||{};S.nt[id]=(S.nt[id]||0)+1;save();if(view!=='note'){try{history.pushState({dtzNote:1},'');}catch(e){}}NOTE=id;view='note';render();window.scrollTo(0,0);}
 function closeNote(){stopSay();NOTE=null;view='notes';render();window.scrollTo(0,0);}
 window.addEventListener('popstate',function(){if(view==='note')closeNote();});
 
