@@ -45,9 +45,9 @@ function today(){return ds(new Date());}
 function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x;}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var q=a[i];a[i]=a[j];a[j]=q;}return a;}
 function daysLeft(){var e=new Date((C.exam||'2026-12-19')+'T00:00:00'),n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.round((e-n)/864e5));}
-function def(){return {name:'',lang:'',xp:0,done:{},days:{},frozen:{},freezes:0,missed:{},seen:{},prac:{},newDay:'',newN:0,best:0,perfect:0,reviews:0,t:0};}
+function def(){return {name:'',lang:'',xp:0,done:{},days:{},frozen:{},freezes:0,missed:{},seen:{},prac:{},cards:{},newDay:'',newN:0,best:0,perfect:0,reviews:0,t:0};}
 function fix(o){var d=def();o=o&&typeof o==='object'?JSON.parse(JSON.stringify(o)):{};var r=Object.assign(d,o);
-  ['done','days','frozen','missed','seen','prac','nt'].forEach(function(k){if(!r[k]||typeof r[k]!=='object'||Array.isArray(r[k]))r[k]={};});
+  ['done','days','frozen','missed','seen','prac','nt','cards'].forEach(function(k){if(!r[k]||typeof r[k]!=='object'||Array.isArray(r[k]))r[k]={};});
   r.xp=+r.xp||0;return r;}
 
 /* ---------- state + sync (same model as Pulse: last write wins on client timestamp) ---------- */
@@ -148,7 +148,7 @@ function say(el,text,rate){if(sayEl===el){stopSay();return false;}stopSay();sayS
   catch(e){toast(t('toast.nospeech'));return false;}}
 
 /* ---------- routing ---------- */
-var VIEWS=['path','practice','notes','top','progress','watch'], view='path', R=null, T=null, RES=null, toastT=null, BACK='path';
+var VIEWS=['path','practice','cards','notes','top','progress','watch'], view='path', R=null, T=null, RES=null, toastT=null, BACK='path';
 function fromHash(){var h=(location.hash||'').slice(1);return VIEWS.indexOf(h)>=0?h:'path';}
 window.addEventListener('hashchange',function(){if(view==='run'||view==='result')return;stopSay();view=fromHash();render();});
 function toast(m){var o=$('.toast');if(o)o.remove();var d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=m;document.body.appendChild(d);clearTimeout(toastT);toastT=setTimeout(function(){d.remove();},3600);}
@@ -196,8 +196,10 @@ function vPath(){var ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()
   else{body='<div class="eyebrow">✅</div><h2 class="daytitle">'+esc(t('path.donet',{n:Math.max(1,ni)}))+'</h2><p class="small" style="margin:0">'+esc(cap?t('path.cap',{n:ni+1}):t('path.did'))+'</p>'+pace+
       '<div class="foot">'+(cap?'<button class="btn ghost" data-a="tab" data-v="practice">'+esc(t('tab.practice'))+'</button>':'<button class="btn ghost" data-a="open" data-i="'+ni+'">'+esc(t('path.more',{n:ni+1}))+'</button>')+'</div>'+rev;}
   var exam='<p class="examline"><span aria-hidden="true">⏳</span> '+esc(t('path.exam',{n:'\u0001'})).replace('\u0001','<b class="num">'+daysLeft()+'</b>')+'</p>';
+  if(cards().length&&S.tour&&S.tourDone&&TOUR<0&&!(S.news&&S.news.cards))h+='<section class="card news"><div class="eyebrow">🆕 '+esc(t('news.cards.h'))+'</div><p class="small" style="margin:6px 0 10px">'+esc(t('news.cards.p'))+'</p><div class="row"><button class="btn small" data-a="newsopen">🃏 '+esc(t('news.open'))+'</button><button class="btn small ghost" data-a="newsx">'+esc(t('news.close'))+'</button></div></section>';
   h+=remCard();
-  h+='<section class="card hero todayc'+(did&&ni>=0?' done':'')+'">'+exam+'<div class="todaygo">'+body+'</div></section>';
+  var cn=cards().length?cToday():0,cline=cn?'<button class="cline" data-a="cards"><span aria-hidden="true">🃏</span><span>'+esc(t('cards.today',{n:'\u0001'})).replace('\u0001','<b class="num">'+cn+'</b>')+'</span><span aria-hidden="true" class="muted">›</span></button>':'';
+  h+='<section class="card hero todayc'+(did&&ni>=0?' done':'')+'">'+exam+'<div class="todaygo">'+body+'</div></section>'+cline;
   WK.forEach(function(w,wi){var d=w.days.filter(function(x){return S.done[x.id];}).length;
     h+='<section class="week"><div><div class="eyebrow">'+esc(t('path.week',{n:wi+1}))+' · <span class="num">'+d+' / '+w.days.length+'</span></div><h2>'+esc(L(w.title))+'</h2>'+(w.sub?'<p class="small muted" style="margin:4px 0 0">'+esc(L(w.sub))+'</p>':'')+'</div><div class="days">'+w.days.map(dayRow).join('')+'</div></section>';});
   return h;}
@@ -206,6 +208,7 @@ function vPath(){var ni=nextIdx(),did=S.days[today()]!==undefined,cap=newToday()
 function secStats(sec){var a=(C.bank[sec]||[]),seen=0,miss=0;a.forEach(function(x){if(S.seen[x._k])seen++;if(S.missed[x._k])miss++;});return {n:a.length,seen:seen,miss:miss};}
 var SEC_ICON={kasus:'der·den·dem',satz:'weil … ist',hoeren:'♪',lesen:'¶',wort:'A↔Б',sprechen:'„…“',schreiben:'✎'};
 function vPractice(){var h=header()+'<section><div class="eyebrow">'+esc(t('tab.practice'))+'</div><h1>'+esc(t('prac.h'))+'</h1><p class="small muted" style="margin:6px 0 0;max-width:60ch">'+esc(t('prac.p'))+'</p></section><div class="secs">';
+  if(cards().length){var cn=cToday();h+='<button class="sec" data-a="cards"><span class="ico" aria-hidden="true" style="font-size:24px">🃏</span><span class="grow"><span class="tt">'+esc(t('sec.cards'))+'</span><br><span class="st">'+esc(t('sec.cards.d'))+'</span></span><span class="num small muted" style="text-align:end">'+cLearned()+'/'+cards().length+(cn?'<br><span style="color:var(--pulse);white-space:nowrap">'+esc(t('cards.left',{n:cn}))+'</span>':'')+'</span></button>';}
   SECTIONS.forEach(function(sec){var st=secStats(sec);if(!st.n)return;
     h+='<button class="sec" data-a="prac" data-v="'+sec+'"><span class="ico" lang="de" dir="ltr">'+esc(SEC_ICON[sec])+'</span><span class="grow"><span class="tt">'+esc(t('sec.'+sec))+'</span><br><span class="st">'+esc(t('sec.'+sec+'.d'))+'</span></span><span class="num small muted" style="text-align:end">'+st.seen+'/'+st.n+(st.miss?'<br><span style="color:var(--bad)">'+esc(t('prac.miss',{n:st.miss}))+'</span>':'')+'</span></button>';});
   h+='</div><section class="card"><h3>'+esc(t('prac.mock.h'))+'</h3><p class="small" style="margin:6px 0 10px">'+esc(t('prac.mock.p'))+'</p><div class="row"><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/PDF/DTZ_UEbungssatz_1_Erwachsene.pdf" target="_blank" rel="noopener">Übungssatz 1 PDF</a><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/Audio/gast_Deutsch-Test_fuer_Zuwanderer_UEbungssatz_1.mp3" target="_blank" rel="noopener">MP3 1</a><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/PDF/DTZ_UEbungssatz_2_Erwachsene.pdf" target="_blank" rel="noopener">Übungssatz 2 PDF</a><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/Audio/gast_Deutsch-Test_fuer_Zuwanderer_UEbungssatz_2.mp3" target="_blank" rel="noopener">MP3 2</a></div></section>';
@@ -265,6 +268,7 @@ function learnerRow(st){var name=st.name||st.email||'—',s=streak(st),dn=doneCo
     '<div class="stats"><div class="stat"><b class="num" style="color:var(--pulse)">'+s+'</b><span class="small muted">'+esc(t('chip.streak'))+'</span></div><div class="stat"><b class="num">'+dn+' / '+TOTAL+'</b><span class="small muted">'+esc(t('prog.days'))+'</span></div><div class="stat"><b class="num">'+wk+'/7</b><span class="small muted">'+esc(t('w.week'))+'</span></div></div>'+
     wTags(t('w.prac'),Object.keys(st.prac||{}).sort(function(a,b){return st.prac[b]-st.prac[a];}).map(function(k){return [t('sec.'+k),st.prac[k]];}))+
     wTags(t('w.notes'),Object.keys(st.nt||{}).sort(function(a,b){return st.nt[b]-st.nt[a];}).map(function(k){var n=notes().filter(function(x){return x.id===k;})[0];return [n?n.de:k,st.nt[k]];}))+
+    '<div class="small wtags"><b>'+esc(t('w.cards'))+':</b> '+(Object.keys(st.cards||{}).length?'<span class="tag">'+esc(t('w.cardsv',{a:cLearned(st),b:Object.keys(st.cards).length}))+'</span>':'<span class="muted">'+esc(t('w.nothing'))+'</span>')+'</div>'+
     wTags(t('w.miss'),Object.keys(miss).map(function(k){return [t('sec.'+k),miss[k]];}))+'</section>';}
 function wTags(label,items){return '<div class="small wtags"><b>'+esc(label)+':</b> '+(items.length?items.map(function(x){return '<span class="tag">'+esc(x[0])+' · '+x[1]+'</span>';}).join(' '):'<span class="muted">'+esc(t('w.nothing'))+'</span>')+'</div>';}
 function vWatch(){if(!OWNER)return header()+'<div class="card">'+esc(t('w.only'))+'</div>';startWatch();
@@ -307,7 +311,7 @@ function doPw(){var a=$('#pw1').value,b=$('#pw2').value;if(a.length<8)return toa
 /* upload a new course version (observer only; RLS policy "course: observers update") */
 var UP={st:'',pct:0,res:null,err:'',open:false};
 function cStats(c){var b=c&&c.bank||{},per={},n=0;Object.keys(b).forEach(function(k){per[k]=(b[k]||[]).length;n+=per[k];});
-  var d=0;(c&&c.weeks||[]).forEach(function(w){d+=(w.days||[]).length;});return {days:d,tasks:n,per:per,notes:(c&&c.notes||[]).length};}
+  var d=0;(c&&c.weeks||[]).forEach(function(w){d+=(w.days||[]).length;});return {days:d,tasks:n,per:per,notes:(c&&c.notes||[]).length,cards:(c&&c.cards||[]).length};}
 function vUpload(){var h='<details class="card upl"'+(UP.open||UP.st?' open':'')+'><summary>'+esc(t('up.h'))+'</summary><p class="small muted">'+esc(t('up.p'))+'</p>';
   var busy=UP.st&&UP.st!=='done'&&UP.st!=='err';
   h+='<label class="btn small ghost'+(busy?' disabled':'')+'" style="display:inline-flex;align-items:center;cursor:pointer">'+esc(t('up.btn'))+'<input type="file" id="upf" accept=".json,application/json" hidden'+(busy?' disabled':'')+'></label>';
@@ -315,7 +319,7 @@ function vUpload(){var h='<details class="card upl"'+(UP.open||UP.st?' open':'')
     '<p class="small" style="margin:6px 0 0">'+(UP.st==='err'?'<b style="color:var(--pulse)">'+esc(UP.err)+'</b>':UP.st==='done'?'<b style="color:var(--ok)">'+esc(t('up.done'))+'</b>':esc(t('up.'+UP.st))+' '+UP.pct+'%')+'</p>';}
   if(UP.st==='done'&&UP.res){var r=UP.res,a=r.after,bf=r.before;
     h+='<div class="upres"><div class="stats"><div class="stat"><b class="num">'+a.days+'</b><span class="small muted">'+esc(t('up.days'))+'</span></div><div class="stat"><b class="num">'+a.tasks+'</b><span class="small muted">'+esc(t('up.tasks'))+'</span></div><div class="stat"><b class="num">'+a.notes+'</b><span class="small muted">'+esc(t('up.notes'))+'</span></div></div>'+
-      '<div class="small wtags">'+Object.keys(a.per).map(function(k){var dd=bf?a.per[k]-(bf.per[k]||0):0;return '<span class="tag">'+esc(t('sec.'+k))+' · '+a.per[k]+(dd?' <b style="color:'+(dd>0?'var(--ok)':'var(--pulse)')+'">'+(dd>0?'+':'')+dd+'</b>':'')+'</span>';}).join(' ')+'</div>'+
+      '<div class="small wtags">'+Object.keys(a.per).map(function(k){var dd=bf?a.per[k]-(bf.per[k]||0):0;return '<span class="tag">'+esc(t('sec.'+k))+' · '+a.per[k]+(dd?' <b style="color:'+(dd>0?'var(--ok)':'var(--pulse)')+'">'+(dd>0?'+':'')+dd+'</b>':'')+'</span>';}).join(' ')+(a.cards?' <span class="tag">'+esc(t('sec.cards'))+' · '+a.cards+'</span>':'')+'</div>'+
       (bf?'<p class="small muted" style="margin:6px 0 0">'+esc(t('up.diff',{a:bf.tasks,b:a.tasks}))+'</p>':'')+
       (r.at?'<p class="small muted" style="margin:2px 0 0">'+esc(t('up.saved',{t:new Date(r.at).toLocaleString()}))+'</p>':'')+'</div>';}
   return h+'</details>';}
@@ -491,6 +495,51 @@ function openNote(id){stopSay();S.nt=S.nt||{};S.nt[id]=(S.nt[id]||0)+1;save();if
 function closeNote(){stopSay();NOTE=null;view='notes';render();window.scrollTo(0,0);}
 window.addEventListener('popstate',function(){if(view==='note')closeNote();});
 
+/* word cards: Leitner boxes 1..5, intervals in days; ~10 new a day */
+var CI=[0,1,3,7,14,30], CS=null, CMAP=null, CMAPC=null;
+function cards(){return C.cards||[];}
+function cDecks(){return C.cardDecks||[];}
+function cardBy(id){if(CMAPC!==C.cards){CMAP={};cards().forEach(function(c){CMAP[c.id]=c;});CMAPC=C.cards;}return CMAP[id];}
+function cdeck(){var d=S.cdeck||'all';return d==='all'||cDecks().some(function(x){return x.id===d;})?d:'all';}
+function cPool(){var d=cdeck();return cards().filter(function(c){return d==='all'||c.d===d;});}
+function cNew(){var td=today();if(!S.cnew||S.cnew.d!==td)S.cnew={d:td,n:0,x:0};return S.cnew;}
+function cNewLeft(){var n=S.cnew&&S.cnew.d===today()?S.cnew:{n:0,x:0};return Math.max(0,10+(n.x||0)-(n.n||0));}
+function cQueue(){var td=today(),due=[],nw=[],k=cNewLeft();cPool().forEach(function(c){var s=S.cards[c.id];if(s){if(s[1]<=td)due.push(c.id);}else if(nw.length<k)nw.push(c.id);});return {due:due,nw:nw};}
+function cLearned(st){st=st||S;var n=0;Object.keys(st.cards||{}).forEach(function(k){if(st.cards[k][0]>=3)n++;});return n;}
+function cToday(){var q=cQueue();return q.due.length+q.nw.length;}
+function cStart(){var q=cQueue();CS={q:shuffle(q.due).concat(q.nw),pos:0,flip:false,n:0,again:{}};render();window.scrollTo(0,0);}
+function cGrade(g){if(!CS||!CS.flip)return;var id=CS.q[CS.pos],s=S.cards[id],td=today(),b=s?s[0]:0;stopSay();
+  if(!s)cNew().n++;
+  if(g===0){b=1;S.cards[id]=[b,td];if(!CS.again[id]){CS.again[id]=1;CS.q.push(id);}}
+  else if(g===1){b=Math.max(1,b);S.cards[id]=[b,ds(addDays(new Date(),1))];}
+  else{b=Math.min(5,b+1);S.cards[id]=[b,ds(addDays(new Date(),CI[b]))];S.xp+=1;}
+  CS.n++;S.cn=(S.cn||0)+1;save();CS.pos++;CS.flip=false;render();}
+function cWord(de){var m=de.match(/^(der|die|das) (.*)$/);if(!m)return esc(de);var i=m[2].indexOf(','),w=i<0?m[2]:m[2].slice(0,i),r=i<0?'':m[2].slice(i);
+  return '<span class="art a-'+m[1]+'">'+m[1]+'</span> '+esc(w)+(r?'<span class="pl">'+esc(r)+'</span>':'');}
+function cCard(){var c=cardBy(CS.q[CS.pos]);if(!c){CS.pos++;return vCards();}
+  var h='<div class="row small muted cbar"><span class="num">'+esc(t('cards.left',{n:CS.q.length-CS.pos}))+'</span><button class="linkbtn" data-a="cstop">'+esc(t('cards.stop'))+'</button></div>';
+  h+='<section class="card fcard'+(CS.flip?' flip':'')+'"><button class="fcw" data-a="cflip" lang="de" dir="ltr">'+cWord(c.de)+'</button>'+
+    '<div class="row" style="justify-content:center"><button class="btn small ghost say" data-a="say" data-txt="'+esc(c.say||c.de)+'" aria-label="'+esc(t('btn.listen'))+'">🔊</button></div>';
+  if(CS.flip){h+='<div class="fcb"><div class="fct" dir="auto">'+esc(L(c.t))+'</div>'+
+      (c.ex?'<div class="fcex"><div class="eyebrow">'+esc(t('cards.ex'))+'</div><button class="nline" data-a="say" data-txt="'+esc(c.ex)+'" lang="de" dir="ltr"><span class="nplay" aria-hidden="true">▶</span><span>'+esc(c.ex)+'</span></button>'+(LANG==='ru'&&c.exr?'<p class="small muted" style="margin:4px 0 0">'+esc(c.exr)+'</p>':'')+'</div>':'')+'</div>';}
+  h+='</section>';
+  h+=CS.flip?'<div class="cgr"><button class="btn cg0" data-a="cgrade" data-v="0">'+esc(t('cards.no'))+'</button><button class="btn cg1" data-a="cgrade" data-v="1">'+esc(t('cards.hard'))+'</button><button class="btn cg2" data-a="cgrade" data-v="2">'+esc(t('cards.yes'))+'</button></div>'
+    :'<div class="foot"><button class="btn big-cta" data-a="cflip">'+esc(t('cards.flip'))+'</button></div>';
+  return h;}
+function vCards(){var h=header()+'<button class="btn small ghost nback" data-a="cback">← '+esc(t('tab.practice'))+'</button>';
+  if(!cards().length)return h+'<section class="card"><p class="small" style="margin:0">'+esc(t('notes.none'))+'</p></section>';
+  if(CS&&CS.pos<CS.q.length)return h+cCard();
+  var q=cQueue(),pool=cPool(),n=q.due.length+q.nw.length,lr=0,stt=0;pool.forEach(function(c){var x=S.cards[c.id];if(x){stt++;if(x[0]>=3)lr++;}});
+  h+='<section><div class="eyebrow">🃏 '+esc(t('tab.practice'))+'</div><h1>'+esc(t('cards.h'))+'</h1><p class="small muted" style="margin:6px 0 0;max-width:60ch">'+esc(t('cards.p'))+'</p></section>';
+  h+='<section class="card hero cstart">'+(CS&&CS.n?'<p class="small" style="margin:0;color:var(--ok)"><b>✓ '+esc(t('cards.res',{n:CS.n}))+'</b></p>':'')+
+    '<div class="stats"><div class="stat"><b class="num">'+q.due.length+'</b><span class="small muted">'+esc(t('cards.due',{n:''}).split(/[:：]/)[0])+'</span></div><div class="stat"><b class="num">'+q.nw.length+'</b><span class="small muted">'+esc(t('cards.new',{n:''}).split(/[:：]/)[0])+'</span></div><div class="stat"><b class="num">'+lr+'</b><span class="small muted">'+esc(t('cards.learned',{a:'',b:''}).split(/[:：]/)[0])+'</span></div></div>'+
+    '<div class="bar acc"><i style="width:'+(pool.length?Math.round(stt/pool.length*100):0)+'%"></i></div>'+
+    (n?'<div class="foot"><button class="btn big-cta" data-a="cstart">'+esc(t('cards.start',{n:n}))+' →</button></div>'
+      :'<p class="small" style="margin:0">'+esc(t('cards.done'))+'</p><div class="foot"><button class="btn ghost" data-a="cmore">+ '+esc(t('cards.more'))+'</button></div>')+'</section>';
+  var d=cdeck();
+  h+='<div class="ncats cdecks">'+[['all',t('cards.all'),cards().length]].concat(cDecks().map(function(x){return [x.id,L(x.t).replace('Linie 1 B1 · ',''),x.n];})).map(function(x){return '<button class="chip'+(d===x[0]?' on':'')+'" aria-pressed="'+(d===x[0])+'" data-a="cdeck" data-v="'+esc(x[0])+'"'+(/^l\d/.test(x[0])?' lang="de" dir="ltr"':'')+'>'+esc(x[1])+' <span class="muted num">'+x[2]+'</span></button>';}).join('')+'</div>';
+  return h;}
+
 /* app install + daily reminders (Web Push) */
 var INSTALL_EVT=null, PUSHBUSY=false;
 var IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
@@ -561,9 +610,9 @@ function maybeTour(){if(!S.tour&&TOUR<0&&ALL.length&&VIEWS.indexOf(view)>=0&&vie
 
 /* ---------- render + events ---------- */
 function render(){maybeTour();var a=$('#app'),tabs=$('#tabs'),inRun=view==='run'||view==='result'||view==='login'||view==='boot'||view==='nocourse';tabs.hidden=inRun;tabs.style.display=inRun?'none':'';
-  a.innerHTML=view==='nocourse'?vNoCourse():view==='login'?vLogin():view==='boot'?vBoot():view==='run'?vRun():view==='result'?vResult():view==='practice'?vPractice():view==='notes'?vNotes():view==='note'?vNote():view==='top'?vTop():view==='progress'?vProg():view==='watch'?vWatch():vPath();
+  a.innerHTML=view==='nocourse'?vNoCourse():view==='login'?vLogin():view==='boot'?vBoot():view==='run'?vRun():view==='result'?vResult():view==='practice'?vPractice():view==='cards'?vCards():view==='notes'?vNotes():view==='note'?vNote():view==='top'?vTop():view==='progress'?vProg():view==='watch'?vWatch():vPath();
   tabs.classList.add('ready');
-  tabs.querySelectorAll('button').forEach(function(b){b.textContent=t('tab.'+b.dataset.v);if(b.dataset.v===view||(view==='note'&&b.dataset.v==='notes'))b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  tabs.querySelectorAll('button').forEach(function(b){b.textContent=t('tab.'+b.dataset.v);if(b.dataset.v===view||(view==='note'&&b.dataset.v==='notes')||(view==='cards'&&b.dataset.v==='practice'))b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   var wt=$('#watchtab');if(wt)wt.hidden=!OWNER;
   document.title='DTZ-Puls';
   var old=document.querySelector('.tour');if(old)old.remove();if(TOUR>=0){var tg=TOURT[TOUR]&&document.querySelector(TOURT[TOUR]);if(tg&&tg.closest('#app'))window.scrollBy(0,tg.getBoundingClientRect().top-80);document.body.insertAdjacentHTML('beforeend',vTour());placeTour();}
@@ -617,6 +666,16 @@ var A={
   install:function(){if(!INSTALL_EVT)return;var e=INSTALL_EVT;e.prompt();(e.userChoice||Promise.resolve()).then(function(){INSTALL_EVT=null;render();});},
   tourskip:function(){TOURQ=false;TOUR=-1;S.tour=1;save();render();},
   note:function(el){openNote(el.dataset.v);},
+  cards:function(){stopSay();CS=null;view='cards';try{location.hash='cards';}catch(e){}render();window.scrollTo(0,0);},
+  cback:function(){stopSay();CS=null;view='practice';try{location.hash='practice';}catch(e){}render();window.scrollTo(0,0);},
+  cstart:cStart,
+  cflip:function(){if(CS&&!CS.flip){CS.flip=true;render();}},
+  cgrade:function(el){cGrade(+el.dataset.v);},
+  cstop:function(){stopSay();if(CS)CS.q=CS.q.slice(0,CS.pos);render();window.scrollTo(0,0);},
+  cmore:function(){cNew().x+=10;save();cStart();},
+  cdeck:function(el){S.cdeck=el.dataset.v;save();CS=null;render();},
+  newsopen:function(){S.news=S.news||{};S.news.cards=1;save();A.cards();},
+  newsx:function(){S.news=S.news||{};S.news.cards=1;save();render();},
   ncat:function(el){NCAT=el.dataset.v;document.querySelectorAll('.ncats .chip').forEach(function(c){var on=c.dataset.v===NCAT;c.classList.toggle('on',on);c.setAttribute('aria-selected',on);});nFilter();},
   nback:function(){try{if(history.state&&history.state.dtzNote){history.back();return;}}catch(e){}closeNote();},
   tour:function(){TOURQ=false;TOUR=LANGCHOSEN?1:0;view='path';try{location.hash='path';}catch(e){}render();},
@@ -637,7 +696,7 @@ document.addEventListener('click',function(e){var el=e.target.closest('[data-a]'
 document.addEventListener('toggle',function(e){if(e.target.classList&&e.target.classList.contains('upl'))UP.open=e.target.open;},true);
 document.addEventListener('change',function(e){if(e.target.id==='upf'&&e.target.files&&e.target.files[0]){doUpload(e.target.files[0]);e.target.value='';return;}if(e.target.dataset&&e.target.dataset.ch==='lang'){setLang(e.target.value);render();}if(e.target.dataset&&e.target.dataset.ch==='remh'){pushHour(+e.target.value);}});
 document.addEventListener('submit',function(e){if(e.target.id==='lf'){e.preventDefault();doLogin();}if(e.target.id==='af'){e.preventDefault();doAdd();}if(e.target.id==='pwf'){e.preventDefault();doPw();}});
-document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='fillin'){e.preventDefault();check();}});
+document.addEventListener('keydown',function(e){if(view==='cards'&&CS&&CS.pos<CS.q.length&&!/INPUT|TEXTAREA|SELECT/.test((e.target.tagName||''))){if(!CS.flip&&(e.key===' '||e.key==='Enter')){e.preventDefault();A.cflip();return;}if(CS.flip&&/^[123]$/.test(e.key)){cGrade(+e.key-1);return;}}if(e.key==='Enter'&&e.target.id==='fillin'){e.preventDefault();check();}});
 document.addEventListener('input',function(e){if(e.target.id==='nq'){NQ=e.target.value.trim();nFilter();return;}if(e.target.id==='fillin'&&T)T.val=e.target.value;if(e.target.dataset&&e.target.dataset.g&&T&&T.vals)T.vals[e.target.dataset.g]=e.target.value;});
 
 window.DTZ_APP={t:t,L:L,setCourse:setCourse,state:function(){return S;},current:function(){return R&&R.q[R.pos];}};

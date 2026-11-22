@@ -353,6 +353,29 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 .upbar i{display:block;height:100%;background:var(--accent);transition:width .35s ease}
 .upbar.ok i{background:var(--ok)}.upbar.bad i{background:var(--pulse)}
 .upres{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.cline{display:flex;align-items:center;gap:8px;width:100%;margin-top:-6px;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--ink);font:inherit;font-size:14px;cursor:pointer;text-align:start}
+.cline .muted{margin-inline-start:auto}
+.card.news{border-inline-start:4px solid var(--flag)}
+.cbar{justify-content:space-between}
+.fcard{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:28px 18px}
+.fcw{all:unset;cursor:pointer;font-size:clamp(24px,7vw,34px);font-weight:700;line-height:1.25;color:var(--ink);overflow-wrap:anywhere}
+.fcw:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+.fcw .pl{font-weight:400;color:var(--muted);font-size:.6em}
+.art.a-der{color:#2563eb}.art.a-die{color:#dc2626}.art.a-das{color:#16a34a}
+@media (prefers-color-scheme:dark){:root:not([data-theme]) .art.a-der{color:#6ea8ff}:root:not([data-theme]) .art.a-die{color:#ff7a7a}:root:not([data-theme]) .art.a-das{color:#5fd38a}}
+:root[data-theme="nacht"] .art.a-der,:root[data-theme="wald"] .art.a-der,:root[data-theme="berlin"] .art.a-der{color:#6ea8ff}
+:root[data-theme="nacht"] .art.a-die,:root[data-theme="wald"] .art.a-die,:root[data-theme="berlin"] .art.a-die{color:#ff7a7a}
+:root[data-theme="nacht"] .art.a-das,:root[data-theme="wald"] .art.a-das,:root[data-theme="berlin"] .art.a-das{color:#5fd38a}
+.fcb{width:100%;border-top:1px dashed var(--line);padding-top:14px;display:flex;flex-direction:column;gap:12px}
+.fct{font-size:20px;font-weight:600}
+.fcex{text-align:start}
+.fcex .nline{display:flex;gap:8px;align-items:flex-start;width:100%;background:none;border:0;padding:4px 0;color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.cgr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cgr .btn{justify-content:center;padding-inline:6px}
+.cgr .cg0{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.cgr .cg1{background:var(--accent-soft);color:var(--ink);border-color:var(--gold)}
+.cgr .cg2{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.cstart{display:flex;flex-direction:column;gap:12px}
 </style>
 </head>
 <body>
@@ -360,20 +383,20 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 <nav class="tabs" id="tabs"><div>
 <button data-a="tab" data-v="path">&nbsp;</button><button data-a="tab" data-v="practice">&nbsp;</button><button data-a="tab" data-v="notes">&nbsp;</button><button data-a="tab" data-v="top">&nbsp;</button><button data-a="tab" data-v="watch" id="watchtab" hidden>&nbsp;</button>
 </div></nav>
-<script src="config.js?v=45"></script>
+<script src="config.js?v=46"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=45"></script>
-<script src="i18n/uk.js?v=45"></script>
-<script src="i18n/en.js?v=45"></script>
-<script src="i18n/tr.js?v=45"></script>
-<script src="i18n/ar.js?v=45"></script>
-<script src="i18n/ur.js?v=45"></script>
-<script src="i18n/fa.js?v=45"></script>
-<script src="i18n/hr.js?v=45"></script>
-<script src="i18n/sr.js?v=45"></script>
-<script src="i18n/my.js?v=45"></script>
-<script src="i18n/es.js?v=45"></script>
-<script src="i18n/hi.js?v=45"></script>
-<script src="app.js?v=45"></script>
+<script src="i18n/ru.js?v=46"></script>
+<script src="i18n/uk.js?v=46"></script>
+<script src="i18n/en.js?v=46"></script>
+<script src="i18n/tr.js?v=46"></script>
+<script src="i18n/ar.js?v=46"></script>
+<script src="i18n/ur.js?v=46"></script>
+<script src="i18n/fa.js?v=46"></script>
+<script src="i18n/hr.js?v=46"></script>
+<script src="i18n/sr.js?v=46"></script>
+<script src="i18n/my.js?v=46"></script>
+<script src="i18n/es.js?v=46"></script>
+<script src="i18n/hi.js?v=46"></script>
+<script src="app.js?v=46"></script>
 </body>
 </html>
