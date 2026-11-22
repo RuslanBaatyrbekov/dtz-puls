@@ -101,11 +101,26 @@ function onSession(sess){var id=sess&&sess.user?sess.user.id:null;
     syncState='connecting';pull();
     if(view==='login'){view='path';try{history.replaceState(null,'','#path');}catch(e){}}else if(view==='boot'||view==='nocourse')view=fromHash();render();});}
 function loadCourse(){
-  return SB.from('course_content').select('data').eq('id','dtz').maybeSingle().then(function(r){
-    if(!r.error&&r.data&&setCourse(r.data.data)){courseErr='';try{localStorage.setItem(CKEY,JSON.stringify(r.data.data));}catch(e){}return true;}
+  return SB.from('course_content').select('data,updated_at').eq('id','dtz').maybeSingle().then(function(r){
+    if(!r.error&&r.data&&setCourse(r.data.data)){courseErr='';COURSE_AT=r.data.updated_at||'';try{localStorage.setItem(CKEY,JSON.stringify(r.data.data));}catch(e){}return true;}
     courseErr=r.error?t('err.server',{m:r.error.message||''}):t('err.nocontent');
     return fromCache();
   },function(){courseErr=t('err.offline');return fromCache();});}
+/* freshness: new app version -> reload; new course upload -> reload course data */
+var APP_VER=47, COURSE_AT='', UPD=false, FRESH_T=0;
+function busyNow(){return view==='run'||view==='login'||view==='boot'||(view==='cards'&&CS&&CS.pos<CS.q.length)||(UP.st&&UP.st!=='done'&&UP.st!=='err')||TOUR>=0||!!document.querySelector('input:focus,textarea:focus');}
+function hardReload(){try{sessionStorage.setItem('dtz-reloaded',String(Date.now()));}catch(e){}location.replace(location.pathname+'?r='+Date.now()+(location.hash||''));}
+function checkFresh(force){if(document.hidden||(!force&&Date.now()-FRESH_T<60000))return;FRESH_T=Date.now();
+  try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){if(!j||!(+j.v>APP_VER))return;
+    var last=0;try{last=+sessionStorage.getItem('dtz-reloaded')||0;}catch(e){}
+    if(!busyNow()&&Date.now()-last>120000)hardReload();else if(!UPD){UPD=true;render();}},function(){});}catch(e){}
+  if(SB&&ME&&COURSE_AT&&!busyNow())SB.from('course_content').select('updated_at').eq('id','dtz').maybeSingle().then(function(r){var at=r&&r.data&&r.data.updated_at;
+    if(at&&at!==COURSE_AT&&!busyNow())loadCourse().then(function(ok){if(ok){render();toast(t('upd.course'));}});},function(){});}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)checkFresh();});
+window.addEventListener('focus',function(){checkFresh();});
+setInterval(function(){checkFresh();},15*60000);
+setTimeout(function(){checkFresh(true);},8000);
+try{if(/[?&]r=\d/.test(location.search))history.replaceState(null,'',location.pathname+(location.hash||''));}catch(e){}
 function fromCache(){try{var c=JSON.parse(localStorage.getItem(CKEY)||'null');if(c&&setCourse(c)){toast(t('toast.cache'));return true;}}catch(e){}return false;}
 function initCloud(){if(!cfgOk())return;var c=window.PULS_CONFIG;
   SB=window.supabase.createClient(c.url,c.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
@@ -165,6 +180,7 @@ function stripSvg(st){st=st||S;var n=14,w=560/n,y=46,p='M0 '+y,lab='',tt=new Dat
 /* ---------- screens ---------- */
 var BRAND='<div class="brand"><svg viewBox="0 0 28 16"><path d="M0 9h7l2-3 3 9 3-14 3 8h10"/></svg>DTZ-Puls</div>';
 function langSelect(id){return '<label class="sr" for="'+id+'">'+esc(t('set.lang'))+'</label><select class="txt sel'+(id==='lgh'?' lgh':'')+'" id="'+id+'" data-ch="lang" title="Language">'+LANGS.map(function(l){return '<option value="'+l[0]+'"'+(l[0]===LANG?' selected':'')+'>'+(id==='lgh'?l[0].toUpperCase():l[1])+'</option>';}).join('')+'</select>';}
+function updBar(){return UPD?'<button class="updbar" data-a="reload"><span aria-hidden="true">🔄</span><span class="grow">'+esc(t('upd.h'))+'</span><b>'+esc(t('upd.btn'))+'</b></button>':'';}
 function header(){var nm=(S.name||'').trim().split(/\s+/)[0]||t('tab.progress'),on=view==='progress';
   return '<div class="top hdr"><div class="hl">'+BRAND+'<div class="chips">'+langSelect('lgh')+'<span class="chip num" title="'+esc(t('chip.exam'))+'"><b>⏳</b> '+daysLeft()+'</span><span class="chip num" title="'+esc(t('chip.streak'))+'"><b>♥</b> '+streak()+'</span><span class="chip xp num" title="XP"><b>★</b> '+S.xp+'</span></div></div>'+
   '<button class="mebtn'+(on?' on':'')+'" data-a="tab" data-v="progress" aria-label="'+esc(t('tab.progress'))+'"'+(on?' aria-current="page"':'')+'><span class="meav avc" aria-hidden="true">'+esc(S.avatar||'👤')+'</span><span class="mename" dir="auto">'+esc(nm)+'</span></button></div>';}
@@ -610,7 +626,7 @@ function maybeTour(){if(!S.tour&&TOUR<0&&ALL.length&&VIEWS.indexOf(view)>=0&&vie
 
 /* ---------- render + events ---------- */
 function render(){maybeTour();var a=$('#app'),tabs=$('#tabs'),inRun=view==='run'||view==='result'||view==='login'||view==='boot'||view==='nocourse';tabs.hidden=inRun;tabs.style.display=inRun?'none':'';
-  a.innerHTML=view==='nocourse'?vNoCourse():view==='login'?vLogin():view==='boot'?vBoot():view==='run'?vRun():view==='result'?vResult():view==='practice'?vPractice():view==='cards'?vCards():view==='notes'?vNotes():view==='note'?vNote():view==='top'?vTop():view==='progress'?vProg():view==='watch'?vWatch():vPath();
+  a.innerHTML=(inRun?'':updBar())+(view==='nocourse'?vNoCourse():view==='login'?vLogin():view==='boot'?vBoot():view==='run'?vRun():view==='result'?vResult():view==='practice'?vPractice():view==='cards'?vCards():view==='notes'?vNotes():view==='note'?vNote():view==='top'?vTop():view==='progress'?vProg():view==='watch'?vWatch():vPath());
   tabs.classList.add('ready');
   tabs.querySelectorAll('button').forEach(function(b){b.textContent=t('tab.'+b.dataset.v);if(b.dataset.v===view||(view==='note'&&b.dataset.v==='notes')||(view==='cards'&&b.dataset.v==='practice'))b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   var wt=$('#watchtab');if(wt)wt.hidden=!OWNER;
@@ -666,6 +682,7 @@ var A={
   install:function(){if(!INSTALL_EVT)return;var e=INSTALL_EVT;e.prompt();(e.userChoice||Promise.resolve()).then(function(){INSTALL_EVT=null;render();});},
   tourskip:function(){TOURQ=false;TOUR=-1;S.tour=1;save();render();},
   note:function(el){openNote(el.dataset.v);},
+  reload:hardReload,
   cards:function(){stopSay();CS=null;view='cards';try{location.hash='cards';}catch(e){}render();window.scrollTo(0,0);},
   cback:function(){stopSay();CS=null;view='practice';try{location.hash='practice';}catch(e){}render();window.scrollTo(0,0);},
   cstart:cStart,
