@@ -236,9 +236,10 @@ h1{font-size:26px;letter-spacing:.01em} h2{font-size:19px} h3{font-size:16px;fon
 .eyebrow{font-family:var(--f-display);font-size:13px;letter-spacing:.1em}
 .card,.day,.sec,.stat,.badge,.pt,.prompt,.tx{border-radius:6px}
 .card{border-color:var(--line);box-shadow:3px 3px 0 var(--line)}
-.hero{border-top:4px solid var(--ink);position:relative}
-.hero::after{content:"";position:absolute;top:-4px;right:0;width:72px;height:4px;background:linear-gradient(90deg,var(--ink) 0 33.34%,var(--pulse) 0 66.67%,var(--flag) 0)}
-[dir="rtl"] .hero::after{right:auto;left:0}
+.hero{position:relative;padding-top:20px;background-image:linear-gradient(90deg,var(--flag-k,#151515) 0 33.34%,#dd0000 0 66.67%,#ffce00 0),linear-gradient(var(--ink),var(--ink));background-size:72px 4px,100% 4px;background-position:top right,top left;background-repeat:no-repeat}
+[dir="rtl"] .hero{background-position:top left,top left}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){--flag-k:#4a4a48}}
+:root[data-theme="nacht"],:root[data-theme="wald"],:root[data-theme="berlin"]{--flag-k:#4a4a48}
 .btn{border-radius:6px;letter-spacing:.01em;box-shadow:3px 3px 0 var(--btn-sh,var(--flag))}
 .btn.ghost{border-color:var(--ghost-b,var(--ink))}
 .btn.ghost{box-shadow:none;border-color:var(--ink);color:var(--ink)}
@@ -378,6 +379,26 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 .cstart{display:flex;flex-direction:column;gap:12px}
 .updbar{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:12px;padding:12px 14px;border-radius:12px;border:2px solid var(--ink);background:var(--accent-soft);color:var(--ink);font:inherit;font-size:14px;text-align:start;cursor:pointer}
 .updbar b{background:var(--ink);color:var(--paper);border-radius:8px;padding:6px 10px;white-space:nowrap}
+.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+#app.vin{animation:vin .22s ease-out}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}}
+.fcard{will-change:transform}
+.fcard.fout{animation:fout .17s ease-in forwards}
+@keyframes fout{to{transform:perspective(900px) rotateY(90deg)}}
+.fcard.fin{animation:fin .24s ease-out}
+@keyframes fin{from{transform:perspective(900px) rotateY(-90deg)}to{transform:perspective(900px) rotateY(0)}}
+.fcard.gok{animation:gok .23s ease-in forwards;border-color:var(--ok)}
+.fcard.gno{animation:gno .23s ease-in forwards;border-color:var(--bad)}
+.fcard.ghard{animation:ghard .23s ease-in forwards;border-color:var(--gold)}
+@keyframes gok{to{transform:translateX(110%) rotate(9deg);opacity:0}}
+@keyframes gno{to{transform:translateX(-110%) rotate(-9deg);opacity:0}}
+@keyframes ghard{to{transform:translateY(-24px) scale(.92);opacity:0}}
+.fcard.fnew{animation:fnew .26s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes fnew{from{transform:translateY(28px) scale(.95);opacity:0}}
+.btn:active,.sec:active,.chip:active,.cline:active{transform:translate(2px,2px)}
+.sec{transition:transform .12s,box-shadow .12s}
+@media (hover:hover){.sec:hover{transform:translate(-1px,-1px)}}
+.stamp{animation:stamp .5s cubic-bezier(.2,.9,.3,1.4) both}
 </style>
 </head>
 <body>
@@ -385,20 +406,20 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 <nav class="tabs" id="tabs"><div>
 <button data-a="tab" data-v="path">&nbsp;</button><button data-a="tab" data-v="practice">&nbsp;</button><button data-a="tab" data-v="notes">&nbsp;</button><button data-a="tab" data-v="top">&nbsp;</button><button data-a="tab" data-v="watch" id="watchtab" hidden>&nbsp;</button>
 </div></nav>
-<script src="config.js?v=47"></script>
+<script src="config.js?v=48"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=47"></script>
-<script src="i18n/uk.js?v=47"></script>
-<script src="i18n/en.js?v=47"></script>
-<script src="i18n/tr.js?v=47"></script>
-<script src="i18n/ar.js?v=47"></script>
-<script src="i18n/ur.js?v=47"></script>
-<script src="i18n/fa.js?v=47"></script>
-<script src="i18n/hr.js?v=47"></script>
-<script src="i18n/sr.js?v=47"></script>
-<script src="i18n/my.js?v=47"></script>
-<script src="i18n/es.js?v=47"></script>
-<script src="i18n/hi.js?v=47"></script>
-<script src="app.js?v=47"></script>
+<script src="i18n/ru.js?v=48"></script>
+<script src="i18n/uk.js?v=48"></script>
+<script src="i18n/en.js?v=48"></script>
+<script src="i18n/tr.js?v=48"></script>
+<script src="i18n/ar.js?v=48"></script>
+<script src="i18n/ur.js?v=48"></script>
+<script src="i18n/fa.js?v=48"></script>
+<script src="i18n/hr.js?v=48"></script>
+<script src="i18n/sr.js?v=48"></script>
+<script src="i18n/my.js?v=48"></script>
+<script src="i18n/es.js?v=48"></script>
+<script src="i18n/hi.js?v=48"></script>
+<script src="app.js?v=48"></script>
 </body>
 </html>
