@@ -22,7 +22,7 @@ jobs:
 
       - name: JavaScript syntax
         run: |
-          node --check app.js && node --check config.js && node --check lib/core.js
+          for f in js/*.js lib/*.js config.js; do node --check "$f"; done
           for f in i18n/*.js; do node --check "$f"; done
 
       - name: Unit tests and translations complete in all 12 languages

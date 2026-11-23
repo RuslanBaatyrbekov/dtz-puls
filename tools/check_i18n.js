@@ -1,4 +1,4 @@
-// Every language must have exactly the same keys as Russian, and every key used in app.js must exist.
+// Every language must have exactly the same keys as Russian, and every key used in js/*.js must exist.
 global.window = {};
 const fs = require('fs'),
   path = require('path');
@@ -18,7 +18,9 @@ for (const l of Object.keys(I)) {
 const used = new Set(
   (
     fs
-      .readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8')
+      .readdirSync(path.join(__dirname, '..', 'js'))
+      .map(f => fs.readFileSync(path.join(__dirname, '..', 'js', f), 'utf8'))
+      .join('\n')
       .match(/(?<![A-Za-z_.$])t\('[a-z0-9.]+[a-z0-9]'/g) || []
   ).map(s => s.slice(s.indexOf("'") + 1, -1))
 );

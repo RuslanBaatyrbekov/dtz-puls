@@ -67,7 +67,7 @@ MIT
 ## Development
 
 - `lib/core.js` — pure logic (state merge between devices, streak, flashcard scheduling). No DOM, unit-tested.
-- `app.js` — UI, Supabase sync and everything that touches the browser.
+- `js/*.js` — the browser app, one file per area (sync, runner, cards, glossary, observer, …). Classic scripts sharing one global scope; the load order is in `index.html`.
 - `npm test` — runs the unit tests (`tests/*.test.js`, Node's built-in test runner, no dependencies) and checks that all 12 translations have the same keys. GitHub Actions (`.github/workflows/ci.yml`) runs it on every push, together with a syntax check and a scan for secret keys.
 - `python3 tools/bump.py` — bumps the app version before a release; open apps reload themselves.
 - `npm run check` — lint (ESLint), formatting check (Prettier) and tests, the same as CI. `npm run format` rewrites files to the project style.
