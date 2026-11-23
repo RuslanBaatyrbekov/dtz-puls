@@ -400,6 +400,19 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 @media (hover:hover){.sec:hover{transform:translate(-1px,-1px)}}
 .stamp{animation:stamp .5s cubic-bezier(.2,.9,.3,1.4) both}
 .cbar2{position:relative}.cbar2 i{position:absolute;inset-inline-start:0;top:0;bottom:0}.cbar2 i.st{opacity:.35}
+.gw{cursor:pointer;text-decoration:underline dotted;text-decoration-color:var(--muted);text-decoration-thickness:1.5px;text-underline-offset:3px;border-radius:3px}
+.gw:hover,.gw:focus-visible{background:var(--accent-soft);outline:none}
+.gpop{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));transform:translate(-50%,20px);width:min(440px,calc(100% - 24px));z-index:900;background:var(--card);color:var(--ink);border:2px solid var(--ink);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px 14px;opacity:0;pointer-events:none;transition:opacity .16s,transform .16s}
+.gpop.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.gph{display:flex;align-items:flex-start;gap:10px}.gpw{flex:1;font-size:22px;font-weight:700;line-height:1.25}.gpw .pl{font-weight:400;color:var(--muted);font-size:.65em}
+.gpt{font-size:17px;margin:4px 0 10px}.gpr{align-items:center;gap:8px}
+.gltip{margin:0 0 8px;padding:6px 10px;border-radius:8px;background:var(--accent-soft)}
+.wlist{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.wrow{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.wde{all:unset;cursor:pointer;font-weight:700;font-size:18px}.wde .pl{font-weight:400;color:var(--muted);font-size:.75em}
+.wtr{all:unset;cursor:pointer;grid-column:1/-1;font-size:15px}
+.wrow.open{border-color:var(--ok)}
+details.trans{margin-top:8px}details.trans summary{cursor:pointer;font-size:14px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -407,20 +420,20 @@ input.gap{border-bottom-color:var(--ink);color:var(--ink)}
 <nav class="tabs" id="tabs"><div>
 <button data-a="tab" data-v="path">&nbsp;</button><button data-a="tab" data-v="practice">&nbsp;</button><button data-a="tab" data-v="notes">&nbsp;</button><button data-a="tab" data-v="top">&nbsp;</button><button data-a="tab" data-v="watch" id="watchtab" hidden>&nbsp;</button>
 </div></nav>
-<script src="config.js?v=50"></script>
+<script src="config.js?v=51"></script>
 <script src="vendor/supabase.js"></script>
-<script src="i18n/ru.js?v=50"></script>
-<script src="i18n/uk.js?v=50"></script>
-<script src="i18n/en.js?v=50"></script>
-<script src="i18n/tr.js?v=50"></script>
-<script src="i18n/ar.js?v=50"></script>
-<script src="i18n/ur.js?v=50"></script>
-<script src="i18n/fa.js?v=50"></script>
-<script src="i18n/hr.js?v=50"></script>
-<script src="i18n/sr.js?v=50"></script>
-<script src="i18n/my.js?v=50"></script>
-<script src="i18n/es.js?v=50"></script>
-<script src="i18n/hi.js?v=50"></script>
-<script src="app.js?v=50"></script>
+<script src="i18n/ru.js?v=51"></script>
+<script src="i18n/uk.js?v=51"></script>
+<script src="i18n/en.js?v=51"></script>
+<script src="i18n/tr.js?v=51"></script>
+<script src="i18n/ar.js?v=51"></script>
+<script src="i18n/ur.js?v=51"></script>
+<script src="i18n/fa.js?v=51"></script>
+<script src="i18n/hr.js?v=51"></script>
+<script src="i18n/sr.js?v=51"></script>
+<script src="i18n/my.js?v=51"></script>
+<script src="i18n/es.js?v=51"></script>
+<script src="i18n/hi.js?v=51"></script>
+<script src="app.js?v=51"></script>
 </body>
 </html>
