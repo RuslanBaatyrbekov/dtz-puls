@@ -1,5 +1,6 @@
--- DTZ-Puls: safety net for learner progress (run once in Supabase → SQL Editor).
--- 1) Every time a saved progress loses XP or finished days, the previous version is kept in progress_history.
+-- DTZ-Puls: safety net for learner progress (run once in Supabase → SQL Editor; safe to run again).
+-- 1) The database refuses any save that loses XP or finished days (unless the learner pressed "Reset" / imported),
+--    and keeps the refused/previous version in progress_history. Old cached app versions can no longer wipe anyone.
 -- 2) Every night at 03:00 a full snapshot of all progress is kept (14 days).
 -- Restore one learner:  update progress set state = (select state from progress_history where id = <ID>), updated_at = now() where user_id = '<USER_ID>';
 
@@ -20,10 +21,15 @@ declare
   new_xp int := coalesce((new.state->>'xp')::numeric, 0);
   old_done int := (select count(*) from jsonb_object_keys(coalesce(old.state->'done', '{}'::jsonb)));
   new_done int := (select count(*) from jsonb_object_keys(coalesce(new.state->'done', '{}'::jsonb)));
+  wiped boolean := coalesce((new.state->>'wipe')::numeric, 0) > coalesce((old.state->>'t')::numeric, 0);
 begin
   if new_xp < old_xp or new_done < old_done then
     insert into progress_history (user_id, state, reason)
-    values (old.user_id, old.state, format('before drop: xp %s→%s, days %s→%s', old_xp, new_xp, old_done, new_done));
+    values (old.user_id, case when wiped then old.state else new.state end,
+            format('%s: xp %s→%s, days %s→%s', case when wiped then 'reset by learner' else 'refused' end, old_xp, new_xp, old_done, new_done));
+    if not wiped then
+      return old;  -- keep the richer copy; the app merges it back on its next sync
+    end if;
   end if;
   return new;
 end $$;
