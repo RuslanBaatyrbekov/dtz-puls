@@ -1,0 +1,8 @@
+{
+  "name": "dtz-puls",
+  "private": true,
+  "description": "Daily practice app for the DTZ (Deutsch-Test für Zuwanderer) exam",
+  "scripts": {
+    "test": "node --test && node tools/check_i18n.js"
+  }
+}

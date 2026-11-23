@@ -63,3 +63,10 @@ A private, free learning project. Not official and not affiliated with BAMF, g.a
 ## License
 
 MIT
+
+## Development
+
+- `lib/core.js` — pure logic (state merge between devices, streak, flashcard scheduling). No DOM, unit-tested.
+- `app.js` — UI, Supabase sync and everything that touches the browser.
+- `npm test` — runs the unit tests (`tests/*.test.js`, Node's built-in test runner, no dependencies) and checks that all 12 translations have the same keys. GitHub Actions runs it on every push.
+- `python3 tools/bump.py` — bumps the app version before a release; open apps reload themselves.

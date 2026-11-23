@@ -38,18 +38,13 @@ function rule(id){var r=(C.rules||{})[id];return r?L(r):'';}
 function explain(x){var parts=[];(x.r||[]).forEach(function(id){var s=rule(id);if(s)parts.push(s);});if(x.e)parts.push(L(x.e));return parts.join(' · ');}
 
 /* ---------- helpers ---------- */
+/* pure logic lives in lib/core.js (unit-tested); short aliases keep the existing call sites */
+var Core=window.DTZCore, ds=Core.dateKey, addDays=Core.addDays, def=Core.defaultState, fix=Core.normalizeState, mergeS=Core.mergeStates, same=Core.sameState;
 var $=function(s){return document.querySelector(s);};
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function ds(d){var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(x<10?'0':'')+x;}
 function today(){return ds(new Date());}
-function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x;}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var q=a[i];a[i]=a[j];a[j]=q;}return a;}
 function daysLeft(){var e=new Date((C.exam||'2026-12-19')+'T00:00:00'),n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.round((e-n)/864e5));}
-function def(){return {name:'',lang:'',xp:0,done:{},days:{},frozen:{},freezes:0,missed:{},seen:{},prac:{},cards:{},newDay:'',newN:0,best:0,perfect:0,reviews:0,t:0};}
-function fix(o){var d=def();o=o&&typeof o==='object'?JSON.parse(JSON.stringify(o)):{};var r=Object.assign(d,o);
-  ['done','days','frozen','missed','seen','prac','nt','cards','my'].forEach(function(k){if(!r[k]||typeof r[k]!=='object'||Array.isArray(r[k]))r[k]={};});
-  r.xp=+r.xp||0;return r;}
-
 /* ---------- state + sync (same model as Pulse: last write wins on client timestamp) ---------- */
 var S=def(), SB=null, ME=null, EMAIL='', OWNER=false, syncState='local', pushT=null, pushing=false, again=false, loginErr='', loginBusy=false, loginEm='';
 try{var raw=localStorage.getItem(KEY);if(raw)S=fix(JSON.parse(raw));}catch(e){}
@@ -60,21 +55,6 @@ var LANGCHOSEN=false;
   var th=S.theme;try{th=th||localStorage.getItem('dtz-theme');}catch(e){}applyTheme(th||'auto');})();
 function cfgOk(){var c=window.PULS_CONFIG||{};return !!(c.url&&c.anonKey&&c.url.indexOf('YOUR')<0&&window.supabase&&window.supabase.createClient);}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}schedulePush();}
-/* merge two copies of one learner's state so that no device can wipe progress made on another.
-   Newer copy wins for settings; progress is united (max / union). A deliberate reset or import (wipe) cuts off older copies. */
-function mergeS(a,b){a=fix(a);b=fix(b);var A=(a.t||0)>=(b.t||0)?a:b,B=A===a?b:a;
-  if((A.wipe||0)>(B.t||0))return A;
-  var r=fix(A);
-  function uni(k){Object.keys(B[k]||{}).forEach(function(x){if(!(x in r[k]))r[k][x]=B[k][x];});}
-  function mx(k){Object.keys(B[k]||{}).forEach(function(x){var v=+B[k][x]||0;if(!(x in r[k])||v>(+r[k][x]||0))r[k][x]=B[k][x];});}
-  ['done','frozen','seen','nt','my'].forEach(uni);['days','prac'].forEach(mx);
-  Object.keys(B.cards||{}).forEach(function(x){var u=B.cards[x],v=r.cards[x];if(!v||(u&&u[0]>v[0]))r.cards[x]=u;});
-  if(Object.keys(r.done).length<Object.keys(B.done||{}).length||!Object.keys(r.missed).length)uni('missed');
-  ['xp','best','perfect','reviews','cn'].forEach(function(k){r[k]=Math.max(+A[k]||0,+B[k]||0);});
-  if(!r.tourDone&&B.tourDone)r.tourDone=B.tourDone;if(!r.tour&&B.tour)r.tour=B.tour;if(!r.name&&B.name)r.name=B.name;
-  if(B.wipe&&!(r.wipe>=B.wipe))r.wipe=B.wipe;
-  return r;}
-function same(a,b){try{return JSON.stringify(a)===JSON.stringify(b);}catch(e){return false;}}
 var PULLED=false;
 function adopt(c){S=fix(c);if(S.lang&&S.lang!==LANG)setLang(S.lang,true);if(S.theme)applyTheme(S.theme);try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function schedulePush(){if(!SB||!ME)return;clearTimeout(pushT);pushT=setTimeout(push,600);}
@@ -125,7 +105,7 @@ function loadCourse(){
     return fromCache();
   },function(){courseErr=t('err.offline');return fromCache();});}
 /* freshness: new app version -> reload; new course upload -> reload course data */
-var APP_VER=51, COURSE_AT='', UPD=false, FRESH_T=0;
+var APP_VER=52, COURSE_AT='', UPD=false, FRESH_T=0;
 function busyNow(){return view==='run'||view==='login'||view==='boot'||(view==='cards'&&CS&&CS.pos<CS.q.length)||(UP.st&&UP.st!=='done'&&UP.st!=='err')||TOUR>=0||!!document.querySelector('input:focus,textarea:focus');}
 function hardReload(){try{sessionStorage.setItem('dtz-reloaded',String(Date.now()));}catch(e){}location.replace(location.pathname+'?r='+Date.now()+(location.hash||''));}
 function checkFresh(force){if(document.hidden||(!force&&Date.now()-FRESH_T<60000))return;FRESH_T=Date.now();
@@ -155,8 +135,8 @@ function doLogin(){var em=$('#em').value.trim(),pw=$('#pw').value;loginEm=em;if(
 
 /* ---------- streak, levels ---------- */
 var LEVELS=[0,150,400,800,1300,2000,2800,3800,5000,6500];
-function active(k,st){st=st||S;return st.days[k]!==undefined||!!(st.frozen&&st.frozen[k]);}
-function streak(st){st=st||S;var d=new Date();if(!active(ds(d),st)){d=addDays(d,-1);if(!active(ds(d),st))return 0;}var n=0;while(active(ds(d),st)){if(st.days[ds(d)]!==undefined)n++;d=addDays(d,-1);}return n;}
+function active(k,st){return Core.isActiveDay(st||S,k);}
+function streak(st){return Core.streak(st||S,new Date());}
 function applyFreezes(){var keys=Object.keys(S.days).concat(Object.keys(S.frozen)).sort();if(!keys.length||!S.freezes)return;var last=keys[keys.length-1],gap=[],d=addDays(new Date(),-1);
   while(ds(d)>last&&gap.length<6){gap.push(ds(d));d=addDays(d,-1);}
   if(gap.length&&gap.length<=S.freezes){gap.forEach(function(k){S.frozen[k]=1;});S.freezes-=gap.length;save();}}
@@ -583,7 +563,7 @@ function vWords(st){var g=G();
     '</div><div class="foot"><button class="btn" data-a="next">'+esc(t('btn.next'))+' →</button></div>';}
 
 /* word cards: Leitner boxes 1..5, intervals in days; ~10 new a day */
-var CI=[0,1,3,7,14,30], CS=null, CMAP=null, CMAPC=null;
+var CS=null, CMAP=null, CMAPC=null;
 function cards(){var b=C.cards||[],m=C.gloss?myCards():[];return m.length?m.concat(b):b;}
 function cDecks(){var d=C.cardDecks||[],n=C.gloss?myCards().length:0;if(!n)return d;var tt={};tt[LANG]=t('cards.my');tt.en=tt.en||t('cards.my');return [{id:'my',t:tt,n:n}].concat(d);}
 function cardBy(id){if(id.indexOf('g:')===0){var x=G()[id.slice(2)];return x?{id:id,de:x.de,say:gSay(x.de),t:x.t,d:'my'}:null;}if(CMAPC!==C.cards){CMAP={};cards().forEach(function(c){CMAP[c.id]=c;});CMAPC=C.cards;}return CMAP[id];}
@@ -597,9 +577,9 @@ function cToday(){var q=cQueue();return q.due.length+q.nw.length;}
 function cStart(){var q=cQueue();CS={q:shuffle(q.due).concat(q.nw),pos:0,flip:false,n:0,again:{}};render();window.scrollTo(0,0);}
 function cGrade(g){if(!CS||!CS.flip)return;var id=CS.q[CS.pos],s=S.cards[id],td=today(),b=s?s[0]:0;stopSay();
   if(!s)cNew().n++;
-  if(g===0){b=1;S.cards[id]=[b,td];if(!CS.again[id]){CS.again[id]=1;CS.q.push(id);}}
-  else if(g===1){b=Math.max(1,b);S.cards[id]=[b,ds(addDays(new Date(),1))];}
-  else{b=Math.min(5,b+1);S.cards[id]=[b,ds(addDays(new Date(),CI[b]))];S.xp+=1;}
+  S.cards[id]=Core.scheduleCard(s,g,new Date());
+  if(g===Core.GRADE.AGAIN&&!CS.again[id]){CS.again[id]=1;CS.q.push(id);}
+  if(g===Core.GRADE.GOOD)S.xp+=1;
   CS.n++;S.cn=(S.cn||0)+1;save();CS.pos++;CS.flip=false;CS.anim='fnew';CS.busy=false;render();
   if(CS.pos>=CS.q.length)setTimeout(function(){confetti(CS&&CS.n>=10);},150);}
 function cFlip(){if(!CS||CS.flip||CS.busy)return;var el=document.querySelector('.fcard');
