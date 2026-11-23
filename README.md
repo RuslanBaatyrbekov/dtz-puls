@@ -70,3 +70,5 @@ MIT
 - `app.js` — UI, Supabase sync and everything that touches the browser.
 - `npm test` — runs the unit tests (`tests/*.test.js`, Node's built-in test runner, no dependencies) and checks that all 12 translations have the same keys. GitHub Actions (`.github/workflows/ci.yml`) runs it on every push, together with a syntax check and a scan for secret keys.
 - `python3 tools/bump.py` — bumps the app version before a release; open apps reload themselves.
+- `npm run check` — lint (ESLint), formatting check (Prettier) and tests, the same as CI. `npm run format` rewrites files to the project style.
+- Styles live in `css/app.css`.

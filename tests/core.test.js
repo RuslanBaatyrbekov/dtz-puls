@@ -4,7 +4,10 @@ const assert = require('node:assert/strict');
 const core = require('../lib/core.js');
 
 const richCloud = {
-  name: 'Ekaterina', xp: 500, t: 100, tourDone: 1,
+  name: 'Ekaterina',
+  xp: 500,
+  t: 100,
+  tourDone: 1,
   done: { d01: { d: '2026-11-18', p: 1 }, d02: { d: '2026-11-19', p: 0 } },
   days: { '2026-11-18': 120, '2026-11-19': 110 },
   prac: { kasus: 4 },
@@ -29,7 +32,8 @@ test.describe('mergeStates', () => {
 
   test('progress from two devices is united, not replaced', () => {
     const phone = {
-      xp: 520, t: 300,
+      xp: 520,
+      t: 300,
       done: { d01: {}, d03: {} },
       days: { '2026-11-19': 40, '2026-11-20': 90 },
       cards: { c2: [1, 'x'], c5: [1, 'y'] }
@@ -105,7 +109,10 @@ test.describe('streak', () => {
   });
 
   test('a frozen day bridges the gap but does not count', () => {
-    const state = core.normalizeState({ days: { '2026-11-21': 1, '2026-11-23': 1 }, frozen: { '2026-11-22': 1 } });
+    const state = core.normalizeState({
+      days: { '2026-11-21': 1, '2026-11-23': 1 },
+      frozen: { '2026-11-22': 1 }
+    });
     assert.equal(core.streak(state, now), 2);
   });
 });
