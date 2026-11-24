@@ -379,5 +379,11 @@
     'Ovo nije registracija: račun otvara organizator. Otvori poveznicu iz njegove poruke i prijava će se dogoditi sama. Ili upiši e-mail i lozinku iz poruke, ne svoje.',
   'login.invbad':
     'Poveznica nije uspjela: lozinka je možda promijenjena. Zatraži od organizatora novu poveznicu ili upiši podatke ručno.',
-  'add.reset': 'Postavi novu lozinku i pošalji poveznicu za prijavu'
+  'add.reset': 'Postavi novu lozinku i pošalji poveznicu za prijavu',
+  'w.hide': 'Sakrij s popisa',
+  'w.unhide': 'Vrati',
+  'w.hidden': 'Skriveni: {n}',
+  'w.hiddenp':
+    'Njihov napredak ostaje; samo se ne vide na popisu i ne broje se u „učili danas”. To vidiš samo ti.',
+  'w.hidden.ok': 'Skriveno. Možeš ih vratiti na dnu popisa.'
 };

@@ -381,5 +381,11 @@
     'No es un registro: la cuenta la crea el organizador. Abre el enlace de su mensaje y entrarás automáticamente. O escribe el correo y la contraseña del mensaje, no los tuyos.',
   'login.invbad':
     'El enlace no funcionó: quizá cambiaron la contraseña. Pide un enlace nuevo al organizador o escribe los datos a mano.',
-  'add.reset': 'Poner contraseña nueva y enviar enlace de acceso'
+  'add.reset': 'Poner contraseña nueva y enviar enlace de acceso',
+  'w.hide': 'Ocultar de la lista',
+  'w.unhide': 'Mostrar de nuevo',
+  'w.hidden': 'Ocultos: {n}',
+  'w.hiddenp':
+    'Su progreso se conserva; solo no aparecen en la lista ni cuentan en «estudiaron hoy». Solo tú lo ves.',
+  'w.hidden.ok': 'Oculto. Puedes recuperarlo al final de la lista.'
 };

@@ -193,8 +193,17 @@ function learnerRow(st) {
         return [t('sec.' + k), miss[k]];
       })
     ) +
+    '<div class="row" style="margin-top:10px"><button class="linkbtn small" data-a="whide" data-v="' +
+    esc(st._id) +
+    '">🙈 ' +
+    esc(t('w.hide')) +
+    '</button></div>' +
     '</section>'
   );
+}
+/** Learners the organiser has hidden (test accounts etc.): {userId: name}. Stored in the organiser's own state. */
+function hiddenW() {
+  return S.whide && typeof S.whide === 'object' ? S.whide : {};
 }
 function wTags(label, items) {
   return (
@@ -234,8 +243,15 @@ function vWatch() {
   if (W.err) return h + '<div class="card">' + esc(t('w.err')) + '</div>';
   if (!W.docs) return h + '<div class="card">' + esc(t('boot')) + '</div>';
   if (!W.docs.length) return h + '<div class="card">' + esc(t('w.none')) + '</div>';
+  var hid = hiddenW(),
+    hiddenDocs = W.docs.filter(function (x) {
+      return hid[x._id];
+    }),
+    shown = W.docs.filter(function (x) {
+      return !hid[x._id];
+    });
   var td = today(),
-    act = W.docs.filter(function (x) {
+    act = shown.filter(function (x) {
       return x.days[td] !== undefined;
     }).length,
     sort = W.sort || 'recent';
@@ -253,7 +269,7 @@ function vWatch() {
       return 0;
     }
   }[sort];
-  var docs = W.docs.slice().sort(
+  var docs = shown.slice().sort(
     sort === 'name'
       ? function (a, b) {
           return String(a.name || a.email || '').localeCompare(String(b.name || b.email || ''));
@@ -266,7 +282,7 @@ function vWatch() {
     '<div class="wsum"><b class="num">' +
     act +
     ' / ' +
-    W.docs.length +
+    shown.length +
     '</b><span class="small">' +
     esc(t('w.sum')) +
     '</span></div>';
@@ -288,7 +304,31 @@ function vWatch() {
       })
       .join('') +
     '</div>';
-  return h + '<div class="wlist">' + docs.map(learnerLine).join('') + '</div>';
+  h += '<div class="wlist">' + docs.map(learnerLine).join('') + '</div>';
+  if (hiddenDocs.length)
+    h +=
+      '<details class="card whid"><summary class="small"><b>🙈 ' +
+      esc(t('w.hidden', { n: hiddenDocs.length })) +
+      '</b></summary><p class="small muted" style="margin:6px 0 10px">' +
+      esc(t('w.hiddenp')) +
+      '</p>' +
+      hiddenDocs
+        .map(function (x) {
+          return (
+            '<div class="row" style="justify-content:space-between;padding:6px 0;border-top:1px solid var(--line)"><span>' +
+            esc(x.avatar || '🙂') +
+            ' ' +
+            esc(x.name || x.email || '—') +
+            '</span><button class="btn small ghost" data-a="wunhide" data-v="' +
+            esc(x._id) +
+            '">' +
+            esc(t('w.unhide')) +
+            '</button></div>'
+          );
+        })
+        .join('') +
+      '</details>';
+  return h;
 }
 function learnerLine(st) {
   var id = st._id,

@@ -377,5 +377,11 @@
     'Ovo nije registracija: nalog otvara organizator. Otvori link iz njegove poruke i prijava će se desiti sama. Ili upiši e-mail i lozinku iz poruke, ne svoje.',
   'login.invbad':
     'Link nije uspeo: lozinka je možda promenjena. Zatraži od organizatora novi link ili upiši podatke ručno.',
-  'add.reset': 'Postavi novu lozinku i pošalji link za prijavu'
+  'add.reset': 'Postavi novu lozinku i pošalji link za prijavu',
+  'w.hide': 'Sakrij sa spiska',
+  'w.unhide': 'Vrati',
+  'w.hidden': 'Skriveni: {n}',
+  'w.hiddenp':
+    'Njihov napredak ostaje; samo se ne vide na spisku i ne broje se u „učili danas”. To vidiš samo ti.',
+  'w.hidden.ok': 'Skriveno. Možeš ih vratiti na dnu spiska.'
 };

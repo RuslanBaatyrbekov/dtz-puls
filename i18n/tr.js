@@ -376,5 +376,11 @@
     'Bu bir kayıt değil: hesabı organizatör açar. Mesajındaki bağlantıyı aç, giriş kendiliğinden olur. Ya da kendi bilgilerini değil, mesajdaki e-posta ve şifreyi yaz.',
   'login.invbad':
     'Bağlantı çalışmadı: şifre değişmiş olabilir. Organizatörden yeni bağlantı iste ya da bilgileri elle yaz.',
-  'add.reset': 'Yeni şifre ve giriş bağlantısı ver'
+  'add.reset': 'Yeni şifre ve giriş bağlantısı ver',
+  'w.hide': 'Listeden gizle',
+  'w.unhide': 'Geri getir',
+  'w.hidden': 'Gizlenenler: {n}',
+  'w.hiddenp':
+    'İlerlemeleri korunur; sadece listede görünmez ve “bugün çalıştı” sayısına girmezler. Bunu yalnızca sen görürsün.',
+  'w.hidden.ok': 'Gizlendi. Listenin altından geri getirebilirsin.'
 };

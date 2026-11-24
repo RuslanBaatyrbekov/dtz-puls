@@ -514,6 +514,24 @@ var A = {
     W.sort = el.dataset.v;
     render();
   },
+  whide: function (el) {
+    var id = el.dataset.v,
+      d = (W.docs || []).filter(function (x) {
+        return x._id === id;
+      })[0];
+    S.whide = Object.assign({}, hiddenW());
+    S.whide[id] = (d && (d.name || d.email)) || 1;
+    if (W.open) delete W.open[id];
+    save();
+    render();
+    toast(t('w.hidden.ok'));
+  },
+  wunhide: function (el) {
+    S.whide = Object.assign({}, hiddenW());
+    delete S.whide[el.dataset.v];
+    save();
+    render();
+  },
   wopen: function (el) {
     W.open = W.open || {};
     W.open[el.dataset.v] = !W.open[el.dataset.v];

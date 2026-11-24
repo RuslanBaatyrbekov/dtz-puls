@@ -387,5 +387,11 @@
     'Ce n’est pas une inscription : c’est l’organisateur qui crée votre compte. Ouvrez le lien de son message et vous serez connecté automatiquement. Ou saisissez l’e-mail et le mot de passe de ce message, pas les vôtres.',
   'login.invbad':
     'Le lien n’a pas marché : le mot de passe a peut-être changé. Demandez un nouveau lien à l’organisateur ou saisissez les données à la main.',
-  'add.reset': 'Nouveau mot de passe et lien de connexion'
+  'add.reset': 'Nouveau mot de passe et lien de connexion',
+  'w.hide': 'Masquer de la liste',
+  'w.unhide': 'Réafficher',
+  'w.hidden': 'Masqués : {n}',
+  'w.hiddenp':
+    'Leur progression est conservée ; ils ne sont simplement plus affichés ni comptés dans « ont travaillé aujourd’hui ». Vous seul le voyez.',
+  'w.hidden.ok': 'Masqué. Vous pouvez le réafficher en bas de la liste.'
 };

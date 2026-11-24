@@ -378,5 +378,11 @@
     'This is not a sign-up: the organiser creates your account. Open the link from their message and you are signed in automatically. Or type the email and password from that message, not your own.',
   'login.invbad':
     'The link did not work: the password may have been changed. Ask the organiser for a new link or type the details by hand.',
-  'add.reset': 'Set a new password and send a sign-in link'
+  'add.reset': 'Set a new password and send a sign-in link',
+  'w.hide': 'Hide from the list',
+  'w.unhide': 'Show again',
+  'w.hidden': 'Hidden: {n}',
+  'w.hiddenp':
+    'Their progress is kept; they are just not shown in the list or counted in “studied today”. Only you see this — learners notice nothing.',
+  'w.hidden.ok': 'Hidden. You can bring them back at the bottom of the list.'
 };
