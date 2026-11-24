@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>DTZ-Puls — German exam prep in 12 languages</h1>
+  <h1>DTZ-Puls — German exam prep in 13 languages</h1>
   <p><b>Daily lessons and free practice for the Deutsch-Test für Zuwanderer (A2–B1).<br>
   Built on the <a href="https://github.com/RuslanBaatyrbekov/pulse-learning">Pulse</a> engine: vanilla JavaScript, Supabase Auth + Postgres Row Level Security, static hosting.</b></p>
 
@@ -7,7 +7,7 @@
     <a href="https://github.com/RuslanBaatyrbekov/dtz-puls/actions/workflows/ci.yml"><img src="https://github.com/RuslanBaatyrbekov/dtz-puls/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
     <img src="https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript">
     <img src="https://img.shields.io/badge/Supabase-Auth_·_Postgres_·_Realtime-3FCF8E?logo=supabase&logoColor=white" alt="Supabase">
-    <img src="https://img.shields.io/badge/i18n-12_languages_·_RTL-0a7a74" alt="12 languages">
+    <img src="https://img.shields.io/badge/i18n-13_languages_·_RTL-0a7a74" alt="13 languages">
     <img src="https://img.shields.io/badge/GitHub_Pages-static-222222?logo=github&logoColor=white" alt="GitHub Pages">
   </p>
 </div>
@@ -26,7 +26,7 @@ I built it to prepare for my own DTZ exam and to share with my classmates.
 
 | | |
 |---|---|
-| **12 interface languages** | Русский, Українська, English, Türkçe, العربية, اردو, فارسی, Hrvatski, Srpski, မြန်မာ, Español, हिन्दी. Arabic, Urdu and Farsi render right-to-left; script fonts load only when chosen. Grammar rules, vocabulary and letter ideas are translated too. |
+| **13 interface languages** | Русский, Українська, English, Türkçe, العربية, اردو, فارسی, Hrvatski, Srpski, မြန်မာ, Español, हिन्दी, Français. Arabic, Urdu and Farsi render right-to-left; script fonts load only when chosen. Grammar rules, vocabulary and letter ideas are translated too. |
 | **Daily lessons** | 31 lessons up to the exam date: a rule card, then about 10 tasks. Two official g.a.s.t. mock exams are scheduled on Saturdays. Max two new lessons per day. |
 | **Free practice** | Seven sections drawn from the same task bank: cases and articles, word order, listening, reading, vocabulary, speaking (parts 1–3), writing. Your mistakes come first. |
 | **Task types** | gap fill with chips, word order, multiple choice, listening (browser German voice, play/stop), reading, pair matching, speaking with timer and B1 model answer, letter builder with ideas and graded gaps. |
@@ -68,7 +68,7 @@ MIT
 
 - `lib/core.js` — pure logic (state merge between devices, streak, flashcard scheduling). No DOM, unit-tested.
 - `js/*.js` — the browser app, one file per area (sync, runner, cards, glossary, observer, …). Classic scripts sharing one global scope; the load order is in `index.html`.
-- `npm test` — runs the unit tests (`tests/*.test.js`, Node's built-in test runner, no dependencies) and checks that all 12 translations have the same keys. GitHub Actions (`.github/workflows/ci.yml`) runs it on every push, together with a syntax check and a scan for secret keys.
+- `npm test` — runs the unit tests (`tests/*.test.js`, Node's built-in test runner, no dependencies) and checks that all 13 translations have the same keys. GitHub Actions (`.github/workflows/ci.yml`) runs it on every push, together with a syntax check and a scan for secret keys.
 - `python3 tools/bump.py` — bumps the app version before a release; open apps reload themselves.
 - `npm run check` — lint (ESLint), formatting check (Prettier) and tests, the same as CI. `npm run format` rewrites files to the project style.
 - Styles live in `css/app.css`.

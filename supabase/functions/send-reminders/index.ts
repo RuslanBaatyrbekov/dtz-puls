@@ -38,7 +38,8 @@ const MSG: Record<string, [string, string]> = {
   sr: ['Vreme je za učenje 💪', 'Današnja lekcija te čeka — oko 20 minuta.'],
   my: ['လေ့ကျင့်ချိန် ရောက်ပြီ 💪', 'ယနေ့ သင်ခန်းစာ စောင့်နေသည် — မိနစ် ၂၀ ခန့်။'],
   es: ['Hora de estudiar 💪', 'La lección de hoy te espera: unos 20 minutos.'],
-  hi: ['पढ़ाई का समय 💪', 'आज का पाठ आपका इंतज़ार कर रहा है — लगभग 20 मिनट।']
+  hi: ['पढ़ाई का समय 💪', 'आज का पाठ आपका इंतज़ार कर रहा है — लगभग 20 मिनट।'],
+  fr: ['C’est l’heure de travailler 💪', 'La leçon du jour vous attend — environ 20 minutes.']
 };
 const STREAK: Record<string, string> = {
   ru: 'Серия ♥ {n} дн. — не прерывай её!',
@@ -52,7 +53,8 @@ const STREAK: Record<string, string> = {
   sr: 'Niz ♥ {n} dana — nemoj da ga prekineš!',
   my: '♥ ဆက်တိုက် {n} ရက် — မပြတ်စေနှင့်!',
   es: 'Tu racha ♥: {n} días — ¡no la pierdas!',
-  hi: 'आपका ♥ सिलसिला: {n} दिन — इसे बनाए रखें!'
+  hi: 'आपका ♥ सिलसिला: {n} दिन — इसे बनाए रखें!',
+  fr: 'Votre série ♥ : {n} jours — ne la perdez pas !'
 };
 
 function local(tz: string): { date: string; hour: number } {

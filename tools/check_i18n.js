@@ -29,9 +29,9 @@ if (missing.length) {
   bad++;
   console.log('used but missing:', missing);
 }
-if (Object.keys(I).length !== 12) {
+if (Object.keys(I).length !== 13) {
   bad++;
-  console.log('expected 12 languages, got', Object.keys(I).length);
+  console.log('expected 13 languages, got', Object.keys(I).length);
 }
 if (bad) process.exit(1);
 console.log('i18n ok:', Object.keys(I).length, 'languages,', base.length, 'keys');

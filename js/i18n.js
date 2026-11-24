@@ -5,7 +5,7 @@
 
 /* DTZ-Puls: daily lessons + free practice for the Deutsch-Test für Zuwanderer (A2–B1).
  Fork of the Pulse engine: Supabase auth + RLS progress sync, observer view, review queue.
- UI and explanations in 12 languages; all exam material stays German. */
+ UI and explanations in 13 languages; all exam material stays German. */
 
 /* ---------- languages ---------- */
 var LANGS = [
@@ -20,7 +20,8 @@ var LANGS = [
   ['sr', 'Srpski'],
   ['my', 'မြန်မာ'],
   ['es', 'Español'],
-  ['hi', 'हिन्दी']
+  ['hi', 'हिन्दी'],
+  ['fr', 'Français']
 ];
 var I18N = window.DTZ_I18N || {},
   LANG = 'ru';
