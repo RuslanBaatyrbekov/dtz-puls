@@ -385,5 +385,11 @@
   'w.hidden': 'Skriveni: {n}',
   'w.hiddenp':
     'Njihov napredak ostaje; samo se ne vide na popisu i ne broje se u „učili danas”. To vidiš samo ti.',
-  'w.hidden.ok': 'Skriveno. Možeš ih vratiti na dnu popisa.'
+  'w.hidden.ok': 'Skriveno. Možeš ih vratiti na dnu popisa.',
+  'wn.h': 'Obavijesti o polaznicima',
+  'wn.p': 'Push na ovaj telefon i kad je aplikacija zatvorena. Za jednog polaznika najviše jednom u 3 sata.',
+  'wn.online': 'Polaznik je otvorio aplikaciju',
+  'wn.lesson': 'Polaznik je završio lekciju',
+  'wn.err': 'Postavka nije spremljena.',
+  'wn.nosql': 'Najprije pokrenite notify.sql u Supabaseu i objavite funkciju notify-observers.'
 };

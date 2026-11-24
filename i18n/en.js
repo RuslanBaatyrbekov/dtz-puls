@@ -384,5 +384,11 @@
   'w.hidden': 'Hidden: {n}',
   'w.hiddenp':
     'Their progress is kept; they are just not shown in the list or counted in “studied today”. Only you see this — learners notice nothing.',
-  'w.hidden.ok': 'Hidden. You can bring them back at the bottom of the list.'
+  'w.hidden.ok': 'Hidden. You can bring them back at the bottom of the list.',
+  'wn.h': 'Learner notifications',
+  'wn.p': 'Push to this phone, even when the app is closed. At most once every 3 hours per learner.',
+  'wn.online': 'A learner opened the app',
+  'wn.lesson': 'A learner finished a lesson',
+  'wn.err': 'Could not save the setting.',
+  'wn.nosql': 'First run notify.sql in Supabase and deploy the notify-observers function.'
 };

@@ -647,6 +647,9 @@ document.addEventListener('change', function (e) {
   if (e.target.dataset && e.target.dataset.ch === 'remh') {
     pushHour(+e.target.value);
   }
+  if (e.target.dataset && e.target.dataset.ch === 'wnotify') {
+    setNotifyPref(e.target.dataset.v, e.target.checked);
+  }
 });
 document.addEventListener('submit', function (e) {
   if (e.target.id === 'lf') {

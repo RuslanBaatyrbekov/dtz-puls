@@ -239,7 +239,8 @@ function vWatch() {
     esc(t('w.today')) +
     '</span></p></section>' +
     vAdd() +
-    vUpload();
+    vUpload() +
+    vNotifyPrefs();
   if (W.err) return h + '<div class="card">' + esc(t('w.err')) + '</div>';
   if (!W.docs) return h + '<div class="card">' + esc(t('boot')) + '</div>';
   if (!W.docs.length) return h + '<div class="card">' + esc(t('w.none')) + '</div>';

@@ -382,5 +382,11 @@
   'w.hidden': 'Gizlenenler: {n}',
   'w.hiddenp':
     'İlerlemeleri korunur; sadece listede görünmez ve “bugün çalıştı” sayısına girmezler. Bunu yalnızca sen görürsün.',
-  'w.hidden.ok': 'Gizlendi. Listenin altından geri getirebilirsin.'
+  'w.hidden.ok': 'Gizlendi. Listenin altından geri getirebilirsin.',
+  'wn.h': 'Öğrenci bildirimleri',
+  'wn.p': 'Uygulama kapalıyken bile bu telefona push. Öğrenci başına en fazla 3 saatte bir.',
+  'wn.online': 'Öğrenci uygulamayı açtı',
+  'wn.lesson': 'Öğrenci bir dersi bitirdi',
+  'wn.err': 'Ayar kaydedilemedi.',
+  'wn.nosql': 'Önce Supabase’de notify.sql çalıştırın ve notify-observers işlevini yükleyin.'
 };

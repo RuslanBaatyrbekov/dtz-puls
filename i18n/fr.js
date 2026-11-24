@@ -393,5 +393,11 @@
   'w.hidden': 'Masqués : {n}',
   'w.hiddenp':
     'Leur progression est conservée ; ils ne sont simplement plus affichés ni comptés dans « ont travaillé aujourd’hui ». Vous seul le voyez.',
-  'w.hidden.ok': 'Masqué. Vous pouvez le réafficher en bas de la liste.'
+  'w.hidden.ok': 'Masqué. Vous pouvez le réafficher en bas de la liste.',
+  'wn.h': 'Notifications sur les apprenants',
+  'wn.p': 'Push sur ce téléphone, même appli fermée. Au plus une fois toutes les 3 heures par apprenant.',
+  'wn.online': 'Un apprenant a ouvert l’appli',
+  'wn.lesson': 'Un apprenant a terminé une leçon',
+  'wn.err': 'Impossible d’enregistrer le réglage.',
+  'wn.nosql': 'Exécutez d’abord notify.sql dans Supabase et déployez la fonction notify-observers.'
 };

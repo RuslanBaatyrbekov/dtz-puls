@@ -387,5 +387,11 @@
   'w.hidden': 'Ocultos: {n}',
   'w.hiddenp':
     'Su progreso se conserva; solo no aparecen en la lista ni cuentan en «estudiaron hoy». Solo tú lo ves.',
-  'w.hidden.ok': 'Oculto. Puedes recuperarlo al final de la lista.'
+  'w.hidden.ok': 'Oculto. Puedes recuperarlo al final de la lista.',
+  'wn.h': 'Avisos sobre alumnos',
+  'wn.p': 'Push a este teléfono, incluso con la app cerrada. Como máximo una vez cada 3 horas por alumno.',
+  'wn.online': 'Un alumno abrió la app',
+  'wn.lesson': 'Un alumno terminó una lección',
+  'wn.err': 'No se pudo guardar el ajuste.',
+  'wn.nosql': 'Primero ejecuta notify.sql en Supabase y publica la función notify-observers.'
 };

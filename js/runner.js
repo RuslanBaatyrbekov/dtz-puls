@@ -686,6 +686,7 @@ function finish() {
       S.newN = 0;
     }
     S.newN++;
+    notifyObs('lesson', { day: D.id, n: (LBY[D.id] ? LBY[D.id].idx : 0) + 1, title: D.title });
   }
   var s = streak(),
     fz = false;

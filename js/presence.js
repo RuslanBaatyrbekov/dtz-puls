@@ -113,6 +113,9 @@ function onSession(sess) {
     return;
   }
   if (INVITE) INVITE = null;
+  setTimeout(function () {
+    notifyObs('online');
+  }, 3000);
   if (id === ME && view !== 'boot' && view !== 'login') return;
   ME = id;
   EMAIL = sess.user.email || '';

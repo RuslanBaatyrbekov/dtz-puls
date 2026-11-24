@@ -2581,3 +2581,14 @@ details.trans summary {
 .ntab.ng tbody th {
   width: 36%;
 }
+.wnrow {
+  gap: 10px;
+  padding: 8px 0;
+  align-items: center;
+  cursor: pointer;
+}
+.wnrow input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ok);
+}
