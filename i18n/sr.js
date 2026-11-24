@@ -369,5 +369,8 @@
   'gl.tip': 'Dodirni podvučenu reč — pojaviće se prevod.',
   'news.gl.h': 'Novo: prevod reči dodirom',
   'news.gl.p':
-    'Dodirni bilo koju podvučenu reč u zadatku i videćeš prevod i čuti izgovor. Lekcije sada počinju kratkim zagrevanjem „Najpre reči”. Sve reči koje pogledaš skupljaju se u špil Moje reči u Karticama.'
+    'Dodirni bilo koju podvučenu reč u zadatku i videćeš prevod i čuti izgovor. Lekcije sada počinju kratkim zagrevanjem „Najpre reči”. Sve reči koje pogledaš skupljaju se u špil Moje reči u Karticama.',
+  'notes.key': 'Najvažnije',
+  'notes.ex': 'Primeri',
+  'notes.err': 'Česte greške'
 };

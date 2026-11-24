@@ -368,5 +368,8 @@
   'gl.tip': 'Altı çizili kelimelere dokun — çevirisi görünür.',
   'news.gl.h': 'Yeni: dokunarak kelime çevirisi',
   'news.gl.p':
-    'Görevlerdeki altı çizili kelimelere dokununca çeviri ve sesli okuma görünür. Dersler artık kısa bir “Önce kelimeler” ısınmasıyla başlıyor. Baktığın her kelime Kelime kartları’ndaki Kelimelerim destesine eklenir.'
+    'Görevlerdeki altı çizili kelimelere dokununca çeviri ve sesli okuma görünür. Dersler artık kısa bir “Önce kelimeler” ısınmasıyla başlıyor. Baktığın her kelime Kelime kartları’ndaki Kelimelerim destesine eklenir.',
+  'notes.key': 'Önemli olan',
+  'notes.ex': 'Örnekler',
+  'notes.err': 'Sık yapılan hatalar'
 };

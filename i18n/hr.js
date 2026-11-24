@@ -371,5 +371,8 @@
   'gl.tip': 'Dodirni podcrtanu riječ — pojavit će se prijevod.',
   'news.gl.h': 'Novo: prijevod riječi dodirom',
   'news.gl.p':
-    'Dodirni bilo koju podcrtanu riječ u zadatku i vidjet ćeš prijevod i čuti izgovor. Lekcije sada počinju kratkim zagrijavanjem „Najprije riječi”. Sve riječi koje pogledaš skupljaju se u špil Moje riječi u Karticama.'
+    'Dodirni bilo koju podcrtanu riječ u zadatku i vidjet ćeš prijevod i čuti izgovor. Lekcije sada počinju kratkim zagrijavanjem „Najprije riječi”. Sve riječi koje pogledaš skupljaju se u špil Moje riječi u Karticama.',
+  'notes.key': 'Najvažnije',
+  'notes.ex': 'Primjeri',
+  'notes.err': 'Česte pogreške'
 };

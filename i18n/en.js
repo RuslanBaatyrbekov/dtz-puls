@@ -370,5 +370,8 @@
   'gl.tip': 'Tap an underlined word to see its translation.',
   'news.gl.h': 'New: tap a word to translate it',
   'news.gl.p':
-    'Tap any underlined word in a task to see its translation and hear it. Lessons now start with a short “Words first” warm-up. Every word you look up is collected in the My words deck under Flashcards.'
+    'Tap any underlined word in a task to see its translation and hear it. Lessons now start with a short “Words first” warm-up. Every word you look up is collected in the My words deck under Flashcards.',
+  'notes.key': 'Key points',
+  'notes.ex': 'Examples',
+  'notes.err': 'Common mistakes'
 };

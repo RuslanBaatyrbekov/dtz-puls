@@ -13,28 +13,30 @@ function notes() {
     return n && n.id;
   });
 }
+/** Text in a cheat sheet is either German (string) or localized ({ru: …, en: …}). **x** is bold. */
+function tx(x) {
+  return x && typeof x === 'object' ? L(x) : x == null ? '' : String(x);
+}
 function md(x) {
-  return esc(x).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return esc(tx(x)).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+}
+/** Table header / row label: 'main|small' shows a second, smaller line. */
+function cellLabel(x) {
+  var p = tx(x).split('|');
+  return md(p[0]) + (p[1] ? '<small class="nsub">' + md(p[1]) + '</small>' : '');
 }
 function plain(x) {
   return String(x).replace(/\*\*/g, '').replace(/…/g, ' ');
 }
+/** All text of a sheet (German and the learner's language), flattened for search. */
+function flatText(x) {
+  if (Array.isArray(x)) return x.map(flatText).join(' ');
+  return tx(x);
+}
 function nHay(n) {
   var b = (n.b || [])
     .map(function (x) {
-      return (
-        (x.h || '') +
-        ' ' +
-        (x.head || []).join(' ') +
-        ' ' +
-        (x.r || [])
-          .map(function (r) {
-            return r.join(' ');
-          })
-          .join(' ') +
-        ' ' +
-        (x.l || []).join(' ')
-      );
+      return [x.h, x.head, x.r, x.l].map(flatText).join(' ');
     })
     .join(' ');
   return (n.de + ' ' + L(n.tip) + ' ' + b).replace(/\*\*/g, '').toLowerCase();
@@ -143,15 +145,73 @@ function vNote() {
     esc(L(n.tip)) +
     '</p></section>';
   (n.b || []).forEach(function (b) {
-    h += '<section class="card nblock" lang="de" dir="ltr">' + (b.h ? '<h3>' + md(b.h) + '</h3>' : '');
-    if (b.t === 'tab') {
+    var title =
+      b.h ||
+      (b.t === 'key' ? t('notes.key') : b.t === 'ex' ? t('notes.ex') : b.t === 'err' ? t('notes.err') : '');
+    var local = b.t === 'key';
+    h +=
+      '<section class="card nblock nb-' +
+      b.t +
+      '"' +
+      (local ? '' : ' lang="de" dir="ltr"') +
+      '>' +
+      (title ? '<h3>' + (b.t === 'key' ? '💡 ' : b.t === 'err' ? '⚠️ ' : '') + md(title) + '</h3>' : '');
+    if (b.t === 'key') {
+      h +=
+        '<ol class="nkey">' +
+        b.l
+          .map(function (x) {
+            return '<li>' + md(x) + '</li>';
+          })
+          .join('') +
+        '</ol>';
+    } else if (b.t === 'ex') {
+      h +=
+        '<div class="nsay">' +
+        b.l
+          .map(function (x) {
+            return (
+              '<button class="nline nex" data-a="say" data-txt="' +
+              esc(plain(x[0])) +
+              '"><span class="nplay" aria-hidden="true">▶</span><span><span class="nde">' +
+              md(x[0]) +
+              '</span><span class="ntr" dir="auto" lang="' +
+              LANG +
+              '">' +
+              md(x[1]) +
+              '</span></span></button>'
+            );
+          })
+          .join('') +
+        '</div>';
+    } else if (b.t === 'err') {
+      h +=
+        '<div class="nerr">' +
+        b.l
+          .map(function (x) {
+            return (
+              '<div class="nerow"><div class="nbad">✗ <s>' +
+              md(x[0]) +
+              '</s></div><div class="ngood">✓ ' +
+              md(x[1]) +
+              '</div><div class="nwhy" dir="auto" lang="' +
+              LANG +
+              '">' +
+              md(x[2]) +
+              '</div></div>'
+            );
+          })
+          .join('') +
+        '</div>';
+    } else if (b.t === 'tab') {
       h +=
         '<div class="ntab' +
         ((b.head || []).length >= 4 ? ' nw' : '') +
+        (b.g ? ' ng' : '') +
         '"><table><thead><tr>' +
         (b.head || [])
           .map(function (c) {
-            return '<th>' + md(c) + '</th>';
+            return '<th>' + cellLabel(c) + '</th>';
           })
           .join('') +
         '</tr></thead><tbody>' +
@@ -162,7 +222,11 @@ function vNote() {
               r
                 .map(function (c, i) {
                   return i === 0 && r.length > 2
-                    ? '<th scope="row">' + md(c) + '</th>'
+                    ? '<th scope="row"' +
+                        (typeof c === 'object' ? ' dir="auto" lang="' + LANG + '"' : '') +
+                        '>' +
+                        cellLabel(c) +
+                        '</th>'
                     : '<td>' + md(c) + '</td>';
                 })
                 .join('') +

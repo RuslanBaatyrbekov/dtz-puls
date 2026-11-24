@@ -373,5 +373,8 @@
   'gl.tip': 'Toca una palabra subrayada para ver su traducción.',
   'news.gl.h': 'Novedad: traduce una palabra con un toque',
   'news.gl.p':
-    'Toca cualquier palabra subrayada en una tarea para ver su traducción y oírla. Las lecciones empiezan ahora con un breve calentamiento «Primero, las palabras». Cada palabra que consultas se guarda en el mazo Mis palabras, en Tarjetas.'
+    'Toca cualquier palabra subrayada en una tarea para ver su traducción y oírla. Las lecciones empiezan ahora con un breve calentamiento «Primero, las palabras». Cada palabra que consultas se guarda en el mazo Mis palabras, en Tarjetas.',
+  'notes.key': 'Lo esencial',
+  'notes.ex': 'Ejemplos',
+  'notes.err': 'Errores frecuentes'
 };

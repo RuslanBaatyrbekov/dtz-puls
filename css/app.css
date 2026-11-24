@@ -2496,3 +2496,88 @@ details.trans summary {
   font-size: 14px;
   color: var(--muted);
 }
+.nb-key {
+  border-inline-start: 4px solid var(--flag);
+}
+.nkey {
+  margin: 0;
+  padding-inline-start: 1.3em;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.nkey b {
+  color: var(--pulse);
+}
+.ntab.ng thead th:nth-child(2) {
+  color: #2563eb;
+}
+.ntab.ng thead th:nth-child(3) {
+  color: #dc2626;
+}
+.ntab.ng thead th:nth-child(4) {
+  color: #16a34a;
+}
+.ntab.ng td,
+.ntab.ng thead th {
+  text-align: center;
+}
+.ntab.ng table {
+  width: 100%;
+  table-layout: fixed;
+}
+.ntab.ng tbody th {
+  width: 34%;
+  font-weight: 600;
+  white-space: normal;
+}
+.nex .nde {
+  display: block;
+}
+.nex .ntr {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.nerr {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.nerow {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.nbad {
+  color: var(--bad);
+}
+.nbad s {
+  text-decoration-thickness: 1.5px;
+}
+.ngood {
+  color: var(--ok);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.nwhy {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.nsub {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.ntab.ng thead th {
+  font-size: 15px;
+}
+.ntab.ng tbody th {
+  width: 30%;
+}
