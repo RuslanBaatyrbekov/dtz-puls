@@ -221,13 +221,17 @@ function vNote() {
               '<tr>' +
               r
                 .map(function (c, i) {
-                  return i === 0 && r.length > 2
+                  return i === 0 && (r.length > 2 || typeof c === 'object')
                     ? '<th scope="row"' +
                         (typeof c === 'object' ? ' dir="auto" lang="' + LANG + '"' : '') +
                         '>' +
                         cellLabel(c) +
                         '</th>'
-                    : '<td>' + md(c) + '</td>';
+                    : '<td' +
+                        (typeof c === 'object' ? ' dir="auto" lang="' + LANG + '"' : '') +
+                        '>' +
+                        md(c) +
+                        '</td>';
                 })
                 .join('') +
               '</tr>'
@@ -255,7 +259,9 @@ function vNote() {
         '<ul class="nlst">' +
         (b.l || [])
           .map(function (x) {
-            return '<li>' + md(x) + '</li>';
+            return (
+              '<li' + (typeof x === 'object' ? ' dir="auto" lang="' + LANG + '"' : '') + '>' + md(x) + '</li>'
+            );
           })
           .join('') +
         '</ul>';
