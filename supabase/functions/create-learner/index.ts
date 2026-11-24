@@ -35,7 +35,7 @@ function secretKey(): string {
   return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 }
 
-const VERSION = 'v4';
+const VERSION = 'v5';
 
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
@@ -66,7 +66,7 @@ Deno.serve(async req => {
   }
 
   // 2. Validate input.
-  let body: { email?: string; password?: string; name?: string } = {};
+  let body: { email?: string; password?: string; name?: string; reset?: boolean } = {};
   try {
     body = await req.json();
   } catch {
@@ -89,6 +89,23 @@ Deno.serve(async req => {
     return json({ error: 'config', detail: VERSION + ' no secret key' }, 500);
   }
   const admin = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+  // 3a. Existing account + reset: set a new password so the organiser can send a fresh sign-in link.
+  if (body.reset) {
+    for (let page = 1; page <= 20; page++) {
+      const { data: list, error: le } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+      if (le) return json({ error: le.message }, 500);
+      const u = list.users.find(x => (x.email || '').toLowerCase() === email);
+      if (u) {
+        const { error: ue } = await admin.auth.admin.updateUserById(u.id, { password });
+        if (ue) return json({ error: ue.message }, 400);
+        console.log(VERSION, 'password reset', email);
+        return json({ id: u.id, email, password, name, reset: true });
+      }
+      if (list.users.length < 1000) break;
+    }
+    return json({ error: 'notfound' }, 404);
+  }
+
   const { data, error } = await admin.auth.admin.createUser({
     email,
     password,

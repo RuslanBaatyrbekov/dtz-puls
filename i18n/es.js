@@ -376,5 +376,10 @@
     'Toca cualquier palabra subrayada en una tarea para ver su traducción y oírla. Las lecciones empiezan ahora con un breve calentamiento «Primero, las palabras». Cada palabra que consultas se guarda en el mazo Mis palabras, en Tarjetas.',
   'notes.key': 'Lo esencial',
   'notes.ex': 'Ejemplos',
-  'notes.err': 'Errores frecuentes'
+  'notes.err': 'Errores frecuentes',
+  'login.hint':
+    'No es un registro: la cuenta la crea el organizador. Abre el enlace de su mensaje y entrarás automáticamente. O escribe el correo y la contraseña del mensaje, no los tuyos.',
+  'login.invbad':
+    'El enlace no funcionó: quizá cambiaron la contraseña. Pide un enlace nuevo al organizador o escribe los datos a mano.',
+  'add.reset': 'Poner contraseña nueva y enviar enlace de acceso'
 };

@@ -372,5 +372,10 @@
     'Dodirni bilo koju podvučenu reč u zadatku i videćeš prevod i čuti izgovor. Lekcije sada počinju kratkim zagrevanjem „Najpre reči”. Sve reči koje pogledaš skupljaju se u špil Moje reči u Karticama.',
   'notes.key': 'Najvažnije',
   'notes.ex': 'Primeri',
-  'notes.err': 'Česte greške'
+  'notes.err': 'Česte greške',
+  'login.hint':
+    'Ovo nije registracija: nalog otvara organizator. Otvori link iz njegove poruke i prijava će se desiti sama. Ili upiši e-mail i lozinku iz poruke, ne svoje.',
+  'login.invbad':
+    'Link nije uspeo: lozinka je možda promenjena. Zatraži od organizatora novi link ili upiši podatke ručno.',
+  'add.reset': 'Postavi novu lozinku i pošalji link za prijavu'
 };

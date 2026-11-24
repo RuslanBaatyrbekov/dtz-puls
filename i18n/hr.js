@@ -374,5 +374,10 @@
     'Dodirni bilo koju podcrtanu riječ u zadatku i vidjet ćeš prijevod i čuti izgovor. Lekcije sada počinju kratkim zagrijavanjem „Najprije riječi”. Sve riječi koje pogledaš skupljaju se u špil Moje riječi u Karticama.',
   'notes.key': 'Najvažnije',
   'notes.ex': 'Primjeri',
-  'notes.err': 'Česte pogreške'
+  'notes.err': 'Česte pogreške',
+  'login.hint':
+    'Ovo nije registracija: račun otvara organizator. Otvori poveznicu iz njegove poruke i prijava će se dogoditi sama. Ili upiši e-mail i lozinku iz poruke, ne svoje.',
+  'login.invbad':
+    'Poveznica nije uspjela: lozinka je možda promijenjena. Zatraži od organizatora novu poveznicu ili upiši podatke ručno.',
+  'add.reset': 'Postavi novu lozinku i pošalji poveznicu za prijavu'
 };

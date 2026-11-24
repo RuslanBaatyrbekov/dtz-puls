@@ -371,5 +371,10 @@
     'Görevlerdeki altı çizili kelimelere dokununca çeviri ve sesli okuma görünür. Dersler artık kısa bir “Önce kelimeler” ısınmasıyla başlıyor. Baktığın her kelime Kelime kartları’ndaki Kelimelerim destesine eklenir.',
   'notes.key': 'Önemli olan',
   'notes.ex': 'Örnekler',
-  'notes.err': 'Sık yapılan hatalar'
+  'notes.err': 'Sık yapılan hatalar',
+  'login.hint':
+    'Bu bir kayıt değil: hesabı organizatör açar. Mesajındaki bağlantıyı aç, giriş kendiliğinden olur. Ya da kendi bilgilerini değil, mesajdaki e-posta ve şifreyi yaz.',
+  'login.invbad':
+    'Bağlantı çalışmadı: şifre değişmiş olabilir. Organizatörden yeni bağlantı iste ya da bilgileri elle yaz.',
+  'add.reset': 'Yeni şifre ve giriş bağlantısı ver'
 };

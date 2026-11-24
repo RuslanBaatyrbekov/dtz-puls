@@ -294,6 +294,9 @@ var A = {
       onSession(r && r.data && r.data.session);
     });
   },
+  addreset: function () {
+    doAdd(true);
+  },
   addcopy: function () {
     var ta = $('#amsg');
     ta.select();
@@ -336,7 +339,7 @@ var A = {
   'pick-lang': function (el) {
     LANGCHOSEN = true;
     setLang(el.dataset.v);
-    render();
+    if (!(view === 'login' && tryInvite())) render();
   },
   tournext: function () {
     TOURQ = false;

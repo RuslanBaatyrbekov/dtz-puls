@@ -140,7 +140,7 @@ function doLogin() {
       loginBusy = false;
       if (r.error) {
         loginErr = /invalid/i.test(r.error.message)
-          ? t('login.wrong')
+          ? t('login.wrong') + ' ' + t('login.hint')
           : t('login.fail', { m: r.error.message });
         render();
         return;

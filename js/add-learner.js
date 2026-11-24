@@ -29,6 +29,11 @@ function vAdd() {
     esc(ADD.busy ? t('add.busy') : t('add.btn')) +
     '</button></form>';
   if (ADD.err) h += '<p class="small" role="alert" style="color:var(--bad)">' + esc(ADD.err) + '</p>';
+  if (ADD.exists)
+    h +=
+      '<div class="row" style="margin-top:-4px"><button class="btn small ghost" data-a="addreset">🔑 ' +
+      esc(t('add.reset')) +
+      '</button></div>';
   if (ADD.res) {
     h +=
       '<p class="small"><b>' +
@@ -43,20 +48,19 @@ function vAdd() {
 }
 function addMsg(r) {
   return (
-    'DTZ-Puls\n' +
-    location.origin +
-    location.pathname +
-    '\nEmail: ' +
+    'DTZ-Puls 👋\n' +
+    'Link öffnen – die Anmeldung passiert automatisch.\nOpen the link – you will be signed in automatically.\n' +
+    inviteLink(r.email, r.password) +
+    '\n\nFalls nötig / if asked:\nE-Mail: ' +
     r.email +
     '\nPasswort / Password: ' +
-    r.password +
-    '\n\nSprache ändern / change language: oben im Menü.'
+    r.password
   );
 }
-function doAdd() {
-  var em = $('#ae').value.trim(),
-    nm = $('#an').value.trim(),
-    pw = $('#ap').value.trim();
+function doAdd(reset) {
+  var em = reset ? ADD.lastEm : $('#ae').value.trim(),
+    nm = reset ? ADD.lastName || '' : $('#an').value.trim(),
+    pw = reset ? '' : $('#ap').value.trim();
   if (!em) return;
   if (!SB || !SB.functions) return;
   ADD = { busy: true, res: null, err: '' };
@@ -74,7 +78,7 @@ function doAdd() {
         return null;
       }
       return SB.functions
-        .invoke('create-learner', { body: { email: em, name: nm, password: pw } })
+        .invoke('create-learner', { body: { email: em, name: nm, password: pw, reset: !!reset } })
         .then(function (r) {
           var d = r.data,
             e = r.error;
@@ -87,6 +91,9 @@ function doAdd() {
                 ADD = {
                   busy: false,
                   res: null,
+                  exists: code === 'exists',
+                  lastEm: em,
+                  lastName: nm,
                   err:
                     code === 'exists'
                       ? t('add.exists')

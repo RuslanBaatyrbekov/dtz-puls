@@ -382,5 +382,10 @@
     'Touchez un mot souligné dans un exercice pour voir sa traduction et l’entendre. Les leçons commencent maintenant par un court échauffement « D’abord les mots ». Chaque mot consulté est ajouté au paquet Mes mots dans Cartes.',
   'notes.key': 'L’essentiel',
   'notes.ex': 'Exemples',
-  'notes.err': 'Erreurs fréquentes'
+  'notes.err': 'Erreurs fréquentes',
+  'login.hint':
+    'Ce n’est pas une inscription : c’est l’organisateur qui crée votre compte. Ouvrez le lien de son message et vous serez connecté automatiquement. Ou saisissez l’e-mail et le mot de passe de ce message, pas les vôtres.',
+  'login.invbad':
+    'Le lien n’a pas marché : le mot de passe a peut-être changé. Demandez un nouveau lien à l’organisateur ou saisissez les données à la main.',
+  'add.reset': 'Nouveau mot de passe et lien de connexion'
 };

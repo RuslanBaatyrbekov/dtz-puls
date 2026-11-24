@@ -97,9 +97,22 @@ function onSession(sess) {
     OWNER = false;
     syncState = 'local';
     view = 'login';
-    render();
+    if (!tryInvite()) render();
     return;
   }
+  // An invite for another account (shared device): sign out here, then the invite signs in.
+  if (INVITE && sess.user.email && sess.user.email.toLowerCase() !== INVITE.e.toLowerCase()) {
+    SB.auth.signOut({ scope: 'local' }).then(
+      function () {
+        onSession(null);
+      },
+      function () {
+        onSession(null);
+      }
+    );
+    return;
+  }
+  if (INVITE) INVITE = null;
   if (id === ME && view !== 'boot' && view !== 'login') return;
   ME = id;
   EMAIL = sess.user.email || '';

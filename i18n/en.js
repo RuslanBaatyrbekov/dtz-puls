@@ -373,5 +373,10 @@
     'Tap any underlined word in a task to see its translation and hear it. Lessons now start with a short “Words first” warm-up. Every word you look up is collected in the My words deck under Flashcards.',
   'notes.key': 'Key points',
   'notes.ex': 'Examples',
-  'notes.err': 'Common mistakes'
+  'notes.err': 'Common mistakes',
+  'login.hint':
+    'This is not a sign-up: the organiser creates your account. Open the link from their message and you are signed in automatically. Or type the email and password from that message, not your own.',
+  'login.invbad':
+    'The link did not work: the password may have been changed. Ask the organiser for a new link or type the details by hand.',
+  'add.reset': 'Set a new password and send a sign-in link'
 };

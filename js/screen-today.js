@@ -113,7 +113,7 @@ function langGrid() {
     '</div>'
   );
 }
-var LANGHEAD = '🌐 Sprache · Language · Язык · Dil · اللغة · زبان · Jezik · Idioma · भाषा';
+var LANGHEAD = '🌐 Sprache · Language · Язык · Dil · اللغة · زبان · Jezik · Idioma · Langue · भाषा';
 function vLogin() {
   if (!LANGCHOSEN)
     return (
@@ -150,7 +150,9 @@ function vLogin() {
     (loginBusy ? ' disabled' : '') +
     '>' +
     esc(loginBusy ? t('login.busy') : t('login.btn')) +
-    '</button></form><p class="small muted" style="margin:0">' +
+    '</button></form><p class="small" style="margin:0;padding:10px 12px;border-radius:10px;background:var(--accent-soft)">💡 ' +
+    esc(t('login.hint')) +
+    '</p><p class="small muted" style="margin:0">' +
     esc(t('login.noacc')) +
     '</p></section><p class="small muted" lang="de" dir="ltr" style="margin:0">Privates, kostenloses Lernprojekt. Nicht offiziell, nicht verbunden mit BAMF, g.a.s.t. oder telc.</p>'
   );
