@@ -145,9 +145,9 @@ function vNote() {
     esc(L(n.tip)) +
     '</p></section>';
   (n.b || []).forEach(function (b) {
-    var title =
-      b.h ||
-      (b.t === 'key' ? t('notes.key') : b.t === 'ex' ? t('notes.ex') : b.t === 'err' ? t('notes.err') : '');
+    // Default headings are bilingual: German first, the learner's language after it.
+    var DE_HEAD = { key: 'Das Wichtigste', ex: 'Beispiele', err: 'Typische Fehler' };
+    var title = b.h || (DE_HEAD[b.t] ? DE_HEAD[b.t] + ' · ' + t('notes.' + b.t) : '');
     var local = b.t === 'key';
     h +=
       '<section class="card nblock nb-' +
