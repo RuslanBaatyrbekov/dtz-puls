@@ -381,5 +381,12 @@
   'wn.online': 'သင်တန်းသား အက်ပ်ဖွင့်သည်',
   'wn.lesson': 'သင်တန်းသား သင်ခန်းစာ ပြီးသည်',
   'wn.err': 'သတ်မှတ်ချက် မသိမ်းနိုင်ပါ။',
-  'wn.nosql': 'ဦးစွာ Supabase တွင် notify.sql ကို run ပြီး notify-observers function ကို deploy လုပ်ပါ။'
+  'wn.nosql': 'ဦးစွာ Supabase တွင် notify.sql ကို run ပြီး notify-observers function ကို deploy လုပ်ပါ။',
+  'part.sp1': 'Teil 1 · ကိုယ့်အကြောင်း',
+  'part.sp2': 'Teil 2 · ပုံ',
+  'part.sp3': 'Teil 3 · စီစဉ်ခြင်း',
+  'part.ann': 'ကြေညာချက်များ',
+  'part.phone': 'အသံမက်ဆေ့ချ်',
+  'part.radio': 'ရေဒီယို',
+  'part.talk': 'စကားပြောများ'
 };

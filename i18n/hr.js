@@ -391,5 +391,12 @@
   'wn.online': 'Polaznik je otvorio aplikaciju',
   'wn.lesson': 'Polaznik je završio lekciju',
   'wn.err': 'Postavka nije spremljena.',
-  'wn.nosql': 'Najprije pokrenite notify.sql u Supabaseu i objavite funkciju notify-observers.'
+  'wn.nosql': 'Najprije pokrenite notify.sql u Supabaseu i objavite funkciju notify-observers.',
+  'part.sp1': 'Teil 1 · o sebi',
+  'part.sp2': 'Teil 2 · slika',
+  'part.sp3': 'Teil 3 · planiranje',
+  'part.ann': 'Obavijesti',
+  'part.phone': 'Govorna pošta',
+  'part.radio': 'Radio',
+  'part.talk': 'Razgovori'
 };

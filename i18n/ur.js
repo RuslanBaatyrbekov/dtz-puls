@@ -386,5 +386,12 @@
   'wn.online': 'طالب علم نے ایپ کھولی',
   'wn.lesson': 'طالب علم نے سبق مکمل کیا',
   'wn.err': 'ترتیب محفوظ نہ ہو سکی۔',
-  'wn.nosql': 'پہلے Supabase میں notify.sql چلائیں اور notify-observers فنکشن لگائیں۔'
+  'wn.nosql': 'پہلے Supabase میں notify.sql چلائیں اور notify-observers فنکشن لگائیں۔',
+  'part.sp1': 'Teil 1 · اپنے بارے میں',
+  'part.sp2': 'Teil 2 · تصویر',
+  'part.sp3': 'Teil 3 · منصوبہ بندی',
+  'part.ann': 'اعلانات',
+  'part.phone': 'وائس میل',
+  'part.radio': 'ریڈیو',
+  'part.talk': 'گفتگو'
 };

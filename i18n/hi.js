@@ -382,5 +382,12 @@
   'wn.online': 'विद्यार्थी ने ऐप खोला',
   'wn.lesson': 'विद्यार्थी ने पाठ पूरा किया',
   'wn.err': 'सेटिंग सहेजी नहीं जा सकी।',
-  'wn.nosql': 'पहले Supabase में notify.sql चलाएँ और notify-observers फ़ंक्शन डिप्लॉय करें।'
+  'wn.nosql': 'पहले Supabase में notify.sql चलाएँ और notify-observers फ़ंक्शन डिप्लॉय करें।',
+  'part.sp1': 'Teil 1 · अपने बारे में',
+  'part.sp2': 'Teil 2 · चित्र',
+  'part.sp3': 'Teil 3 · योजना',
+  'part.ann': 'घोषणाएँ',
+  'part.phone': 'वॉइसमेल',
+  'part.radio': 'रेडियो',
+  'part.talk': 'बातचीत'
 };

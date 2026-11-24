@@ -393,5 +393,12 @@
   'wn.online': 'Un alumno abrió la app',
   'wn.lesson': 'Un alumno terminó una lección',
   'wn.err': 'No se pudo guardar el ajuste.',
-  'wn.nosql': 'Primero ejecuta notify.sql en Supabase y publica la función notify-observers.'
+  'wn.nosql': 'Primero ejecuta notify.sql en Supabase y publica la función notify-observers.',
+  'part.sp1': 'Teil 1 · sobre ti',
+  'part.sp2': 'Teil 2 · imagen',
+  'part.sp3': 'Teil 3 · planificar',
+  'part.ann': 'Avisos',
+  'part.phone': 'Buzón de voz',
+  'part.radio': 'Radio',
+  'part.talk': 'Conversaciones'
 };

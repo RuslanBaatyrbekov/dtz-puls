@@ -83,13 +83,68 @@ function pickFrom(pool, n) {
   });
   return out;
 }
-function openPractice(sec) {
-  var pool = C.bank[sec] || [];
+/* Parts of a practice section that can be trained on their own (e.g. only Sprechen Teil 2). */
+var HOEREN_KIND = function (re) {
+  return function (x) {
+    return re.test(String(x.k || ''));
+  };
+};
+var PRAC_PARTS = {
+  sprechen: [
+    {
+      id: '1',
+      key: 'part.sp1',
+      f: function (x) {
+        return x.teil === 1;
+      }
+    },
+    {
+      id: '2',
+      key: 'part.sp2',
+      f: function (x) {
+        return x.teil === 2;
+      }
+    },
+    {
+      id: '3',
+      key: 'part.sp3',
+      f: function (x) {
+        return x.teil === 3;
+      }
+    }
+  ],
+  hoeren: [
+    { id: 'ann', key: 'part.ann', f: HOEREN_KIND(/^(Durchsage|Telefonansage)/) },
+    { id: 'phone', key: 'part.phone', f: HOEREN_KIND(/^(Anrufbeantworter|Telefonnachricht|Nachricht)/) },
+    { id: 'radio', key: 'part.radio', f: HOEREN_KIND(/^Radio/) },
+    { id: 'talk', key: 'part.talk', f: HOEREN_KIND(/^Gespräch/) }
+  ]
+};
+function pracPart(sec, part) {
+  return (PRAC_PARTS[sec] || []).filter(function (p) {
+    return p.id === part;
+  })[0];
+}
+function openPractice(sec, part) {
+  var pp = part ? pracPart(sec, part) : null;
+  var pool = (C.bank[sec] || []).filter(
+    pp
+      ? pp.f
+      : function () {
+          return true;
+        }
+  );
   if (!pool.length) return;
   var n = { sprechen: 3, schreiben: 1, lesen: 4, hoeren: 5 }[sec] || 8;
   var tasks = shuffle(pickFrom(pool, n));
   startRun(
-    { id: 'prac-' + sec, title: t('sec.' + sec), kind: 'practice', sec: sec },
+    {
+      id: 'prac-' + sec + (pp ? '-' + pp.id : ''),
+      title: t('sec.' + sec) + (pp ? ' · ' + t(pp.key) : ''),
+      kind: 'practice',
+      sec: sec,
+      part: pp ? pp.id : ''
+    },
     (/^(hoeren|lesen|sprechen|schreiben)$/.test(sec) ? warmStep(tasks) : []).concat(
       tasks.map(function (x) {
         return { k: 'task', t: x, first: true };
@@ -772,7 +827,13 @@ function vResult() {
     esc(t('btn.home')) +
     '</button>' +
     (r.kind === 'practice'
-      ? '<button class="btn ghost" data-a="prac" data-v="' + r.sec + '">' + esc(t('res.more')) + '</button>'
+      ? '<button class="btn ghost" data-a="prac" data-v="' +
+        r.sec +
+        '" data-p="' +
+        esc(r.part || '') +
+        '">' +
+        esc(t('res.more')) +
+        '</button>'
       : more && r.kind === 'lesson'
         ? '<button class="btn ghost" data-a="open" data-i="' + ni + '">' + esc(t('res.next')) + '</button>'
         : '') +

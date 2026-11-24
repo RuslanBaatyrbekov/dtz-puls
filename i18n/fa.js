@@ -387,5 +387,12 @@
   'wn.online': 'زبان‌آموز برنامه را باز کرد',
   'wn.lesson': 'زبان‌آموز درسی را تمام کرد',
   'wn.err': 'ذخیرهٔ تنظیم ممکن نشد.',
-  'wn.nosql': 'اول notify.sql را در Supabase اجرا کنید و تابع notify-observers را منتشر کنید.'
+  'wn.nosql': 'اول notify.sql را در Supabase اجرا کنید و تابع notify-observers را منتشر کنید.',
+  'part.sp1': 'Teil 1 · دربارهٔ خودت',
+  'part.sp2': 'Teil 2 · تصویر',
+  'part.sp3': 'Teil 3 · برنامه‌ریزی',
+  'part.ann': 'اعلان‌ها',
+  'part.phone': 'پیغام‌گیر',
+  'part.radio': 'رادیو',
+  'part.talk': 'گفتگوها'
 };

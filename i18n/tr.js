@@ -388,5 +388,12 @@
   'wn.online': 'Öğrenci uygulamayı açtı',
   'wn.lesson': 'Öğrenci bir dersi bitirdi',
   'wn.err': 'Ayar kaydedilemedi.',
-  'wn.nosql': 'Önce Supabase’de notify.sql çalıştırın ve notify-observers işlevini yükleyin.'
+  'wn.nosql': 'Önce Supabase’de notify.sql çalıştırın ve notify-observers işlevini yükleyin.',
+  'part.sp1': 'Teil 1 · kendin',
+  'part.sp2': 'Teil 2 · resim',
+  'part.sp3': 'Teil 3 · planlama',
+  'part.ann': 'Anonslar',
+  'part.phone': 'Sesli mesaj',
+  'part.radio': 'Radyo',
+  'part.talk': 'Konuşmalar'
 };

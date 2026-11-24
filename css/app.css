@@ -2592,3 +2592,13 @@ details.trans summary {
   height: 20px;
   accent-color: var(--ok);
 }
+.secparts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: -4px 0 6px;
+  padding-inline-start: 12px;
+}
+.secparts .chip {
+  font-size: 13px;
+}

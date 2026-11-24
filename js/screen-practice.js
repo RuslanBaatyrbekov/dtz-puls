@@ -70,7 +70,8 @@ function vPractice() {
       (st.miss
         ? '<br><span style="color:var(--bad)">' + esc(t('prac.miss', { n: st.miss })) + '</span>'
         : '') +
-      '</span></button>';
+      '</span></button>' +
+      pracPartsRow(sec);
   });
   h +=
     '</div><section class="card"><h3>' +
@@ -79,4 +80,32 @@ function vPractice() {
     esc(t('prac.mock.p')) +
     '</p><div class="row"><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/PDF/DTZ_UEbungssatz_1_Erwachsene.pdf" target="_blank" rel="noopener">Übungssatz 1 PDF</a><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/Audio/gast_Deutsch-Test_fuer_Zuwanderer_UEbungssatz_1.mp3" target="_blank" rel="noopener">MP3 1</a><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/PDF/DTZ_UEbungssatz_2_Erwachsene.pdf" target="_blank" rel="noopener">Übungssatz 2 PDF</a><a class="btn small ghost" href="https://www.gast.de/fileadmin/gast.de/GAST/5_DTZ/Audio/gast_Deutsch-Test_fuer_Zuwanderer_UEbungssatz_2.mp3" target="_blank" rel="noopener">MP3 2</a></div></section>';
   return h;
+}
+
+/** Chips under a section to train just one part of it (Sprechen Teil 1/2/3, Hören by type). */
+function pracPartsRow(sec) {
+  var parts = PRAC_PARTS[sec];
+  if (!parts) return '';
+  var pool = C.bank[sec] || [];
+  return (
+    '<div class="secparts">' +
+    parts
+      .map(function (p) {
+        var n = pool.filter(p.f).length;
+        if (!n) return '';
+        return (
+          '<button class="chip" data-a="prac" data-v="' +
+          sec +
+          '" data-p="' +
+          p.id +
+          '">' +
+          esc(t(p.key)) +
+          ' <span class="muted num">' +
+          n +
+          '</span></button>'
+        );
+      })
+      .join('') +
+    '</div>'
+  );
 }

@@ -384,5 +384,12 @@
   'wn.online': 'متعلّم فتح التطبيق',
   'wn.lesson': 'متعلّم أنهى درسًا',
   'wn.err': 'تعذّر حفظ الإعداد.',
-  'wn.nosql': 'شغّل أولًا notify.sql في Supabase وانشر دالة notify-observers.'
+  'wn.nosql': 'شغّل أولًا notify.sql في Supabase وانشر دالة notify-observers.',
+  'part.sp1': 'Teil 1 · عن نفسك',
+  'part.sp2': 'Teil 2 · صورة',
+  'part.sp3': 'Teil 3 · تخطيط',
+  'part.ann': 'إعلانات',
+  'part.phone': 'بريد صوتي',
+  'part.radio': 'راديو',
+  'part.talk': 'محادثات'
 };

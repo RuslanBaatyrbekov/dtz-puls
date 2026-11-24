@@ -390,5 +390,12 @@
   'wn.online': 'Учень зайшов у застосунок',
   'wn.lesson': 'Учень пройшов урок',
   'wn.err': 'Не вдалося зберегти налаштування.',
-  'wn.nosql': 'Спершу виконайте notify.sql у Supabase і викладіть функцію notify-observers.'
+  'wn.nosql': 'Спершу виконайте notify.sql у Supabase і викладіть функцію notify-observers.',
+  'part.sp1': 'Teil 1 · про себе',
+  'part.sp2': 'Teil 2 · картинка',
+  'part.sp3': 'Teil 3 · планувати',
+  'part.ann': 'Оголошення',
+  'part.phone': 'Автовідповідач',
+  'part.radio': 'Радіо',
+  'part.talk': 'Розмови'
 };

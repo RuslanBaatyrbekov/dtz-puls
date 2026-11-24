@@ -101,7 +101,7 @@ var A = {
     openLesson(+el.dataset.i);
   },
   prac: function (el) {
-    openPractice(el.dataset.v);
+    openPractice(el.dataset.v, el.dataset.p || '');
   },
   review: openReview,
   next: next,

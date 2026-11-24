@@ -399,5 +399,12 @@
   'wn.online': 'Un apprenant a ouvert l’appli',
   'wn.lesson': 'Un apprenant a terminé une leçon',
   'wn.err': 'Impossible d’enregistrer le réglage.',
-  'wn.nosql': 'Exécutez d’abord notify.sql dans Supabase et déployez la fonction notify-observers.'
+  'wn.nosql': 'Exécutez d’abord notify.sql dans Supabase et déployez la fonction notify-observers.',
+  'part.sp1': 'Teil 1 · se présenter',
+  'part.sp2': 'Teil 2 · image',
+  'part.sp3': 'Teil 3 · organiser',
+  'part.ann': 'Annonces',
+  'part.phone': 'Messagerie',
+  'part.radio': 'Radio',
+  'part.talk': 'Conversations'
 };

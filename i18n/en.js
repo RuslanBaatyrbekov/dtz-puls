@@ -390,5 +390,12 @@
   'wn.online': 'A learner opened the app',
   'wn.lesson': 'A learner finished a lesson',
   'wn.err': 'Could not save the setting.',
-  'wn.nosql': 'First run notify.sql in Supabase and deploy the notify-observers function.'
+  'wn.nosql': 'First run notify.sql in Supabase and deploy the notify-observers function.',
+  'part.sp1': 'Teil 1 · about you',
+  'part.sp2': 'Teil 2 · picture',
+  'part.sp3': 'Teil 3 · planning',
+  'part.ann': 'Announcements',
+  'part.phone': 'Voicemail',
+  'part.radio': 'Radio',
+  'part.talk': 'Conversations'
 };
