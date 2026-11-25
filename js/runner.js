@@ -393,7 +393,7 @@ function vTask(st) {
   if (x.t === 'speak') h += vSpeak(x);
   if (x.t === 'write') h += vWrite(x);
   if (T.done && x.t !== 'speak' && x.t !== 'write') {
-    var ex = explain(x);
+    var ex = x.t === 'order' && !T.right && orderMidOnly(x) ? rule('mitte') || explain(x) : explain(x);
     h +=
       '<div class="fb ' +
       (T.right ? 'ok' : 'bad') +
@@ -705,6 +705,36 @@ function check() {
     });
   }
   settle(ok);
+}
+/* Order task answered wrong, but no verb was moved (the verbs stand right):
+   the mistake is in the middle, so the verb-position hint would not help. */
+function isVerbWord(w) {
+  var raw = w.replace(/[.,!?]/g, ''),
+    l = glemma(raw);
+  if (
+    /^(muss|musst|müssen|kann|kannst|können|will|willst|wollen|darf|darfst|dürfen|soll|sollst|sollen|möchte|möchtest|möchten|ist|bin|bist|sind|seid|war|hat|habe|hast|haben|wird|werden)$/i.test(
+      raw
+    )
+  )
+    return true;
+  return (
+    !!l &&
+    l === l.toLowerCase() &&
+    /(en|ern|eln)$/.test(l) &&
+    !/^(einen|seinen|ihren|meinen|deinen|unseren|keinen|diesen|den)$/i.test(raw)
+  );
+}
+function orderMidOnly(x) {
+  var got = T.ans.map(function (j) {
+    return x.w[j];
+  });
+  return [x.w.join(' ')].concat(x.alt || []).some(function (a) {
+    var c = a.split(' ');
+    if (c.length !== got.length || norm(c[c.length - 1]) !== norm(got[got.length - 1])) return false;
+    for (var i = 0; i < c.length; i++)
+      if (norm(c[i]) !== norm(got[i]) && (isVerbWord(c[i]) || isVerbWord(got[i]))) return false;
+    return true;
+  });
 }
 function next() {
   stopSay();
