@@ -363,8 +363,6 @@
   'cards.my': 'My words',
   'gl.in': 'in My words',
   'gl.remove': 'Remove',
-  'gl.warmh': 'Words first',
-  'gl.warmp': 'Words from the next tasks. Tap to see the translation: new ones go to My words for review.',
   'gl.tap': 'show translation',
   'gl.text': 'Audio text',
   'gl.tip': 'Tap an underlined word to see its translation.',

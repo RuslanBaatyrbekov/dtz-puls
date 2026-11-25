@@ -371,9 +371,6 @@
   'cards.my': 'Mes mots',
   'gl.in': 'dans Mes mots',
   'gl.remove': 'Retirer',
-  'gl.warmh': 'D’abord les mots',
-  'gl.warmp':
-    'Les mots des prochains exercices. Touchez pour voir la traduction : les nouveaux vont dans Mes mots pour la révision.',
   'gl.tap': 'voir la traduction',
   'gl.text': 'Texte de l’audio',
   'gl.tip': 'Touchez un mot souligné pour voir sa traduction.',

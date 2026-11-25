@@ -360,9 +360,6 @@
   'cards.my': 'Kelimelerim',
   'gl.in': 'Kelimelerim’de',
   'gl.remove': 'Kaldır',
-  'gl.warmh': 'Önce kelimeler',
-  'gl.warmp':
-    'Sonraki görevlerdeki kelimeler. Çeviriyi görmek için dokun: bilmediklerin tekrar için Kelimelerim’e eklenir.',
   'gl.tap': 'çeviriyi göster',
   'gl.text': 'Ses metni',
   'gl.tip': 'Altı çizili kelimelere dokun — çevirisi görünür.',

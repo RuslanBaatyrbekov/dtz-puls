@@ -363,9 +363,6 @@
   'cards.my': 'Moje riječi',
   'gl.in': 'u Mojim riječima',
   'gl.remove': 'Ukloni',
-  'gl.warmh': 'Najprije riječi',
-  'gl.warmp':
-    'Riječi iz sljedećih zadataka. Dodirni za prijevod: nepoznate idu u Moje riječi za ponavljanje.',
   'gl.tap': 'pokaži prijevod',
   'gl.text': 'Tekst audiozapisa',
   'gl.tip': 'Dodirni podcrtanu riječ — pojavit će se prijevod.',

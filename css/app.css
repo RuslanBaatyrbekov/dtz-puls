@@ -2452,42 +2452,6 @@ input.gap {
   border-radius: 8px;
   background: var(--accent-soft);
 }
-.wlist {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 12px 0;
-}
-.wrow {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 4px 8px;
-  align-items: center;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
-}
-.wde {
-  all: unset;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 18px;
-}
-.wde .pl {
-  font-weight: 400;
-  color: var(--muted);
-  font-size: 0.75em;
-}
-.wtr {
-  all: unset;
-  cursor: pointer;
-  grid-column: 1/-1;
-  font-size: 15px;
-}
-.wrow.open {
-  border-color: var(--ok);
-}
 details.trans {
   margin-top: 8px;
 }

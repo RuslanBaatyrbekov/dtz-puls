@@ -13,7 +13,6 @@ function openLesson(i) {
     .map(function (c) {
       return { k: 'card', c: c };
     })
-    .concat(warmStep(D._tasks))
     .concat(
       D._tasks.map(function (x) {
         return { k: 'task', t: x, first: true };
@@ -145,11 +144,9 @@ function openPractice(sec, part) {
       sec: sec,
       part: pp ? pp.id : ''
     },
-    (/^(hoeren|lesen|sprechen|schreiben)$/.test(sec) ? warmStep(tasks) : []).concat(
-      tasks.map(function (x) {
-        return { k: 'task', t: x, first: true };
-      })
-    ),
+    tasks.map(function (x) {
+      return { k: 'task', t: x, first: true };
+    }),
     false
   );
 }
@@ -621,8 +618,7 @@ function vRun() {
     '</button><div class="bar acc grow"><i style="width:' +
     pct +
     '%"></i></div></div><section class="lesson">';
-  if (st.k === 'words') h += vWords(st);
-  else if (st.k === 'card') {
+  if (st.k === 'card') {
     var c = st.c;
     h +=
       '<div class="eyebrow">' +

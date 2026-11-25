@@ -362,8 +362,6 @@
   'cards.my': 'Moje reči',
   'gl.in': 'u Mojim rečima',
   'gl.remove': 'Ukloni',
-  'gl.warmh': 'Najpre reči',
-  'gl.warmp': 'Reči iz sledećih zadataka. Dodirni za prevod: nepoznate idu u Moje reči za ponavljanje.',
   'gl.tap': 'prikaži prevod',
   'gl.text': 'Tekst audio-snimka',
   'gl.tip': 'Dodirni podvučenu reč — pojaviće se prevod.',

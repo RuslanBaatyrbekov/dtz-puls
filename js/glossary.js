@@ -1,5 +1,5 @@
 /* DTZ-Puls · glossary
- * Tap-to-translate glossary and the "Words first" warm-up.
+ * Tap-to-translate glossary and the "My words" deck.
  * Classic script: shares the global scope with the other files in js/ (load order is set in index.html). */
 'use strict';
 
@@ -128,63 +128,4 @@ function myCards() {
     if (x) out.push({ id: 'g:' + l, de: x.de, say: gSay(x.de), t: x.t, d: 'my' });
   });
   return out;
-}
-/* words of a set of tasks that the learner does not know well yet (for the warm-up step) */
-function warmWords(tasks) {
-  var w = [];
-  tasks.forEach(function (x) {
-    (x.gw || []).forEach(function (l) {
-      if (w.indexOf(l) < 0 && G()[l]) w.push(l);
-    });
-  });
-  return w
-    .filter(function (l) {
-      var c = S.cards['g:' + l];
-      return !(c && c[0] >= 2);
-    })
-    .slice(0, 8);
-}
-function warmStep(tasks) {
-  var w = warmWords(tasks);
-  return w.length >= 3 ? [{ k: 'words', w: w, open: {} }] : [];
-}
-function vWords(st) {
-  var g = G();
-  return (
-    '<div class="eyebrow">📖 ' +
-    esc(R.L.title) +
-    '</div><h1>' +
-    esc(t('gl.warmh')) +
-    '</h1><p class="small muted" style="margin-top:0">' +
-    esc(t('gl.warmp')) +
-    '</p><div class="wlist">' +
-    st.w
-      .map(function (l) {
-        var x = g[l],
-          o = st.open[l];
-        return (
-          '<div class="wrow' +
-          (o ? ' open' : '') +
-          '"><button class="wde" data-a="wflip" data-g="' +
-          esc(l) +
-          '" lang="de" dir="ltr">' +
-          cWord(x.de) +
-          '</button>' +
-          '<button class="btn small ghost say" data-a="say" data-txt="' +
-          esc(gSay(x.de)) +
-          '" aria-label="' +
-          esc(t('btn.listen')) +
-          '">🔊</button>' +
-          '<button class="wtr" data-a="wflip" data-g="' +
-          esc(l) +
-          '" dir="auto">' +
-          (o ? esc(L(x.t)) : '<span class="muted">' + esc(t('gl.tap')) + '</span>') +
-          '</button></div>'
-        );
-      })
-      .join('') +
-    '</div><div class="foot"><button class="btn" data-a="next">' +
-    esc(t('btn.next')) +
-    ' →</button></div>'
-  );
 }

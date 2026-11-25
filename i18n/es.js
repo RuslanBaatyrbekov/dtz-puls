@@ -365,9 +365,6 @@
   'cards.my': 'Mis palabras',
   'gl.in': 'en Mis palabras',
   'gl.remove': 'Quitar',
-  'gl.warmh': 'Primero, las palabras',
-  'gl.warmp':
-    'Palabras de las próximas tareas. Toca para ver la traducción: las nuevas pasan a Mis palabras para repasarlas.',
   'gl.tap': 'ver traducción',
   'gl.text': 'Texto del audio',
   'gl.tip': 'Toca una palabra subrayada para ver su traducción.',

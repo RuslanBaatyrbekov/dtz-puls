@@ -414,14 +414,7 @@ var A = {
       gPaint();
     }
   },
-  wflip: function (el) {
-    var st = R && R.q[R.pos];
-    if (!st || st.k !== 'words') return;
-    var l = el.dataset.g;
-    st.open[l] = !st.open[l];
-    if (st.open[l]) gAdd(l);
-    render();
-  },
+
   reload: hardReload,
   cards: function () {
     stopSay();
