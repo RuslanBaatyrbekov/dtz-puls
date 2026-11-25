@@ -73,12 +73,18 @@ function pickFrom(pool, n) {
       });
   var all = miss.slice(0, Math.ceil(n / 2)).concat(fresh, old, miss.slice(Math.ceil(n / 2))),
     out = [],
-    fr = {};
-  all.forEach(function (x) {
-    if (out.length >= n || out.indexOf(x) >= 0) return;
-    if (x.fr && fr[x.fr]) return;
-    if (x.fr) fr[x.fr] = 1;
-    out.push(x);
+    fr = {},
+    kind = {};
+  /* first pass: one task per situation (e.g. not two "Durchsage · Bahnhof" in a row); second pass fills up */
+  [true, false].forEach(function (distinct) {
+    all.forEach(function (x) {
+      if (out.length >= n || out.indexOf(x) >= 0) return;
+      if (x.fr && fr[x.fr]) return;
+      if (distinct && x.k && kind[x.k]) return;
+      if (x.fr) fr[x.fr] = 1;
+      if (x.k) kind[x.k] = 1;
+      out.push(x);
+    });
   });
   return out;
 }
