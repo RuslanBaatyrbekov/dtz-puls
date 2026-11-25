@@ -407,5 +407,9 @@
     'El servidor no tiene suscripción de esta cuenta. Desactiva y vuelve a activar Recordatorios en tu Perfil.',
   'wn.t.fail': 'Hay suscripción pero el envío falló ({e}). Desactiva y vuelve a activar Recordatorios.',
   'wn.t.ok':
-    'Enviado a dispositivos: {n}. Si no apareció nada, revisa los ajustes de notificaciones del navegador en el teléfono.'
+    'Enviado a dispositivos: {n}. Si no apareció nada, revisa los ajustes de notificaciones del navegador en el teléfono.',
+  'set.voice': 'Voz',
+  'set.speed': 'Velocidad',
+  'set.voicetest': 'Hallo! So klingt meine Stimme.',
+  'set.nomale': 'No hay voz masculina en este dispositivo. Elige otra voz de la lista o cambia la velocidad.'
 };

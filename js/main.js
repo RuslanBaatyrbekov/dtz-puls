@@ -171,6 +171,11 @@ var A = {
     }
     render();
   },
+  vrate: function (el) {
+    setRate(+el.dataset.v);
+    render();
+    say(document.createElement('i'), t('set.voicetest'), 1);
+  },
   say: function (el) {
     say(el, el.dataset.txt, 0.92);
   },
@@ -637,6 +642,10 @@ document.addEventListener('change', function (e) {
   if (e.target.dataset && e.target.dataset.ch === 'lang') {
     setLang(e.target.value);
     render();
+  }
+  if (e.target.dataset && e.target.dataset.ch === 'voice') {
+    setVoice(e.target.value);
+    say(document.createElement('i'), t('set.voicetest'), 1);
   }
   if (e.target.dataset && e.target.dataset.ch === 'remh') {
     pushHour(+e.target.value);

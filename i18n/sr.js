@@ -403,5 +403,9 @@
   'wn.t.nosub': 'Na serveru nema pretplate ovog naloga. Isključite i ponovo uključite Podsetnike u Profilu.',
   'wn.t.fail': 'Pretplata postoji, ali slanje nije uspelo ({e}). Isključite i ponovo uključite Podsetnike.',
   'wn.t.ok':
-    'Poslato na uređaja: {n}. Ako se ništa nije pojavilo, proverite podešavanja obaveštenja pregledača na telefonu.'
+    'Poslato na uređaja: {n}. Ako se ništa nije pojavilo, proverite podešavanja obaveštenja pregledača na telefonu.',
+  'set.voice': 'Glas',
+  'set.speed': 'Brzina',
+  'set.voicetest': 'Hallo! So klingt meine Stimme.',
+  'set.nomale': 'Na ovom uređaju nema muškog glasa. Izaberite drugi glas sa liste ili brzinu.'
 };

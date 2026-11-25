@@ -406,5 +406,9 @@
   'wn.t.fail':
     'There is a subscription but sending failed ({e}). Turn Reminders off and on again in your Profile.',
   'wn.t.ok':
-    'Sent to devices: {n}. If nothing appeared, check the phone’s notification settings for the browser.'
+    'Sent to devices: {n}. If nothing appeared, check the phone’s notification settings for the browser.',
+  'set.voice': 'Voice',
+  'set.speed': 'Speed',
+  'set.voicetest': 'Hallo! So klingt meine Stimme.',
+  'set.nomale': 'No male voice found on this device. Choose another voice from the list or change the speed.'
 };

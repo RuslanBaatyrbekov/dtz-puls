@@ -413,5 +413,10 @@
     'Le serveur n’a pas d’abonnement pour ce compte. Désactivez puis réactivez les Rappels dans votre Profil.',
   'wn.t.fail': 'Abonnement trouvé mais l’envoi a échoué ({e}). Désactivez puis réactivez les Rappels.',
   'wn.t.ok':
-    'Envoyé à {n} appareil(s). Si rien n’apparaît, vérifiez les réglages de notifications du navigateur sur le téléphone.'
+    'Envoyé à {n} appareil(s). Si rien n’apparaît, vérifiez les réglages de notifications du navigateur sur le téléphone.',
+  'set.voice': 'Voix',
+  'set.speed': 'Vitesse',
+  'set.voicetest': 'Hallo! So klingt meine Stimme.',
+  'set.nomale':
+    'Aucune voix masculine sur cet appareil. Choisissez une autre voix dans la liste ou changez la vitesse.'
 };

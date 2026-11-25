@@ -406,5 +406,9 @@
   'wn.t.fail':
     'Pretplata postoji, ali slanje nije uspjelo ({e}). Isključite i ponovno uključite Podsjetnike.',
   'wn.t.ok':
-    'Poslano na uređaja: {n}. Ako se ništa nije pojavilo, provjerite postavke obavijesti preglednika na telefonu.'
+    'Poslano na uređaja: {n}. Ako se ništa nije pojavilo, provjerite postavke obavijesti preglednika na telefonu.',
+  'set.voice': 'Glas',
+  'set.speed': 'Brzina',
+  'set.voicetest': 'Hallo! So klingt meine Stimme.',
+  'set.nomale': 'Na ovom uređaju nema muškog glasa. Odaberite drugi glas s popisa ili brzinu.'
 };

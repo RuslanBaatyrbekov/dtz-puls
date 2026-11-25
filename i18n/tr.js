@@ -402,5 +402,9 @@
     'Sunucuda bu hesabın aboneliği yok. Profil’de Hatırlatmaları kapatıp yeniden açın, sonra tekrar deneyin.',
   'wn.t.fail': 'Abonelik var ama gönderim başarısız ({e}). Profil’de Hatırlatmaları kapatıp yeniden açın.',
   'wn.t.ok':
-    'Gönderilen cihaz: {n}. Bir şey görünmediyse telefonun tarayıcı bildirim ayarlarını kontrol edin.'
+    'Gönderilen cihaz: {n}. Bir şey görünmediyse telefonun tarayıcı bildirim ayarlarını kontrol edin.',
+  'set.voice': 'Ses',
+  'set.speed': 'Hız',
+  'set.voicetest': 'Hallo! So klingt meine Stimme.',
+  'set.nomale': 'Bu cihazda erkek sesi bulunamadı. Listeden başka bir ses veya hız seçin.'
 };

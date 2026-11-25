@@ -184,6 +184,7 @@ function vProg() {
     '</span>' +
     langSelect('lg1') +
     '</div>' +
+    voiceBlock() +
     remBlock() +
     '<div class="row"><label for="nm" class="small" style="min-width:90px">' +
     esc(t('set.name')) +
