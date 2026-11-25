@@ -406,5 +406,15 @@
   'part.ann': 'Annonces',
   'part.phone': 'Messagerie',
   'part.radio': 'Radio',
-  'part.talk': 'Conversations'
+  'part.talk': 'Conversations',
+  'wn.test': 'Envoyer une notification de test',
+  'wn.t.nofn':
+    'La fonction notify-observers ne répond pas : vérifiez qu’elle est déployée et que « Verify JWT » est désactivé.',
+  'wn.t.nodevice':
+    'Les notifications ne sont pas activées sur ce téléphone. Activez les Rappels dans votre Profil (sur iPhone uniquement dans l’appli de l’écran d’accueil), puis réessayez.',
+  'wn.t.nosub':
+    'Le serveur n’a pas d’abonnement pour ce compte. Désactivez puis réactivez les Rappels dans votre Profil.',
+  'wn.t.fail': 'Abonnement trouvé mais l’envoi a échoué ({e}). Désactivez puis réactivez les Rappels.',
+  'wn.t.ok':
+    'Envoyé à {n} appareil(s). Si rien n’apparaît, vérifiez les réglages de notifications du navigateur sur le téléphone.'
 };

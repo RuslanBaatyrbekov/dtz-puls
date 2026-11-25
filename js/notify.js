@@ -87,6 +87,33 @@ function vNotifyPrefs() {
     '</p>' +
     row('online', t('wn.online')) +
     row('lesson', t('wn.lesson')) +
+    '<div class="row" style="margin-top:8px"><button class="btn small ghost" data-a="wntest">' +
+    esc(t('wn.test')) +
+    '</button></div>' +
+    (NTEST ? '<p class="small" role="status" style="margin:8px 0 0">' + esc(NTEST) + '</p>' : '') +
     '</details>'
+  );
+}
+
+/* Test: the function pushes to this account's own devices and says what it found. */
+var NTEST = '';
+function notifyTest() {
+  if (!SB || !ME) return;
+  NTEST = '…';
+  render();
+  var deviceOn = window.Notification && Notification.permission === 'granted' && S.remind && S.remind.on;
+  SB.functions.invoke('notify-observers', { body: { event: 'test' } }).then(
+    function (r) {
+      var d = r && r.data;
+      if (r.error || !d || !d.ok) NTEST = t('wn.t.nofn');
+      else if (!d.subs) NTEST = t(deviceOn ? 'wn.t.nosub' : 'wn.t.nodevice');
+      else if (!d.sent) NTEST = t('wn.t.fail', { e: (d.errors || []).join(', ') });
+      else NTEST = t('wn.t.ok', { n: d.sent });
+      render();
+    },
+    function () {
+      NTEST = t('wn.t.nofn');
+      render();
+    }
   );
 }

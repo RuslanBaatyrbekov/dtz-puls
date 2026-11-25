@@ -397,5 +397,16 @@
   'part.ann': 'Announcements',
   'part.phone': 'Voicemail',
   'part.radio': 'Radio',
-  'part.talk': 'Conversations'
+  'part.talk': 'Conversations',
+  'wn.test': 'Send a test notification',
+  'wn.t.nofn':
+    'The notify-observers function does not answer: check that it is deployed and “Verify JWT” is off.',
+  'wn.t.nodevice':
+    'Notifications are not on for this phone. Turn on Reminders in your Profile (on iPhone only in the app from the Home Screen), then try again.',
+  'wn.t.nosub':
+    'The server has no subscription for this account. Turn Reminders off and on again in your Profile, then try again.',
+  'wn.t.fail':
+    'There is a subscription but sending failed ({e}). Turn Reminders off and on again in your Profile.',
+  'wn.t.ok':
+    'Sent to devices: {n}. If nothing appeared, check the phone’s notification settings for the browser.'
 };

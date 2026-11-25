@@ -398,5 +398,16 @@
   'part.ann': 'Obavijesti',
   'part.phone': 'Govorna pošta',
   'part.radio': 'Radio',
-  'part.talk': 'Razgovori'
+  'part.talk': 'Razgovori',
+  'wn.test': 'Pošalji probnu obavijest',
+  'wn.t.nofn':
+    'Funkcija notify-observers ne odgovara: provjerite je li objavljena i je li „Verify JWT” isključen.',
+  'wn.t.nodevice':
+    'Obavijesti nisu uključene na ovom telefonu. Uključite Podsjetnike u Profilu (na iPhoneu samo u aplikaciji s početnog zaslona), zatim pokušajte ponovno.',
+  'wn.t.nosub':
+    'Na poslužitelju nema pretplate ovog računa. Isključite i ponovno uključite Podsjetnike u Profilu.',
+  'wn.t.fail':
+    'Pretplata postoji, ali slanje nije uspjelo ({e}). Isključite i ponovno uključite Podsjetnike.',
+  'wn.t.ok':
+    'Poslano na uređaja: {n}. Ako se ništa nije pojavilo, provjerite postavke obavijesti preglednika na telefonu.'
 };

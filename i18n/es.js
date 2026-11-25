@@ -400,5 +400,15 @@
   'part.ann': 'Avisos',
   'part.phone': 'Buzón de voz',
   'part.radio': 'Radio',
-  'part.talk': 'Conversaciones'
+  'part.talk': 'Conversaciones',
+  'wn.test': 'Enviar notificación de prueba',
+  'wn.t.nofn':
+    'La función notify-observers no responde: comprueba que esté publicada y que «Verify JWT» esté desactivado.',
+  'wn.t.nodevice':
+    'Las notificaciones no están activadas en este teléfono. Activa Recordatorios en tu Perfil (en iPhone solo en la app desde la pantalla de inicio) y vuelve a probar.',
+  'wn.t.nosub':
+    'El servidor no tiene suscripción de esta cuenta. Desactiva y vuelve a activar Recordatorios en tu Perfil.',
+  'wn.t.fail': 'Hay suscripción pero el envío falló ({e}). Desactiva y vuelve a activar Recordatorios.',
+  'wn.t.ok':
+    'Enviado a dispositivos: {n}. Si no apareció nada, revisa los ajustes de notificaciones del navegador en el teléfono.'
 };

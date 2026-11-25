@@ -514,6 +514,7 @@ var A = {
     W.sort = el.dataset.v;
     render();
   },
+  wntest: notifyTest,
   whide: function (el) {
     var id = el.dataset.v,
       d = (W.docs || []).filter(function (x) {

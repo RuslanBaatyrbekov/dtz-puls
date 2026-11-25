@@ -5,7 +5,7 @@
 // Secrets: the same as send-reminders (VAPID_PUBLIC, VAPID_PRIVATE and the service key).
 import webpush from 'npm:web-push@3.6.7';
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const ONLINE_GAP_HOURS = 3; // at most one "online" push per learner in this time
 
 const cors = {
@@ -87,12 +87,40 @@ Deno.serve(async req => {
   } catch {
     return json({ error: 'body' }, 400);
   }
-  const event = body.event === 'lesson' ? 'lesson' : 'online';
+  const event = body.event === 'lesson' ? 'lesson' : body.event === 'test' ? 'test' : 'online';
   const H = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
   const get = async (path: string) => {
     const r = await fetch(url + '/rest/v1/' + path, { headers: H });
     return r.ok ? await r.json() : [];
   };
+
+  webpush.setVapidDetails('mailto:dtz-puls@users.noreply.github.com', pub, priv);
+
+  // Test button in the Observer tab: push to the caller's own devices and report what happened.
+  if (event === 'test') {
+    const own = await get(`push_subs?select=*&user_id=eq.${me.id}`);
+    const pref = await get(`observer_notify?select=online,lesson&user_id=eq.${me.id}`);
+    const res = {
+      subs: Array.isArray(own) ? own.length : -1,
+      sent: 0,
+      errors: [] as string[],
+      prefs: pref[0] || null
+    };
+    for (const s of Array.isArray(own) ? own : []) {
+      try {
+        await webpush.sendNotification(
+          { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+          JSON.stringify({ title: '🔔 DTZ-Puls', body: 'Test ✓', url: './#watch', tag: 'dtz-test' }),
+          { TTL: 600, urgency: 'high' }
+        );
+        res.sent++;
+      } catch (e) {
+        res.errors.push(String((e as { statusCode?: number }).statusCode || e));
+      }
+    }
+    console.log(VERSION, 'test', me.email, JSON.stringify(res));
+    return json({ ok: true, ...res, v: VERSION });
+  }
 
   // 2. Throttle: one "online" per learner per few hours, one push per finished day.
   const logKey = event === 'lesson' ? String(body.day || '').slice(0, 40) : '';
@@ -104,18 +132,18 @@ Deno.serve(async req => {
     if (event === 'lesson' || age < ONLINE_GAP_HOURS)
       return json({ ok: true, skipped: 'recent', v: VERSION });
   }
-  await fetch(url + '/rest/v1/notify_log?on_conflict=learner,kind,key', {
-    method: 'POST',
-    headers: { ...H, Prefer: 'resolution=merge-duplicates' },
-    body: JSON.stringify({ learner: me.id, kind: event, key: logKey, sent_at: new Date().toISOString() })
-  });
-
   // 3. Observers who want this kind of news (never the caller themselves).
   const prefs = await get(`observer_notify?select=user_id&${event}=eq.true`);
   const obsIds = (Array.isArray(prefs) ? prefs : [])
     .map((p: { user_id: string }) => p.user_id)
     .filter(id => id !== me.id);
-  if (!obsIds.length) return json({ ok: true, sent: 0, v: VERSION });
+  if (!obsIds.length) return json({ ok: true, sent: 0, reason: 'no observers want this', v: VERSION });
+  // Only now count it for throttling, so events before anyone listens do not block later ones.
+  await fetch(url + '/rest/v1/notify_log?on_conflict=learner,kind,key', {
+    method: 'POST',
+    headers: { ...H, Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({ learner: me.id, kind: event, key: logKey, sent_at: new Date().toISOString() })
+  });
 
   const mine = await get(`progress?select=state&user_id=eq.${me.id}`);
   const name = (Array.isArray(mine) && mine[0]?.state?.name) || (me.email || '').split('@')[0] || '?';
@@ -124,7 +152,6 @@ Deno.serve(async req => {
   for (const p of Array.isArray(obsProg) ? obsProg : []) langOf[p.user_id] = p.state?.lang || 'ru';
   const subs = await get(`push_subs?select=*&user_id=in.(${obsIds.join(',')})`);
 
-  webpush.setVapidDetails('mailto:dtz-puls@users.noreply.github.com', pub, priv);
   let sent = 0;
   for (const s of Array.isArray(subs) ? subs : []) {
     const table = event === 'lesson' ? LESSON : ONLINE;
@@ -152,5 +179,6 @@ Deno.serve(async req => {
       else console.error(VERSION, 'push failed', code, String(e));
     }
   }
-  return json({ ok: true, sent, v: VERSION });
+  console.log(VERSION, event, name, 'observers', obsIds.length, 'devices', (subs || []).length, 'sent', sent);
+  return json({ ok: true, sent, devices: Array.isArray(subs) ? subs.length : -1, v: VERSION });
 });

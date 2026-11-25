@@ -395,5 +395,15 @@
   'part.ann': 'Anonslar',
   'part.phone': 'Sesli mesaj',
   'part.radio': 'Radyo',
-  'part.talk': 'Konuşmalar'
+  'part.talk': 'Konuşmalar',
+  'wn.test': 'Test bildirimi gönder',
+  'wn.t.nofn':
+    'notify-observers işlevi yanıt vermiyor: yüklü olduğunu ve “Verify JWT”nin kapalı olduğunu kontrol edin.',
+  'wn.t.nodevice':
+    'Bu telefonda bildirimler açık değil. Profil’de Hatırlatmaları açın (iPhone’da yalnızca ana ekrandaki uygulamada), sonra tekrar deneyin.',
+  'wn.t.nosub':
+    'Sunucuda bu hesabın aboneliği yok. Profil’de Hatırlatmaları kapatıp yeniden açın, sonra tekrar deneyin.',
+  'wn.t.fail': 'Abonelik var ama gönderim başarısız ({e}). Profil’de Hatırlatmaları kapatıp yeniden açın.',
+  'wn.t.ok':
+    'Gönderilen cihaz: {n}. Bir şey görünmediyse telefonun tarayıcı bildirim ayarlarını kontrol edin.'
 };
