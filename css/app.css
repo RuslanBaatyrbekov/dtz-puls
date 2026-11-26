@@ -1026,6 +1026,32 @@ details summary {
   cursor: pointer;
   color: var(--accent);
   font-weight: 600;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* every fold-out gets the same visible arrow: ▸ closed, ▾ open */
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+  margin-inline: 2px 2px;
+}
+[dir='rtl'] details summary::before {
+  transform: rotate(135deg);
+}
+details[open] > summary::before,
+[dir='rtl'] details[open] > summary::before {
+  transform: rotate(45deg);
 }
 textarea.txt {
   font-family: var(--f-mono);
@@ -2609,8 +2635,8 @@ details.trans summary {
 
 /* Practice level bar: green → amber → red */
 .lvlbar {
-  margin: 12px 0 4px;
-  padding: 12px;
+  margin: 10px 0 4px;
+  padding: 8px 10px;
   border: 1.5px solid var(--ink);
   border-radius: 14px;
   background: var(--card);
@@ -2621,7 +2647,7 @@ details.trans summary {
   align-items: baseline;
   font-size: 13px;
   color: var(--muted);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .lvlbar-h b {
   font-size: 15px;
@@ -2646,32 +2672,33 @@ details.trans summary {
   overflow: hidden;
 }
 .lvlseg .seg {
-  min-height: 44px;
+  min-height: 34px;
+  padding: 0 4px;
   border: 0;
   font: inherit;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
   color: var(--ink);
   cursor: pointer;
   transition: background 0.15s;
 }
 .lvlseg .seg.lv1 {
-  background: #e3f3e9;
+  background: #bfeccf;
 }
 .lvlseg .seg.lv2 {
-  background: #fbefc6;
+  background: #ffe7a0;
 }
 .lvlseg .seg.lv3 {
-  background: #f9dedb;
+  background: #ffc9c3;
 }
 .lvlseg .seg.lv1.on {
-  background: #8fd3a9;
+  background: #2fc46c;
 }
 .lvlseg .seg.lv2.on {
-  background: #f2c94c;
+  background: #ffc21a;
 }
 .lvlseg .seg.lv3.on {
-  background: #ec8a82;
+  background: #ff6a5c;
 }
 .lvlseg .seg.on {
   box-shadow: inset 0 0 0 2px var(--ink);
@@ -2687,15 +2714,15 @@ details.trans summary {
   color: #151515;
 }
 .lvlinfo {
-  margin-top: 8px;
+  margin-top: 4px;
   font-size: 13px;
 }
 .lvlinfo summary {
-  cursor: pointer;
-  color: var(--muted);
-  min-height: 32px;
-  display: flex;
-  align-items: center;
+  color: var(--accent);
+  min-height: 30px;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
 }
 .lvlinfo dl {
   margin: 6px 0 0;
