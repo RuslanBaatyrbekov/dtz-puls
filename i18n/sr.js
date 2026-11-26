@@ -424,5 +424,6 @@
   'write.c.close': 'Pozdrav na kraju (Viele Grüße …)',
   'write.c.len': 'Najmanje 30 reči',
   'write.model': 'Uzorak pisma',
-  'write.c.self': 'Sam označi šta ima u tvom pismu (uporedi sa uzorkom ispod):'
+  'write.c.self': 'Sam označi šta ima u tvom pismu (uporedi sa uzorkom ispod):',
+  'diff.more': 'Šta se menja na svakom nivou'
 };

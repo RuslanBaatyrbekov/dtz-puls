@@ -437,5 +437,6 @@
   'write.c.close': 'Formule de fin (Viele Grüße …)',
   'write.c.len': 'Au moins 30 mots',
   'write.model': 'Lettre modèle',
-  'write.c.self': 'Coche toi-même ce que contient ta lettre (compare avec le modèle ci-dessous) :'
+  'write.c.self': 'Coche toi-même ce que contient ta lettre (compare avec le modèle ci-dessous) :',
+  'diff.more': 'Ce qui change à chaque niveau'
 };

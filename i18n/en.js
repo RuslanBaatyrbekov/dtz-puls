@@ -428,5 +428,6 @@
   'write.c.close': 'Closing (Viele Grüße …)',
   'write.c.len': 'At least 30 words',
   'write.model': 'Model letter',
-  'write.c.self': 'Tick yourself what your letter has (compare with the model below):'
+  'write.c.self': 'Tick yourself what your letter has (compare with the model below):',
+  'diff.more': 'What changes on each level'
 };

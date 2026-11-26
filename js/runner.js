@@ -192,24 +192,57 @@ function setLvl(n) {
 function lvl() {
   return R && R.L && R.L.kind === 'practice' ? PLVL : 2;
 }
-function lvlChips(act) {
-  return [1, 2, 3]
-    .map(function (n) {
-      return (
-        '<button class="chipbtn' +
-        (n === PLVL ? ' on' : '') +
-        '" data-a="' +
-        act +
-        '" data-v="' +
-        n +
-        '" aria-pressed="' +
-        (n === PLVL) +
-        '">' +
-        esc(t('diff.' + n)) +
-        '</button>'
-      );
-    })
-    .join('');
+/* Level bar: a coloured three-step scale that is easy to spot, plus a fold-out of what each level changes */
+function lvlBar(act) {
+  var d = ['diff.d1', 'diff.d2', 'diff.d3'];
+  return (
+    '<div class="lvlbar"><div class="lvlbar-h"><span>' +
+    esc(t('diff.h')) +
+    '</span><b class="lv' +
+    PLVL +
+    '">' +
+    esc(t('diff.' + PLVL)) +
+    '</b></div><div class="lvlseg" role="radiogroup" aria-label="' +
+    esc(t('diff.h')) +
+    '">' +
+    [1, 2, 3]
+      .map(function (n) {
+        return (
+          '<button class="seg lv' +
+          n +
+          (n === PLVL ? ' on' : '') +
+          '" role="radio" aria-checked="' +
+          (n === PLVL) +
+          '" data-a="' +
+          act +
+          '" data-v="' +
+          n +
+          '">' +
+          esc(t('diff.' + n)) +
+          '</button>'
+        );
+      })
+      .join('') +
+    '</div><details class="lvlinfo"><summary>' +
+    esc(t('diff.more')) +
+    '</summary><dl>' +
+    [1, 2, 3]
+      .map(function (n) {
+        return (
+          '<div class="' +
+          (n === PLVL ? 'on' : '') +
+          '"><dt class="lv' +
+          n +
+          '">' +
+          esc(t('diff.' + n)) +
+          '</dt><dd>' +
+          esc(t(d[n - 1])) +
+          '</dd></div>'
+        );
+      })
+      .join('') +
+    '</dl></details></div>'
+  );
 }
 function initTask(x) {
   T = { done: false, right: false };
@@ -669,13 +702,7 @@ function vWrite(x) {
   return h;
 }
 function wLvlRow() {
-  return R.L.kind === 'practice'
-    ? '<div class="row" style="margin-bottom:6px"><span class="small muted">' +
-        esc(t('diff.h')) +
-        '</span>' +
-        lvlChips('wlvl') +
-        '</div>'
-    : '';
+  return R.L.kind === 'practice' ? lvlBar('wlvl') : '';
 }
 /* exam level: the learner writes the whole letter alone, then checks it against a list and a model */
 function wordCount(s) {

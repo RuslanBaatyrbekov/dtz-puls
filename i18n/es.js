@@ -429,5 +429,6 @@
   'write.c.close': 'Despedida (Viele Grüße …)',
   'write.c.len': 'Al menos 30 palabras',
   'write.model': 'Carta modelo',
-  'write.c.self': 'Marca tú qué tiene tu carta (compara con el modelo de abajo):'
+  'write.c.self': 'Marca tú qué tiene tu carta (compara con el modelo de abajo):',
+  'diff.more': 'Qué cambia en cada nivel'
 };

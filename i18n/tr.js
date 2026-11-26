@@ -424,5 +424,6 @@
   'write.c.close': 'Kapanış (Viele Grüße …)',
   'write.c.len': 'En az 30 kelime',
   'write.model': 'Örnek mektup',
-  'write.c.self': 'Mektubunda olanları kendin işaretle (aşağıdaki örnekle karşılaştır):'
+  'write.c.self': 'Mektubunda olanları kendin işaretle (aşağıdaki örnekle karşılaştır):',
+  'diff.more': 'Her seviyede ne değişir'
 };

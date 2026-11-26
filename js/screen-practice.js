@@ -30,14 +30,10 @@ function vPractice() {
     esc(t('tab.practice')) +
     '</div><h1>' +
     esc(t('prac.h')) +
-    '</h1><p class="small muted" style="margin:6px 0 0;max-width:60ch">' +
+    '</h1>' +
+    lvlBar('plvl') +
+    '<p class="small muted" style="margin:10px 0 0;max-width:60ch">' +
     esc(t('prac.p')) +
-    '</p><div class="row" style="margin-top:12px"><span class="small muted">' +
-    esc(t('diff.h')) +
-    '</span>' +
-    lvlChips('plvl') +
-    '</div><p class="small muted" style="margin:4px 0 0;max-width:60ch">' +
-    esc(t(['diff.d1', 'diff.d2', 'diff.d3'][PLVL - 1])) +
     '</p></section><div class="secs">';
   if (cards().length) {
     var cn = cToday();

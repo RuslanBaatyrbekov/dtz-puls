@@ -2606,3 +2606,114 @@ details.trans summary {
 .wpt.good {
   border-color: var(--ok);
 }
+
+/* Practice level bar: green → amber → red */
+.lvlbar {
+  margin: 12px 0 4px;
+  padding: 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  background: var(--card);
+}
+.lvlbar-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.lvlbar-h b {
+  font-size: 15px;
+}
+.lvlbar-h b.lv1,
+.lvlinfo dt.lv1 {
+  color: var(--ok);
+}
+.lvlbar-h b.lv2,
+.lvlinfo dt.lv2 {
+  color: var(--gold);
+}
+.lvlbar-h b.lv3,
+.lvlinfo dt.lv3 {
+  color: var(--bad);
+}
+.lvlseg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.lvlseg .seg {
+  min-height: 44px;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.lvlseg .seg.lv1 {
+  background: #e3f3e9;
+}
+.lvlseg .seg.lv2 {
+  background: #fbefc6;
+}
+.lvlseg .seg.lv3 {
+  background: #f9dedb;
+}
+.lvlseg .seg.lv1.on {
+  background: #8fd3a9;
+}
+.lvlseg .seg.lv2.on {
+  background: #f2c94c;
+}
+.lvlseg .seg.lv3.on {
+  background: #ec8a82;
+}
+.lvlseg .seg.on {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+.lvlseg .seg.on::before {
+  content: '✓ ';
+}
+.lvlseg .seg:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: -3px;
+}
+.lvlseg .seg {
+  color: #151515;
+}
+.lvlinfo {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.lvlinfo summary {
+  cursor: pointer;
+  color: var(--muted);
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+.lvlinfo dl {
+  margin: 6px 0 0;
+  display: grid;
+  gap: 8px;
+}
+.lvlinfo dl > div {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.lvlinfo dl > div.on {
+  border-color: var(--ink);
+}
+.lvlinfo dt {
+  font-weight: 700;
+}
+.lvlinfo dd {
+  margin: 2px 0 0;
+  line-height: 1.45;
+}
