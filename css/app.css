@@ -2566,3 +2566,43 @@ details.trans summary {
 .secparts .chip {
   font-size: 13px;
 }
+
+/* Schreiben, exam level: free letter and its checklist */
+.wfree {
+  width: 100%;
+  min-height: 220px;
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+.wchk {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  display: grid;
+  gap: 6px;
+}
+.wchk li {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.wchk li.good {
+  border-color: var(--ok);
+}
+.wchk li.bad {
+  border-color: var(--bad);
+}
+
+.wpt {
+  text-align: start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+.wpt.good {
+  border-color: var(--ok);
+}

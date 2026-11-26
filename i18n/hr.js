@@ -410,5 +410,23 @@
   'set.voice': 'Glas',
   'set.speed': 'Brzina',
   'set.voicetest': 'Hallo! So klingt meine Stimme.',
-  'set.nomale': 'Na ovom uređaju nema muškog glasa. Odaberite drugi glas s popisa ili brzinu.'
+  'set.nomale': 'Na ovom uređaju nema muškog glasa. Odaberite drugi glas s popisa ili brzinu.',
+  'diff.h': 'Razina',
+  'diff.1': 'Lako',
+  'diff.2': 'Srednje',
+  'diff.3': 'Ispit',
+  'diff.d1':
+    'Više pomoći: jedna opcija manje, tekst zvuka može se otvoriti, prva riječ je već na mjestu, u pismu savjeti za svaku prazninu.',
+  'diff.d2': 'Uobičajeni način. U pismu se savjet za prazninu pojavljuje nakon prvog pokušaja.',
+  'diff.d3':
+    'Kao na ispitu: bez prijevoda riječi i savjeta, zvuk jednom (poruke dvaput), cijelo pismo pišeš sam.',
+  'run.left': 'Preostalo slušanja: {n}',
+  'run.noplay': 'Kao na ispitu: više se ne može slušati. Odaberi odgovor.',
+  'write.freehow': 'Napiši cijelo pismo sam: obraćanje, sve tri točke, pozdrav na kraju. Oko 30–40 riječi.',
+  'write.words': 'Riječi: {n}',
+  'write.c.greet': 'Obraćanje (Liebe …, Lieber …, Sehr geehrte …)',
+  'write.c.close': 'Pozdrav na kraju (Viele Grüße …)',
+  'write.c.len': 'Najmanje 30 riječi',
+  'write.model': 'Uzorak pisma',
+  'write.c.self': 'Sam označi što ima u tvom pismu (usporedi s uzorkom ispod):'
 };

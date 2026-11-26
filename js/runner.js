@@ -175,6 +175,42 @@ function openReview() {
   );
 }
 
+/* Practice difficulty: 1 easy, 2 normal, 3 exam. Kept per device; daily lessons always run at 2. */
+var PLVL = (function () {
+  try {
+    return +localStorage.getItem('dtz.lvl') || 2;
+  } catch (e) {
+    return 2;
+  }
+})();
+function setLvl(n) {
+  PLVL = n;
+  try {
+    localStorage.setItem('dtz.lvl', String(n));
+  } catch (e) {}
+}
+function lvl() {
+  return R && R.L && R.L.kind === 'practice' ? PLVL : 2;
+}
+function lvlChips(act) {
+  return [1, 2, 3]
+    .map(function (n) {
+      return (
+        '<button class="chipbtn' +
+        (n === PLVL ? ' on' : '') +
+        '" data-a="' +
+        act +
+        '" data-v="' +
+        n +
+        '" aria-pressed="' +
+        (n === PLVL) +
+        '">' +
+        esc(t('diff.' + n)) +
+        '</button>'
+      );
+    })
+    .join('');
+}
 function initTask(x) {
   T = { done: false, right: false };
   if (x.t === 'mc' || x.t === 'listen' || x.t === 'read') {
@@ -185,6 +221,14 @@ function initTask(x) {
     );
     T.sel = -1;
     T.plays = 0;
+    /* easy: one wrong option less; exam: audio only as often as in the exam */
+    if (lvl() === 1 && x.o.length > 2) {
+      var wrong = T.opts.filter(function (j) {
+        return j !== x.a;
+      });
+      T.opts.splice(T.opts.indexOf(wrong[Math.floor(Math.random() * wrong.length)]), 1);
+    }
+    T.max = x.t === 'listen' && lvl() === 3 ? (/Telefon|Anrufbeantworter|Nachricht/.test(x.k) ? 2 : 1) : 0;
   }
   if (x.t === 'order') {
     T.pool = shuffle(
@@ -198,7 +242,7 @@ function initTask(x) {
       })
     )
       T.pool.reverse();
-    T.ans = [];
+    T.ans = lvl() === 1 ? [0] : []; // easy: the first word is already in place
   }
   if (x.t === 'match') {
     T.right_ = shuffle(
@@ -213,7 +257,8 @@ function initTask(x) {
   }
   if (x.t === 'fill') {
     T.val = '';
-    T.chips = x.o ? shuffle(x.o) : null;
+    T.chips = x.o && lvl() !== 3 ? shuffle(x.o) : null;
+    T.ph = lvl() === 1 && !T.chips ? x.a[0].charAt(0) + '…' : '';
   }
   if (x.t === 'speak') {
     T.shown = false;
@@ -226,6 +271,8 @@ function initTask(x) {
     T.vals = {};
     T.tries = {};
     T.ok = false;
+    T.free = '';
+    T.chk = null;
   }
 }
 function sayBtn(text, label, cls) {
@@ -243,7 +290,7 @@ function de(s) {
   return '<span lang="de" dir="ltr">' + s + '</span>';
 }
 function glTip(x) {
-  return !S.glTip && x.gw && x.gw.length && C.glossF
+  return !S.glTip && lvl() !== 3 && x.gw && x.gw.length && C.glossF
     ? '<p class="small gltip">💡 ' + esc(t('gl.tip')) + '</p>'
     : '';
 }
@@ -271,9 +318,20 @@ function vTask(st) {
       '</p><div class="row"><button class="play" data-a="play" aria-label="' +
       esc(t('btn.listen')) +
       '"><svg viewBox="0 0 24 24"><path class="pl" d="M8 5v14l11-7z"/><rect class="st" x="6" y="6" width="12" height="12" rx="2"/></svg></button><span class="small muted num">' +
-      (T.plays ? esc(t('run.plays', { n: T.plays })) : esc(t('run.first'))) +
+      (T.max
+        ? esc(t('run.left', { n: Math.max(0, T.max - T.plays) }))
+        : T.plays
+          ? esc(t('run.plays', { n: T.plays }))
+          : esc(t('run.first'))) +
       '</span></div>' +
       optsHtml(x) +
+      (lvl() === 1 && !T.done
+        ? '<details class="trans"><summary>' +
+          esc(t('gl.text')) +
+          '</summary><div class="tx" lang="de" dir="ltr">' +
+          gz(x.text) +
+          '</div></details>'
+        : '') +
       (T.done ? '<div class="tx" lang="de" dir="ltr">' + esc(x.text) + '</div>' : '');
   }
   if (x.t === 'read') {
@@ -292,6 +350,7 @@ function vTask(st) {
       '" autocomplete="off" autocapitalize="off" spellcheck="false" value="' +
       esc(T.val) +
       '"' +
+      (T.ph ? ' placeholder="' + esc(T.ph) + '"' : '') +
       (T.done ? ' disabled' : '') +
       '>';
     h +=
@@ -526,15 +585,20 @@ function gapHtml(s, pi) {
       esc(t('run.gap')) +
       '"' +
       (T.ok ? ' disabled' : '') +
-      '><span class="hint" dir="auto">' +
-      esc(hn) +
-      (T.tries[id] >= 2 ? ' → <b>' + esc(a) + '</b>' : '') +
-      '</span>'
+      '>' +
+      (R.L.kind !== 'practice' || lvl() !== 2 || T.tries[id] != null // normal level: the hint shows after the first try
+        ? '<span class="hint" dir="auto">' +
+          esc(hn) +
+          (T.tries[id] >= 2 ? ' → <b>' + esc(a) + '</b>' : '') +
+          '</span>'
+        : '')
     );
   });
 }
 function vWrite(x) {
+  if (lvl() === 3) return vWriteFree(x);
   var h =
+    wLvlRow() +
     '<h2>' +
     esc(t('write.h')) +
     '</h2><div class="prompt" lang="de" dir="ltr">' +
@@ -577,7 +641,9 @@ function vWrite(x) {
         })
         .join('') +
       '</div>' +
-      (T.sel[i] >= 0 ? '<div class="sent">' + gapHtml(opts[T.sel[i]][1], i) + '</div>' : '') +
+      (T.sel[i] >= 0
+        ? '<div class="sent">' + gapHtml(opts[T.sel[i]][1], i + '_' + T.sel[i]) + '</div>'
+        : '') +
       '</div>';
   });
   h +=
@@ -600,6 +666,108 @@ function vWrite(x) {
       '</button></div>';
   } else
     h += '<div class="foot"><button class="btn" data-a="wcheck">' + esc(t('btn.check')) + '</button></div>';
+  return h;
+}
+function wLvlRow() {
+  return R.L.kind === 'practice'
+    ? '<div class="row" style="margin-bottom:6px"><span class="small muted">' +
+        esc(t('diff.h')) +
+        '</span>' +
+        lvlChips('wlvl') +
+        '</div>'
+    : '';
+}
+/* exam level: the learner writes the whole letter alone, then checks it against a list and a model */
+function wordCount(s) {
+  return (s.match(/[A-Za-zÄÖÜäöüß]+/g) || []).length;
+}
+function freeCheck(x, txt) {
+  /* only what a machine can check reliably; the content points are ticked by the learner */
+  return {
+    greet: /^\s*(liebe|lieber|hallo|sehr geehrte|guten tag)/i.test(txt),
+    close: /(grüße|gruß|bis bald|tschüss)/i.test(txt),
+    len: wordCount(txt) >= 30,
+    pts: x.p.map(function () {
+      return false;
+    })
+  };
+}
+function vWriteFree(x) {
+  var n = wordCount(T.free),
+    h =
+      wLvlRow() +
+      '<h2>' +
+      esc(t('write.h')) +
+      '</h2><div class="prompt" lang="de" dir="ltr">' +
+      esc(x.sit) +
+      '<ul class="pts">' +
+      x.p
+        .map(function (p) {
+          return '<li>' + esc(p) + '</li>';
+        })
+        .join('') +
+      '</ul></div><p class="small muted">' +
+      esc(t('write.freehow')) +
+      '</p><textarea id="wfree" class="txt wfree" lang="de" dir="ltr" rows="10" spellcheck="false" aria-label="' +
+      esc(t('write.h')) +
+      '"' +
+      (T.ok ? ' disabled' : '') +
+      '>' +
+      esc(T.free) +
+      '</textarea><p class="small muted num" id="wcount">' +
+      esc(t('write.words', { n: n })) +
+      '</p>';
+  if (!T.ok)
+    return (
+      h + '<div class="foot"><button class="btn" data-a="wfcheck">' + esc(t('btn.check')) + '</button></div>'
+    );
+  var c = T.chk,
+    li = function (ok, txt) {
+      return '<li class="' + (ok ? 'good' : 'bad') + '">' + (ok ? '✓ ' : '✗ ') + esc(txt) + '</li>';
+    };
+  h +=
+    '<ul class="wchk">' +
+    li(c.greet, t('write.c.greet')) +
+    li(c.close, t('write.c.close')) +
+    li(c.len, t('write.c.len')) +
+    '</ul><p class="small muted">' +
+    esc(t('write.c.self')) +
+    '</p><div class="wchk">' +
+    c.pts
+      .map(function (ok, i) {
+        return (
+          '<button class="wpt' +
+          (ok ? ' good' : '') +
+          '" data-a="wpt" data-i="' +
+          i +
+          '" aria-pressed="' +
+          ok +
+          '">' +
+          (ok ? '✓ ' : '☐ ') +
+          esc(t('write.point', { n: i + 1 })) +
+          ' · <span lang="de">' +
+          esc(x.p[i]) +
+          '</span></button>'
+        );
+      })
+      .join('') +
+    '</div>';
+  T.sel = x.b.map(function () {
+    return 0;
+  });
+  var model = assemble(x);
+  h +=
+    '<div class="eyebrow">' +
+    esc(t('write.model')) +
+    '</div><div class="tx" lang="de" dir="ltr">' +
+    esc(model).replace(/\n/g, '<br>') +
+    '</div><div>' +
+    sayBtn(model, t('btn.listen')) +
+    '</div><div class="foot row"><button class="btn" data-a="srate" data-v="1">' +
+    esc(t('speak.good')) +
+    '</button><button class="btn ghost" data-a="srate" data-v="0">' +
+    esc(t('speak.hard')) +
+    '</button></div>';
   return h;
 }
 function assemble(x) {

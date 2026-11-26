@@ -406,5 +406,23 @@
   'set.voice': 'Ses',
   'set.speed': 'Hız',
   'set.voicetest': 'Hallo! So klingt meine Stimme.',
-  'set.nomale': 'Bu cihazda erkek sesi bulunamadı. Listeden başka bir ses veya hız seçin.'
+  'set.nomale': 'Bu cihazda erkek sesi bulunamadı. Listeden başka bir ses veya hız seçin.',
+  'diff.h': 'Seviye',
+  'diff.1': 'Kolay',
+  'diff.2': 'Orta',
+  'diff.3': 'Sınav',
+  'diff.d1':
+    'Daha çok yardım: bir seçenek eksik, ses metni açılabilir, ilk kelime yerinde, mektupta her boşluk için ipucu.',
+  'diff.d2': 'Normal mod. Mektupta boşluğun ipucu ilk denemeden sonra çıkar.',
+  'diff.d3':
+    'Sınavdaki gibi: kelime çevirisi ve ipucu yok, ses 1 kez (mesajlar 2 kez), mektubu tamamen kendin yazarsın.',
+  'run.left': 'Kalan dinleme: {n}',
+  'run.noplay': 'Sınavdaki gibi: artık dinlenemez. Bir cevap seç.',
+  'write.freehow': 'Mektubu tamamen kendin yaz: hitap, üç nokta, kapanış. Yaklaşık 30–40 kelime.',
+  'write.words': 'Kelime: {n}',
+  'write.c.greet': 'Hitap (Liebe …, Lieber …, Sehr geehrte …)',
+  'write.c.close': 'Kapanış (Viele Grüße …)',
+  'write.c.len': 'En az 30 kelime',
+  'write.model': 'Örnek mektup',
+  'write.c.self': 'Mektubunda olanları kendin işaretle (aşağıdaki örnekle karşılaştır):'
 };

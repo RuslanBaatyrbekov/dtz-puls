@@ -14,7 +14,7 @@ function glemma(w) {
 }
 function gz(s) {
   s = String(s == null ? '' : s);
-  if (!C.glossF) return esc(s);
+  if (!C.glossF || (typeof T !== 'undefined' && T && typeof lvl === 'function' && lvl() === 3)) return esc(s); // exam level: no word help
   var out = '',
     last = 0,
     m;

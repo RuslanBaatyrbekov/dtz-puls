@@ -411,5 +411,23 @@
   'set.voice': 'Voz',
   'set.speed': 'Velocidad',
   'set.voicetest': 'Hallo! So klingt meine Stimme.',
-  'set.nomale': 'No hay voz masculina en este dispositivo. Elige otra voz de la lista o cambia la velocidad.'
+  'set.nomale': 'No hay voz masculina en este dispositivo. Elige otra voz de la lista o cambia la velocidad.',
+  'diff.h': 'Nivel',
+  'diff.1': 'Fácil',
+  'diff.2': 'Medio',
+  'diff.3': 'Examen',
+  'diff.d1':
+    'Más ayuda: una opción menos, se puede abrir el texto del audio, la primera palabra ya está puesta, pistas para cada hueco de la carta.',
+  'diff.d2': 'Modo normal. En la carta, la pista de un hueco aparece tras el primer intento.',
+  'diff.d3':
+    'Como en el examen: sin traducción ni pistas, el audio suena una vez (mensajes dos), escribes toda la carta tú solo.',
+  'run.left': 'Escuchas restantes: {n}',
+  'run.noplay': 'Como en el examen: ya no se puede escuchar. Elige una respuesta.',
+  'write.freehow': 'Escribe toda la carta tú solo: saludo, los tres puntos, despedida. Unas 30–40 palabras.',
+  'write.words': 'Palabras: {n}',
+  'write.c.greet': 'Saludo (Liebe …, Lieber …, Sehr geehrte …)',
+  'write.c.close': 'Despedida (Viele Grüße …)',
+  'write.c.len': 'Al menos 30 palabras',
+  'write.model': 'Carta modelo',
+  'write.c.self': 'Marca tú qué tiene tu carta (compara con el modelo de abajo):'
 };

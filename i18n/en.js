@@ -410,5 +410,23 @@
   'set.voice': 'Voice',
   'set.speed': 'Speed',
   'set.voicetest': 'Hallo! So klingt meine Stimme.',
-  'set.nomale': 'No male voice found on this device. Choose another voice from the list or change the speed.'
+  'set.nomale': 'No male voice found on this device. Choose another voice from the list or change the speed.',
+  'diff.h': 'Level',
+  'diff.1': 'Easy',
+  'diff.2': 'Medium',
+  'diff.3': 'Exam',
+  'diff.d1':
+    'More help: one option less, the audio text can be opened, the first word is already in place, hints for every gap in the letter.',
+  'diff.d2': 'Normal mode. In the letter, a gap’s hint appears after the first try.',
+  'diff.d3':
+    'Like the exam: no word translations or hints, audio plays once (messages twice), you write the whole letter yourself.',
+  'run.left': 'Plays left: {n}',
+  'run.noplay': 'Like in the exam: no more listening. Choose an answer.',
+  'write.freehow': 'Write the whole letter yourself: greeting, all three points, closing. About 30–40 words.',
+  'write.words': 'Words: {n}',
+  'write.c.greet': 'Greeting (Liebe …, Lieber …, Sehr geehrte …)',
+  'write.c.close': 'Closing (Viele Grüße …)',
+  'write.c.len': 'At least 30 words',
+  'write.model': 'Model letter',
+  'write.c.self': 'Tick yourself what your letter has (compare with the model below):'
 };

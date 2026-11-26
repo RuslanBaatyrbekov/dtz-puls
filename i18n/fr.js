@@ -418,5 +418,24 @@
   'set.speed': 'Vitesse',
   'set.voicetest': 'Hallo! So klingt meine Stimme.',
   'set.nomale':
-    'Aucune voix masculine sur cet appareil. Choisissez une autre voix dans la liste ou changez la vitesse.'
+    'Aucune voix masculine sur cet appareil. Choisissez une autre voix dans la liste ou changez la vitesse.',
+  'diff.h': 'Niveau',
+  'diff.1': 'Facile',
+  'diff.2': 'Moyen',
+  'diff.3': 'Examen',
+  'diff.d1':
+    'Plus d’aide : une option en moins, le texte de l’audio peut être ouvert, le premier mot est déjà placé, des indices pour chaque trou de la lettre.',
+  'diff.d2': 'Mode normal. Dans la lettre, l’indice d’un trou apparaît après le premier essai.',
+  'diff.d3':
+    'Comme à l’examen : sans traduction ni indices, l’audio une seule fois (messages deux fois), tu écris toute la lettre toi-même.',
+  'run.left': 'Écoutes restantes : {n}',
+  'run.noplay': 'Comme à l’examen : plus d’écoute possible. Choisis une réponse.',
+  'write.freehow':
+    'Écris toute la lettre toi-même : formule d’appel, les trois points, formule de fin. Environ 30–40 mots.',
+  'write.words': 'Mots : {n}',
+  'write.c.greet': 'Formule d’appel (Liebe …, Lieber …, Sehr geehrte …)',
+  'write.c.close': 'Formule de fin (Viele Grüße …)',
+  'write.c.len': 'Au moins 30 mots',
+  'write.model': 'Lettre modèle',
+  'write.c.self': 'Coche toi-même ce que contient ta lettre (compare avec le modèle ci-dessous) :'
 };

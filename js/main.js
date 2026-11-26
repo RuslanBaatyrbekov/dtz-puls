@@ -181,6 +181,7 @@ var A = {
   },
   play: function (el) {
     var x = R.q[R.pos].t;
+    if (T.max && T.plays >= T.max && !el.classList.contains('playing')) return toast(t('run.noplay'));
     if (say(el, x.text, 1)) {
       T.plays++;
       var s = el.parentNode.querySelector('.num');
@@ -229,22 +230,33 @@ var A = {
     next();
   },
   idea: function (el) {
-    var i = +el.dataset.p,
-      keep = {};
-    document.querySelectorAll('[data-g]').forEach(function (x) {
-      if (x.dataset.g.indexOf(i + '_') !== 0) keep[x.dataset.g] = { v: x.value, c: x.className };
-    });
+    /* typed gaps are kept per idea (T.vals), so switching ideas never carries text over */
+    var i = +el.dataset.p;
     T.sel[i] = +el.dataset.j;
     render();
-    Object.keys(keep).forEach(function (k) {
-      var x = document.querySelector('[data-g="' + k + '"]');
-      if (x) {
-        x.value = keep[k].v;
-        x.className = keep[k].c;
-      }
-    });
-    var g = document.querySelector('[data-g^="' + i + '_"]');
+    var g = document.querySelector('[data-g^="' + i + '_' + T.sel[i] + '_"]');
     if (g) g.focus({ preventScroll: true });
+  },
+  wlvl: function (el) {
+    setLvl(+el.dataset.v);
+    initTask(R.q[R.pos].t);
+    render();
+  },
+  plvl: function (el) {
+    setLvl(+el.dataset.v);
+    render();
+  },
+  wpt: function (el) {
+    var i = +el.dataset.i;
+    T.chk.pts[i] = !T.chk.pts[i];
+    render();
+  },
+  wfcheck: function () {
+    var x = R.q[R.pos].t;
+    if (wordCount(T.free) < 5) return toast(t('toast.empty'));
+    T.chk = freeCheck(x, T.free);
+    T.ok = true;
+    render();
   },
   wcheck: function () {
     var x = R.q[R.pos].t;
@@ -697,6 +709,11 @@ document.addEventListener('input', function (e) {
     return;
   }
   if (e.target.id === 'fillin' && T) T.val = e.target.value;
+  if (e.target.id === 'wfree' && T) {
+    T.free = e.target.value;
+    var wc = $('#wcount');
+    if (wc) wc.textContent = t('write.words', { n: wordCount(T.free) });
+  }
   if (e.target.dataset && e.target.dataset.g && T && T.vals) T.vals[e.target.dataset.g] = e.target.value;
 });
 
